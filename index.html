@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تسجيل مورد جديد</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS styles remain largely the same as the previous version with enhanced borders/fonts */
+        /* Key is that input fields have a min-height to be visible when empty */
+        body { 
+            font-family: 'Cairo', sans-serif;
+            direction: rtl;
+            background-color: #f0f2f5; 
+            margin: 0;
+            padding: 20px;
+            color: #2c3e50; 
+            line-height: 1.55; 
+            font-size: 16px; 
+        }
+
+        .container {
+            max-width: 790px; 
+            margin: 20px auto;
+            background-color: #ffffff; 
+            padding: 25px 30px; 
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+            border: 1px solid #c5cdd4; 
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px; 
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0062cc; 
+        }
+
+        header h1 {
+            color: #004085; 
+            font-size: 28px; 
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .supplier-code-container {
+            display: flex;
+            align-items: center;
+            background-color: #e2e6ea; 
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .supplier-code-container label {
+            margin-left: 10px;
+            font-weight: 600;
+            color: #343a40;
+            font-size: 0.95em; 
+        }
+
+        .supplier-code-container input[type="text"] { 
+            border: 1px solid #b0bac5; 
+            padding: 8px 10px; 
+            border-radius: 4px;
+            font-size: 0.95em;
+            line-height: 1.2; 
+            height: auto;     
+            min-height: 30px; 
+            width: 150px;
+            background-color: #fff;
+            text-align: center; 
+            font-weight: 600;
+        }
+
+        fieldset {
+            border: 2px solid #aab8c5; 
+            border-radius: 8px;
+            padding: 18px 25px; 
+            margin-bottom: 18px; 
+            background-color: #f8f9fa; 
+        }
+
+        legend {
+            font-size: 1.3em; 
+            font-weight: 700;
+            color: #0056b3;
+            padding: 0 12px;
+            margin-right: 10px;
+            background-color: #fff; 
+        }
+
+        .form-group {
+            margin-bottom: 15px; 
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px; 
+            align-items: flex-start; 
+        }
+
+        .form-row .form-group {
+            flex: 1; 
+            margin-bottom: 0; 
+        }
+        fieldset > .form-row {
+            margin-bottom: 15px; 
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px; 
+            font-weight: 600;
+            color: #3e4d5c; 
+            font-size: 1.0em; 
+        }
+
+        .form-group label .required {
+            color: #c82333; 
+            margin-left: 4px;
+            font-weight: 700;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"], 
+        select {
+            width: 100%;
+            padding: 10px 12px; 
+            border: 1px solid #b0bac5; 
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1.0em; 
+            line-height: 1.3;  
+            height: auto; 
+            min-height: 38px;    
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: #fff;
+            font-weight: 400; 
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"] { 
+            text-align: center;
+            font-weight: 600; 
+        }
+        input[type="email"] { 
+             text-align: left;
+             font-weight: 400;
+        }
+
+
+        input[type="date"] { 
+            width: 100%;
+            padding: 10px 12px; 
+            border: 1px solid #b0bac5; 
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1.0em; 
+            line-height: 1.3; 
+            height: auto;
+            min-height: 38px;
+            background-color: #fff;
+            text-align: center; 
+            font-weight: 600;
+        }
+        
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-month-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-day-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-text {
+            color: transparent !important;
+        }
+        input[type="date"]::before{
+            content: 'DD-MM-YYYY'; /* This acts as a visual hint on screen for empty date fields */
+            display: block;
+            color: #99aabb; /* Lighter placeholder-like color */
+            text-align: center;
+            width: 100%;
+        }
+        input[type="date"][value]:not([value=""])::before {
+            display: none; 
+        }
+        
+
+        input:focus,
+        select:focus {
+            border-color: #0056b3; 
+            box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25);
+            outline: none;
+        }
+        
+        /* General placeholder styling for inputs that will have them */
+        input::placeholder {
+            color: #778899; 
+            font-size: 0.95em;
+            text-align: right; /* Default for RTL */
+            font-weight: 400; 
+        }
+        /* Centered placeholders for specific input types */
+        input[type="text"]::placeholder,
+        input[type="number"]::placeholder,
+        input[type="tel"]::placeholder { 
+            text-align: center;
+        }
+
+        .form-actions {
+            text-align: center; /* Center buttons */
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #dee2e6;
+        }
+
+        button {
+            background-color: #0062cc; /* Primary button color */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            margin: 0 8px;
+        }
+
+        button[type="button"] {
+            background-color: #5a6268; /* Secondary button color */
+        }
+
+        button:hover {
+            background-color: #004a99; /* Darker shade on hover */
+        }
+        button[type="button"]:hover {
+            background-color: #474c52;
+        }
+
+        #formStatus {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+        #formStatus.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        #formStatus.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0; /* No gap if they stack, margin-bottom on form-group handles spacing */
+            }
+            .form-row .form-group {
+                 margin-bottom: 15px; /* Add back margin when stacked */
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            header h1 {
+                margin-bottom: 10px;
+            }
+             .supplier-code-container {
+                width: 100%;
+                justify-content: space-between; /* Make label and input take available space */
+            }
+            .supplier-code-container input[type="text"] {
+                flex-grow: 1; /* Allow input to grow */
+            }
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>نموذج تسجيل مورد جديد</h1>
+            <div class="supplier-code-container">
+                <label for="supplierCode">كود المورد:</label>
+                <input type="text" id="supplierCode" name="supplierCode">
+            </div>
+        </header>
+
+        <form id="supplierForm">
+            <fieldset>
+                <legend>البيانات الأساسية</legend>
+                <div class="form-group">
+                    <label for="supplierName">اسم المورد <span class="required">*</span></label>
+                    <input type="text" id="supplierName" name="SupplierName" required placeholder="ادخل اسم المورد كاملاً">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="commercialReg">السجل التجاري <span class="required">*</span></label>
+                        <input type="text" id="commercialReg" name="CommercialReg" required placeholder="رقم السجل التجاري">
+                    </div>
+                    <div class="form-group">
+                        <label for="taxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label>
+                        <input type="text" id="taxRegNum" name="TaxRegNum" required
+                               pattern="\d{3}-\d{3}-\d{3}"
+                               title="الرجاء إدخال 9 أرقام مفصولة بشرطات (123-456-789)"
+                               placeholder="XXX-XXX-XXX">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="taxStatus">الحالة الضريبية <span class="required">*</span></label>
+                    <select id="taxStatus" name="TaxStatus" required>
+                        <option value="">اختر الحالة...</option>
+                        <option value="خاضع للضريبة">خاضع للضريبة</option>
+                        <option value="معفي من الضريبة">معفي من الضريبة</option>
+                        <option value="غير مسجل">غير مسجل</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>البيانات المالية</legend>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="invoiceDiscount">خصم الفاتورة (%)</label>
+                        <input type="number" id="invoiceDiscount" name="InvoiceDiscount" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="deferredDiscount">خصم مؤجل (%)</label>
+                        <input type="number" id="deferredDiscount" name="DeferredDiscount" min="0" step="0.01">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="codingFees">رسوم تكويد</label>
+                        <input type="number" id="codingFees" name="CodingFees" min="0" step="0.01" placeholder="بالعملة المحلية">
+                    </div>
+                    <div class="form-group">
+                        <label for="paymentMethod">طريقة السداد <span class="required">*</span></label>
+                        <select id="paymentMethod" name="PaymentMethod" required>
+                            <option value="">اختر طريقة...</option>
+                            <option value="نقدي">نقدي</option>
+                            <option value="تحويل بنكي">تحويل بنكي</option>
+                            <option value="شيك">شيك</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="paymentPeriod">فترة السداد (أيام)</label>
+                        <input type="number" id="paymentPeriod" name="PaymentPeriod" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="returnPeriod">فترة رفع المرتجع (أيام)</label>
+                        <input type="number" id="returnPeriod" name="ReturnPeriod" min="0">
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>بيانات الاتصال</legend>
+                <div class="form-group">
+                    <label for="contactPerson">اسم المسؤول <span class="required">*</span></label>
+                    <input type="text" id="contactPerson" name="ContactPerson" required placeholder="اسم مسؤول الاتصال">
+                </div>
+                <div class="form-group">
+                    <label for="jobTitle">المسمى الوظيفي</label>
+                    <input type="text" id="jobTitle" name="JobTitle">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber">رقم التليفون <span class="required">*</span></label>
+                    <input type="tel" id="phoneNumber" name="PhoneNumber" pattern="[0-9\s\-\+\(\)]+" required placeholder="مثال: +201XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label for="email">البريد الإلكتروني <span class="required">*</span></label>
+                    <input type="email" id="email" name="Email" required placeholder="example@domain.com">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>بيانات أخرى</legend>
+                <div class="form-group">
+                    <label for="requesterName">صاحب الطلب</label>
+                    <input type="text" id="requesterName" name="RequesterName" placeholder="اسم مقدم الطلب">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="requestDate">تاريخ الطلب</label>
+                        <input type="date" id="requestDate" name="RequestDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="registrationDate">تاريخ التسجيل</label>
+                        <input type="date" id="registrationDate" name="RegistrationDate">
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="form-actions">
+                <button type="submit" id="submitBtn">تسجيل المورد</button>
+                <button type="button" id="exportPdfBtn">تصدير كـ PDF</button>
+            </div>
+        </form>
+        <div id="formStatus"></div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('supplierForm');
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const formStatusDiv = document.getElementById('formStatus');
+        // const requestDateInput = document.getElementById('requestDate'); // Not used in current logic
+        // const registrationDateInput = document.getElementById('registrationDate'); // Not used in current logic
+        // const supplierCodeInput = document.getElementById('supplierCode'); // Not used in current logic
+
+        // *** REPLACE WITH YOUR GOOGLE APPS SCRIPT WEB APP URL ***
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+
+        // Function to validate form (basic example)
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = form.querySelectorAll('[required]');
+            formStatusDiv.innerHTML = '';
+            formStatusDiv.className = '';
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#c82333';
+                    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
+                        const errorMsg = document.createElement('small');
+                        errorMsg.textContent = 'هذا الحقل مطلوب';
+                        errorMsg.style.color = '#c82333';
+                        errorMsg.classList.add('error-message');
+                        field.parentNode.insertBefore(errorMsg, field.nextSibling);
+                    }
+                } else {
+                    field.style.borderColor = '#b0bac5';
+                    if (field.nextElementSibling && field.nextElementSibling.classList.contains('error-message')) {
+                        field.nextElementSibling.remove();
+                    }
+                }
+            });
+
+            // Specific pattern validation for taxRegNum
+            const taxRegNumInput = document.getElementById('taxRegNum');
+            if (taxRegNumInput.value.trim() && !taxRegNumInput.checkValidity()) {
+                isValid = false;
+                taxRegNumInput.style.borderColor = '#c82333';
+                if (!taxRegNumInput.nextElementSibling || !taxRegNumInput.nextElementSibling.classList.contains('error-message')) {
+                    const errorMsg = document.createElement('small');
+                    errorMsg.textContent = taxRegNumInput.title || 'تنسيق غير صحيح.';
+                    errorMsg.style.color = '#c82333';
+                    errorMsg.classList.add('error-message');
+                    taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextSibling);
+                }
+            } else if (taxRegNumInput.value.trim()) {
+                 if (taxRegNumInput.nextElementSibling && taxRegNumInput.nextElementSibling.classList.contains('error-message') && taxRegNumInput.checkValidity()) {
+                        taxRegNumInput.nextElementSibling.remove();
+                    }
+            }
+
+
+            if (!isValid) {
+                formStatusDiv.textContent = 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.';
+                formStatusDiv.className = 'error';
+            }
+            return isValid;
+        }
+
+        form.addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent default HTML form submission
+            formStatusDiv.innerHTML = ''; // Clear previous status
+            formStatusDiv.className = '';
+
+            if (!validateForm()) {
+                return; // Stop if form is not valid
+            }
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                formStatusDiv.textContent = 'خطأ: لم يتم تكوين عنوان URL الخاص بـ Google Apps Script.';
+                formStatusDiv.className = 'error';
+                console.error('Google Apps Script URL is not set.');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'جاري الإرسال...';
+            formStatusDiv.textContent = 'جاري حفظ البيانات...';
+            formStatusDiv.className = '';
+
+
+            const formData = new FormData(form);
+            // Add supplierCode separately as it's outside the form element
+            const supplierCodeValue = document.getElementById('supplierCode').value;
+            formData.append('SupplierCode', supplierCodeValue); // Ensure name matches Sheet header
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                body: formData, // FormData will be sent as application/x-www-form-urlencoded or multipart/form-data
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success from GAS:', data);
+                if (data.result === "success") {
+                    formStatusDiv.textContent = 'تم تسجيل بيانات المورد بنجاح!';
+                    formStatusDiv.className = 'success';
+                    form.reset(); // Optionally reset the form
+                    document.getElementById('supplierCode').value = ''; // Reset supplier code
+                } else {
+                    formStatusDiv.textContent = 'حدث خطأ أثناء التسجيل: ' + (data.error || 'Unknown error');
+                    formStatusDiv.className = 'error';
+                    console.error('Error from GAS:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error submitting form to Google Sheet:', error);
+                formStatusDiv.textContent = 'فشل الاتصال بالخادم لحفظ البيانات. الرجاء المحاولة مرة أخرى. الخطأ: ' + error;
+                formStatusDiv.className = 'error';
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'تسجيل المورد';
+            });
+        });
+
+        exportPdfBtn.addEventListener('click', function () {
+            formStatusDiv.innerHTML = '';
+            formStatusDiv.className = '';
+            console.log("Attempting PDF export...");
+
+            let supplierNameValue = document.getElementById('supplierName').value.trim() || "بيانات_مورد";
+            const fileName = `نموذج_مورد_${supplierNameValue.replace(/\s+/g, '_')}.pdf`;
+
+
+            const { jsPDF } = window.jspdf;
+            const formToExport = document.querySelector('.container'); 
+
+            const buttons = formToExport.querySelectorAll('.form-actions button');
+            buttons.forEach(btn => btn.style.display = 'none');
+            const formStatusElement = formToExport.querySelector('#formStatus');
+            if (formStatusElement) formStatusElement.style.display = 'none';
+
+            const pdfTitleElement = document.createElement('h2');
+            const supplierCodeVal = document.getElementById('supplierCode').value.trim();
+            const supplierNameVal = document.getElementById('supplierName').value.trim();
+
+            let titleText = "بيانات مورد جديد";
+            if (supplierNameVal) titleText = `بيانات المورد: ${supplierNameVal}`;
+            if (supplierCodeVal) titleText += ` (كود: ${supplierCodeVal})`;
+            if (!supplierNameVal && !supplierCodeVal) titleText = "بيانات مورد (للملء)";
+
+            pdfTitleElement.textContent = titleText;
+            pdfTitleElement.style.textAlign = 'center';
+            pdfTitleElement.style.color = '#004085';
+            pdfTitleElement.style.marginBottom = '20px';
+            pdfTitleElement.style.fontSize = '22px';
+            pdfTitleElement.style.fontFamily = "'Cairo', sans-serif";
+            formToExport.insertBefore(pdfTitleElement, form); 
+
+            const originalValues = {}; 
+            const fieldsToBlankInPdf = ['supplierCode', 'requestDate', 'registrationDate'];
+
+            fieldsToBlankInPdf.forEach(id => {
+                const input = document.getElementById(id);
+                if (input) {
+                    originalValues[id] = input.value;
+                }
+            });
+            
+            console.log("Starting html2canvas...");
+            try {
+                html2canvas(formToExport, {
+                    scale: 1.8, 
+                    useCORS: true,
+                    logging: true, 
+                    allowTaint: true, 
+                    removeContainer: false,
+                    imageTimeout: 0,
+                    onclone: (documentClone, element) => {
+                        console.log("html2canvas onclone started.");
+                        try {
+                            documentClone.documentElement.setAttribute('dir', 'rtl');
+                            if (documentClone.body) {
+                                documentClone.body.style.fontFamily = "'Cairo', sans-serif";
+                                documentClone.body.style.fontSize = "16px"; 
+                            }
+                            
+                            const clonedContainer = documentClone.querySelector('.container');
+                            if (clonedContainer && clonedContainer.style) clonedContainer.style.direction = 'rtl';
+                            
+                            const originalInputs = element.querySelectorAll('input, select, textarea');
+                            const clonedInputs = documentClone.querySelectorAll('input, select, textarea');
+                            
+                            originalInputs.forEach((originalInput, index) => {
+                                if (clonedInputs[index]) {
+                                    const clonedEl = clonedInputs[index];
+                                    const computedStyle = getComputedStyle(originalInput);
+                                    let textToRender = originalInput.value; 
+
+                                    if (fieldsToBlankInPdf.includes(originalInput.id)) {
+                                        // If the field is intended to be blank *for manual entry on PDF*
+                                        // AND it doesn't already have a value (meaning it's not being filled for record keeping)
+                                        // then make it blank. Otherwise, show its current value.
+                                        // For this form, supplierCode, requestDate, registrationDate are usually blank for PDF export template.
+                                        // However, if the form IS filled, we might want to show those values.
+                                        // Let's assume for now: if a value exists, show it. If not, it remains blank (or placeholder shown by CSS).
+                                        // The specific requirement for these fields was "blanked for PDF".
+                                        textToRender = ""; // Make it blank for PDF printout
+                                        if (originalInput.type === 'date' && originalInput.id.includes('Date')) {
+                                            // To make date fields appear blank with DD-MM-YYYY hint
+                                            clonedEl.removeAttribute('value'); // Remove value to trigger ::before pseudo-element
+                                        }
+
+                                    } else if (originalInput.tagName === 'SELECT') {
+                                        const selectedIndex = originalInput.selectedIndex;
+                                        if (selectedIndex > -1 && originalInput.options[selectedIndex] && originalInput.options[selectedIndex].value !== "") {
+                                            textToRender = originalInput.options[selectedIndex].text;
+                                        } else {
+                                            textToRender = "......................."; // Placeholder for empty select
+                                        }
+                                        clonedEl.style.appearance = 'none';
+                                        clonedEl.style.backgroundImage = 'none'; 
+                                    } else if (!textToRender && originalInput.tagName !== 'SELECT') {
+                                         // For empty text inputs, use a placeholder of dots
+                                        textToRender = ".......................";
+                                    }
+                                    
+                                    clonedEl.value = textToRender; // This sets the value for html2canvas to render
+
+                                    clonedEl.style.fontFamily = "'Cairo', sans-serif";
+                                    clonedEl.style.fontSize = computedStyle.fontSize;
+                                    clonedEl.style.fontWeight = computedStyle.fontWeight;
+                                    clonedEl.style.color = computedStyle.color; 
+                                    clonedEl.style.backgroundColor = "#ffffff"; // Force white background for inputs
+                                    clonedEl.style.border = "1px solid #777"; // Ensure border is visible
+                                    clonedEl.style.borderRadius = computedStyle.borderRadius;
+                                    clonedEl.style.boxSizing = 'border-box';
+                                    clonedEl.style.margin = '0'; 
+                                    clonedEl.style.minHeight = computedStyle.minHeight;
+
+                                    clonedEl.style.height = computedStyle.height === 'auto' ? clonedEl.style.minHeight : computedStyle.height;
+                                    clonedEl.style.display = 'flex';
+                                    clonedEl.style.alignItems = 'center'; 
+                                    
+                                    // For inputs that should be centered:
+                                    if (['text', 'number', 'tel', 'date'].includes(originalInput.type) || originalInput.id === 'supplierCode') {
+                                       clonedEl.style.justifyContent = 'center';
+                                       clonedEl.style.textAlign = 'center';
+                                       clonedEl.style.padding = `0`;
+                                    } else { // For others (like email, select)
+                                       clonedEl.style.justifyContent = 'flex-start';
+                                       clonedEl.style.textAlign = 'right'; // For RTL
+                                       clonedEl.style.padding = `0 ${computedStyle.paddingLeft}`; 
+                                    }
+                                    
+                                    if (originalInput.type === 'checkbox' || originalInput.type === 'radio') {
+                                        clonedEl.style.display = ''; 
+                                        clonedEl.checked = originalInput.checked;
+                                    }
+                                }
+                            });
+                            // Ensure legends are visible
+                            const legends = documentClone.querySelectorAll('legend');
+                            legends.forEach(leg => {
+                                leg.style.backgroundColor = '#f8f9fa'; // Match fieldset for PDF clarity
+                                leg.style.border = '1px solid #aab8c5';
+                                leg.style.padding = '2px 8px';
+                            });
+
+
+                        } catch (cloneError) { console.error("Error during onclone:", cloneError); }
+                        console.log("html2canvas onclone finished.");
+                    }
+                }).then(canvas => { 
+                    fieldsToBlankInPdf.forEach(id => {
+                        const input = document.getElementById(id);
+                        if (input && originalValues.hasOwnProperty(id)) {
+                            input.value = originalValues[id];
+                        }
+                    });
+
+                    buttons.forEach(btn => btn.style.display = '');
+                    if (formStatusElement) formStatusElement.style.display = '';
+                    if (pdfTitleElement) pdfTitleElement.remove();
+
+                    const imgData = canvas.toDataURL('image/png', 1.0);
+                    const pdf = new jsPDF({
+                        orientation: 'p',
+                        unit: 'mm',
+                        format: 'a4',
+                        putOnlyUsedFonts: true,
+                        floatPrecision: 16 
+                    });
+
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    const imgProps = pdf.getImageProperties(imgData);
+                    const imgWidth = imgProps.width;
+                    const imgHeight = imgProps.height;
+                    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+                    
+                    const finalImgWidth = imgWidth * ratio * 0.95; // 95% of available width
+                    const finalImgHeight = imgHeight * ratio * 0.95; // 95% of available height
+
+                    const xPos = (pdfWidth - finalImgWidth) / 2;
+                    const yPos = (pdfHeight - finalImgHeight) / 2;
+
+                    pdf.addImage(imgData, 'PNG', xPos, yPos, finalImgWidth, finalImgHeight);
+                    pdf.save(fileName);
+
+                    formStatusDiv.textContent = 'تم تصدير النموذج كملف PDF بنجاح.';
+                    formStatusDiv.className = 'success';
+
+                }).catch(err => { 
+                    fieldsToBlankInPdf.forEach(id => {
+                        const input = document.getElementById(id);
+                        if (input && originalValues.hasOwnProperty(id)) {
+                            input.value = originalValues[id];
+                        }
+                    });
+                    buttons.forEach(btn => btn.style.display = '');
+                    if (formStatusElement) formStatusElement.style.display = '';
+                    if (pdfTitleElement) pdfTitleElement.remove();
+                    console.error("PDF Export Error (html2canvas):", err);
+                    formStatusDiv.textContent = 'فشل تصدير PDF. خطأ: ' + err.message;
+                    formStatusDiv.className = 'error';
+                });
+            } catch (outerError) { 
+                 fieldsToBlankInДforEach(id => {
+                        const input = document.getElementById(id);
+                        if (input && originalValues.hasOwnProperty(id)) {
+                            input.value = originalValues[id];
+                        }
+                    });
+                buttons.forEach(btn => btn.style.display = '');
+                if (formStatusElement) formStatusElement.style.display = '';
+                if (pdfTitleElement) pdfTitleElement.remove();
+                console.error("PDF Export Outer Error:", outerError);
+                formStatusDiv.textContent = 'فشل تصدير PDF. خطأ خارجي: ' + outerError.message;
+                formStatusDiv.className = 'error';
+            }
+        });
+    });
+    </script>
+</body>
+</html>
