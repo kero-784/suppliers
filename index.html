@@ -405,7 +405,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDJ08ScsLYKBsOivqqeOXz2f5FGwTtNMik3lqjxsmtga1DREo32TV_a94qiZ-jk-Qtlg/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDJ08ScsLYKBsOivqqeOXz2f5FGwTtNMik3lqjxsmtga1DREo32TV_a94qiZ-jk-Qtlg/exec'; // Ensure this is your correct deployed URL
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
@@ -438,11 +438,11 @@
         // --- HELPER FUNCTIONS ---
         function isGoogleScriptUrlSet() {
             console.log("Checking Google Script URL:", GOOGLE_SCRIPT_URL);
-            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec';
-            const placeholderExamplePart = 'AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA'; // An old example
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) ) {
-                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح في الكود البرمجي.', 'error');
-                console.error('FATAL: Google Apps Script URL is not set or is a placeholder:', GOOGLE_SCRIPT_URL);
+            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec'; // Example old placeholder
+            const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE'; // Generic placeholder part
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
+                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح أو هو رابط وضع التطوير. يرجى استخدام رابط التنفيذ (exec) المنشور.', 'error');
+                console.error('FATAL: Google Apps Script URL is not set correctly, is a placeholder, or is a /dev URL:', GOOGLE_SCRIPT_URL);
                 return false;
             }
             return true;
@@ -469,7 +469,7 @@
             }
             console.log(`showStatus on element ${element.id}: ${message}, type: ${type}`);
             element.textContent = message;
-            element.className = type;
+            element.className = type; // This will overwrite existing classes, ensure it's just for status
             element.style.display = message ? 'block' : 'none'; // Hide if message is empty
 
             if (type === 'success' || type === 'error') {
@@ -480,19 +480,16 @@
         }
 
         function escapeHTML(str) {
-            if (typeof str !== 'string') return '';
-           function escapeHTML(str) {
-    if (typeof str !== 'string') return '';
-    return str.replace(/[&<>"']/g, match => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;'
-    }[match]));
-}
-
+            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str); // Handle non-strings better
+            return str.replace(/[&<>"']/g, match => ({
+                '&': '&',
+                '<': '<',
+                '>': '>',
+                '"': '"',
+                "'": ''' // More common than '''
+            }[match]));
         }
+
 
         // --- DATA FETCHING AND RENDERING ---
         async function fetchData(searchTerm = '') {
@@ -510,11 +507,18 @@
                 const response = await fetch(url);
                 console.log("Fetch response status:", response.status);
                 if (!response.ok) {
-                    const errText = await response.text(); // Get text for better debugging
+                    const errText = await response.text();
                     console.error("Fetch error response text:", errText);
                     let errMessage = `فشل جلب البيانات: ${response.status}`;
-                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
-                    catch (e) { /* Use default if not JSON */ }
+                    try {
+                        const errData = JSON.parse(errText);
+                        // Check if the GAS script returned its own error structure
+                        if (errData && errData.status === 'error' && errData.message) {
+                             errMessage = `خطأ من الخادم: ${errData.message}`;
+                        } else if (errData && errData.message) { // Generic JSON error
+                            errMessage = errData.message;
+                        }
+                    } catch (e) { /* Use default if not JSON or unexpected JSON */ }
                     throw new Error(errMessage);
                 }
                 const result = await response.json();
@@ -547,13 +551,13 @@
             tableHTML += '<th>إجراءات</th></tr></thead><tbody>';
 
             data.forEach(record => {
-                tableHTML += `<tr data-id="${record.RowID}">`;
+                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`; // Ensure RowID is escaped and string
                 DISPLAY_HEADERS_KEYS.forEach(key => {
                     tableHTML += `<td>${escapeHTML(record[key])}</td>`;
                 });
                 tableHTML += `<td class="actions-cell">
-                                <button class="edit-btn button" data-id="${record.RowID}">تعديل</button>
-                                <button class="delete-btn button" data-id="${record.RowID}">حذف</button>
+                                <button class="edit-btn button" data-id="${escapeHTML(String(record.RowID))}">تعديل</button>
+                                <button class="delete-btn button" data-id="${escapeHTML(String(record.RowID))}">حذف</button>
                              </td>`;
                 tableHTML += '</tr>';
             });
@@ -603,14 +607,20 @@
             showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
 
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${recordId}`);
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
                 console.log("Load record response status:", response.status);
                 if (!response.ok) {
                     const errText = await response.text();
                     console.error("Load record error response text:", errText);
                     let errMessage = `فشل تحميل بيانات المورد: ${response.status}`;
-                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
-                    catch (e) { /* Use default */ }
+                     try {
+                        const errData = JSON.parse(errText);
+                        if (errData && errData.status === 'error' && errData.message) {
+                             errMessage = `خطأ من الخادم: ${errData.message}`;
+                        } else if (errData && errData.message) {
+                            errMessage = errData.message;
+                        }
+                    } catch (e) { /* Use default */ }
                     throw new Error(errMessage);
                 }
                 const result = await response.json();
@@ -637,11 +647,25 @@
                     if (inputElement) {
                         if (inputElement.type === 'date' && record[key]) {
                             try {
-                                const date = new Date(record[key]);
-                                if (!isNaN(date.getTime())) {
-                                   inputElement.value = date.toISOString().split('T')[0];
+                                // Ensure record[key] is a valid date string or can be parsed
+                                // Google Sheets might return dates as serial numbers if not formatted,
+                                // but GAS should format them as YYYY-MM-DD.
+                                let dateStr = String(record[key]);
+                                if (dateStr.includes('T')) { // Handle ISO datetime strings if they appear
+                                    dateStr = dateStr.split('T')[0];
+                                }
+                                const date = new Date(dateStr); // Try to parse
+                                // Check if the dateStr itself is valid (e.g. "2023-13-01" is invalid)
+                                // and if the resulting Date object is valid
+                                const isValidDateStr = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+
+                                if (isValidDateStr && !isNaN(date.getTime())) {
+                                   // Add timezone offset to prevent date from shifting by one day
+                                   const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                                   const localISOTime = (new Date(date.valueOf() + tzoffset)).toISOString().split('T')[0];
+                                   inputElement.value = localISOTime;
                                 } else {
-                                    console.warn(`Invalid date value for ${key}: "${record[key]}" - Setting to empty.`);
+                                    console.warn(`Invalid date value or format for ${key}: "${record[key]}" - Setting to empty.`);
                                     inputElement.value = '';
                                 }
                             } catch (e) {
@@ -651,8 +675,6 @@
                         } else {
                             inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
                         }
-                    } else {
-                        // console.warn(`No form element found for key: ${key}`);
                     }
                 }
             }
@@ -670,9 +692,12 @@
                     const errorMsg = document.createElement('small');
                     errorMsg.textContent = 'هذا الحقل مطلوب';
                     errorMsg.classList.add('error-message');
-                    field.parentNode.insertBefore(errorMsg, field.nextSibling);
+                    // Ensure error message is not duplicated
+                    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
+                        field.parentNode.insertBefore(errorMsg, field.nextSibling);
+                    }
                 } else {
-                    field.style.borderColor = '';
+                    field.style.borderColor = ''; // Reset border color if valid
                 }
             });
 
@@ -687,13 +712,14 @@
                     taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextSibling);
                 }
             } else if (taxRegNumInput.value.trim() && taxRegNumInput.checkValidity()){
-                 taxRegNumInput.style.borderColor = '';
+                 taxRegNumInput.style.borderColor = ''; // Reset border color if valid
             }
 
             if (!isValid) {
                 showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.', 'error');
                 console.warn("Modal form validation failed.");
             } else {
+                 showStatus(modalFormStatusDiv, '', ''); // Clear status if validation passes
                 console.log("Modal form validation passed.");
             }
             return isValid;
@@ -701,8 +727,11 @@
 
         function clearModalErrorMessages() {
             supplierModalForm.querySelectorAll('.error-message').forEach(msg => msg.remove());
-            supplierModalForm.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]').forEach(input => input.style.borderColor = '');
+            supplierModalForm.querySelectorAll('input[required], select[required], input[pattern]').forEach(input => {
+                input.style.borderColor = ''; // Reset border for all validated fields
+            });
         }
+
 
         // --- EVENT LISTENERS ---
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
@@ -710,7 +739,10 @@
             if (e.key === 'Enter') fetchData(searchInput.value.trim());
         });
         addNewSupplierBtn.addEventListener('click', () => openModal('add'));
-        refreshDataBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
+        refreshDataBtn.addEventListener('click', () => {
+            searchInput.value = ''; // Clear search input on refresh
+            fetchData();
+        });
         modalCloseBtn.addEventListener('click', closeModal);
         modalCancelBtn.addEventListener('click', closeModal);
         window.addEventListener('click', (event) => {
@@ -727,37 +759,52 @@
             console.log("Modal form submitted.");
             showStatus(modalFormStatusDiv, '', ''); // Clear previous
 
-            if (!validateModalForm() || !isGoogleScriptUrlSet()) return;
+            if (!validateModalForm()) return; // Stop if client-side validation fails
+            if (!isGoogleScriptUrlSet()) return; // Stop if URL is not configured
 
             modalSubmitBtn.disabled = true;
             const originalButtonText = modalSubmitBtn.textContent;
             modalSubmitBtn.textContent = 'جاري الحفظ...';
-            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', '');
+            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', ''); // Non-error status
 
             const formData = new FormData(supplierModalForm);
             const action = modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier';
             formData.append('action', action);
-            console.log("Form data to submit (Action: " + action + "):", Object.fromEntries(formData));
+            // Log form data for debugging
+            // console.log("Form data to submit (Action: " + action + "):", Object.fromEntries(formData));
 
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
                 console.log("Submit form response status:", response.status);
-                if (!response.ok) {
-                    const errText = await response.text();
-                    console.error("Submit form error response text:", errText);
+                const responseText = await response.text(); // Get text first for robust parsing
+                console.log("Submit form response text:", responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("Failed to parse JSON response:", e);
+                    console.error("Response text was:", responseText);
+                    throw new Error(`فشل تحليل استجابة الخادم. الاستجابة لم تكن بتنسيق JSON صحيح. (${response.status})`);
+                }
+
+
+                if (!response.ok) { // Check HTTP status after parsing attempt
                     let errMessage = `فشل حفظ البيانات: ${response.status}`;
-                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
-                    catch (e) { /* Use default */ }
+                    if (result && result.message) {
+                        errMessage = `خطأ من الخادم: ${result.message}`;
+                    }
                     throw new Error(errMessage);
                 }
-                const result = await response.json();
-                console.log("Submit form result:", result);
+
+                console.log("Submit form result (parsed):", result);
                 if (result.status === 'success') {
                     showStatus(modalFormStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim());
+                    fetchData(searchInput.value.trim()); // Refresh table
                     setTimeout(closeModal, 1500);
                 } else {
+                     // Handle cases where response.ok is true, but GAS script returns status: 'error'
                     throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
@@ -784,30 +831,41 @@
             }
             if (!isGoogleScriptUrlSet()) return;
 
-            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
+            showStatus(formStatusDiv, 'جاري حذف المورد...', ''); // Non-error status
 
             const formData = new FormData();
             formData.append('action', 'deleteSupplier');
             formData.append('recordId', recordId);
-            console.log("Form data to delete:", Object.fromEntries(formData));
+            // console.log("Form data to delete:", Object.fromEntries(formData));
 
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
                 console.log("Delete response status:", response.status);
+                const responseText = await response.text();
+                console.log("Delete response text:", responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("Failed to parse JSON response from delete:", e);
+                    console.error("Response text was:", responseText);
+                    throw new Error(`فشل تحليل استجابة الخادم عند الحذف. (${response.status})`);
+                }
+
                 if (!response.ok) {
-                    const errText = await response.text();
-                    console.error("Delete error response text:", errText);
                     let errMessage = `فشل حذف المورد: ${response.status}`;
-                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
-                    catch (e) { /* Use default */ }
+                     if (result && result.message) {
+                        errMessage = `خطأ من الخادم: ${result.message}`;
+                    }
                     throw new Error(errMessage);
                 }
-                const result = await response.json();
-                console.log("Delete result:", result);
+
+                console.log("Delete result (parsed):", result);
                 if (result.status === 'success') {
                     showStatus(formStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim());
+                    fetchData(searchInput.value.trim()); // Refresh table
                 } else {
                     throw new Error(result.message || 'فشل حذف المورد من جهة الخادم (الحالة ليست نجاح).');
                 }
