@@ -485,11 +485,7 @@
     div.textContent = str;
     return div.innerHTML;
 }
-
-        }
-
-
-        // --- DATA FETCHING AND RENDERING ---
+      // --- DATA FETCHING AND RENDERING ---
         async function fetchData(searchTerm = '') {
             console.log(`fetchData called. Search term: "${searchTerm}"`);
             if (!isGoogleScriptUrlSet()) return;
