@@ -479,16 +479,18 @@
             }
         }
 
-           function escapeHTML(str) {
-    if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
-    return str.replace(/[&<>"']/g, match => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;' // Correct single quote escape
-    }[match]));
-        }
+         function escapeHTML(str) {
+    return String(str).replace(/[&<>"']/g, function (char) {
+        return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+        }[char];
+    });
+}
+
         }
 
 
