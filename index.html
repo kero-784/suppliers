@@ -479,15 +479,16 @@
             }
         }
 
-        function escapeHTML(str) {
+              function escapeHTML(str) {
             if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str); // Handle non-strings better
             return str.replace(/[&<>"']/g, match => ({
                 '&': '&',
                 '<': '<',
                 '>': '>',
                 '"': '"',
-                "'": ''' // More common than '''
+                "'": '''
             }[match]));
+        }
         }
 
 
