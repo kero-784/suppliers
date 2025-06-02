@@ -226,7 +226,7 @@
             font-size: 1.05em;
             font-weight: 600;
             transition: background-color 0.2s ease;
-            margin: 0 8px;
+            margin: 5px 8px; /* Added vertical margin for stacking */
         }
 
         button[type="button"] {
@@ -297,7 +297,7 @@
             <h1>نموذج تسجيل مورد جديد</h1>
             <div class="supplier-code-container">
                 <label for="supplierCode">كود المورد:</label>
-                <input type="text" id="supplierCode" name="supplierCodeInput"> <!-- Changed name to avoid conflict with formData key -->
+                <input type="text" id="supplierCode" name="supplierCodeInput"> <!-- Name is supplierCodeInput, ID is supplierCode -->
             </div>
         </header>
 
@@ -412,6 +412,7 @@
             <div class="form-actions">
                 <button type="submit" id="submitBtn">تسجيل المورد</button>
                 <button type="button" id="exportPdfBtn">تصدير كـ PDF</button>
+                <button type="button" id="checkConnectionBtn">التحقق من الاتصال</button>
             </div>
         </form>
         <div id="formStatus"></div>
@@ -421,39 +422,49 @@
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('supplierForm');
         const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const checkConnectionBtn = document.getElementById('checkConnectionBtn');
         const formStatusDiv = document.getElementById('formStatus');
-        const supplierCodeInputField = document.getElementById('supplierCode'); // Renamed variable for clarity
+        const supplierCodeInputField = document.getElementById('supplierCode');
 
         // *** REPLACE WITH YOUR NEWLY DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
-        const GOOGLE_SCRIPT_URL = 'YOUR_NEW_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE'; // <<<<<<< IMPORTANT: UPDATE THIS
+        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'; // <<<<<<< IMPORTANT: UPDATE THIS
+
+        function isGoogleScriptUrlSet() {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyyV_FTG1ucBGVDVlfq8sV0eNT1oodGwXRS23HVFYwSTihLyn7BvNSxybmDkhvym9P_/exec' || GOOGLE_SCRIPT_URL.includes("AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA")) {
+                 // The long string is an example placeholder, you might have a different one from testing
+                formStatusDiv.textContent = 'خطأ: لم يتم تكوين عنوان URL الخاص بـ Google Apps Script. يرجى تحديثه في الكود.';
+                formStatusDiv.className = 'error';
+                console.error('Google Apps Script URL is not set or is still a placeholder.');
+                return false;
+            }
+            return true;
+        }
+
 
         function clearErrorMessages() {
             const errorMessages = form.querySelectorAll('.error-message');
             errorMessages.forEach(msg => msg.remove());
-            const errorInputs = form.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]'); // Find inputs with red border
-            errorInputs.forEach(input => input.style.borderColor = '#b0bac5'); // Reset border
+            const errorInputs = form.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]');
+            errorInputs.forEach(input => input.style.borderColor = '#b0bac5');
         }
-
 
         function validateForm() {
             let isValid = true;
-            clearErrorMessages(); // Clear previous errors
+            clearErrorMessages();
             formStatusDiv.innerHTML = '';
             formStatusDiv.className = '';
 
             const requiredFields = form.querySelectorAll('[required]');
-
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
                     isValid = false;
                     field.style.borderColor = '#c82333';
                     const errorMsg = document.createElement('small');
                     errorMsg.textContent = 'هذا الحقل مطلوب';
-                    errorMsg.style.color = '#c82333';
                     errorMsg.classList.add('error-message');
                     field.parentNode.insertBefore(errorMsg, field.nextSibling);
                 } else {
-                    field.style.borderColor = '#b0bac5'; // Reset border if valid
+                    field.style.borderColor = '#b0bac5';
                 }
             });
 
@@ -463,15 +474,14 @@
                 taxRegNumInput.style.borderColor = '#c82333';
                 const errorMsg = document.createElement('small');
                 errorMsg.textContent = taxRegNumInput.title || 'تنسيق غير صحيح.';
-                errorMsg.style.color = '#c82333';
                 errorMsg.classList.add('error-message');
-                // Check if an error message already exists to avoid duplicates
                 if (!taxRegNumInput.nextElementSibling || !taxRegNumInput.nextElementSibling.classList.contains('error-message')) {
                     taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextSibling);
                 }
-            } else if (taxRegNumInput.checkValidity()){
-                 taxRegNumInput.style.borderColor = '#b0bac5'; // Reset border if valid
+            } else if (taxRegNumInput.value.trim() && taxRegNumInput.checkValidity()){
+                 taxRegNumInput.style.borderColor = '#b0bac5';
             }
+
 
             if (!isValid) {
                 formStatusDiv.textContent = 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.';
@@ -480,53 +490,99 @@
             return isValid;
         }
 
+        checkConnectionBtn.addEventListener('click', async function() {
+            if (!isGoogleScriptUrlSet()) return;
+
+            formStatusDiv.textContent = 'جاري التحقق من الاتصال بقاعدة البيانات...';
+            formStatusDiv.className = '';
+            checkConnectionBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkConnection`, {
+                    method: 'GET',
+                });
+
+                if (!response.ok) {
+                    let errorText = `فشل الاتصال بالخادم: ${response.status}`;
+                    try {
+                        const errData = await response.json();
+                        errorText = errData.message || errData.error.message || errorText;
+                    } catch (e) {
+                        // If response is not JSON, use statusText
+                        errorText = `${errorText} (${response.statusText})`;
+                    }
+                    throw new Error(errorText);
+                }
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    formStatusDiv.textContent = data.message || 'تم الاتصال بقاعدة البيانات بنجاح.';
+                    formStatusDiv.className = 'success';
+                } else {
+                    formStatusDiv.textContent = data.message || 'فشل الاتصال أو تهيئة قاعدة البيانات.';
+                    formStatusDiv.className = 'error';
+                }
+            } catch (error) {
+                console.error('Connection check error:', error);
+                formStatusDiv.textContent = 'خطأ أثناء التحقق من الاتصال: ' + error.message;
+                formStatusDiv.className = 'error';
+            } finally {
+                checkConnectionBtn.disabled = false;
+            }
+        });
+
+
         form.addEventListener('submit', function (event) {
             event.preventDefault();
             formStatusDiv.innerHTML = '';
             formStatusDiv.className = '';
 
-            if (!validateForm()) {
-                return;
-            }
-
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA/exec' || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA/exec') {
-                formStatusDiv.textContent = 'خطأ: لم يتم تكوين عنوان URL الخاص بـ Google Apps Script.';
-                formStatusDiv.className = 'error';
-                console.error('Google Apps Script URL is not set.');
-                return;
-            }
+            if (!validateForm()) return;
+            if (!isGoogleScriptUrlSet()) return;
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'جاري الإرسال...';
             formStatusDiv.textContent = 'جاري حفظ البيانات...';
-            formStatusDiv.className = '';
-
 
             const formData = new FormData(form);
-            const supplierCodeValue = supplierCodeInputField.value; // Use the correctly named variable
-            formData.append('SupplierCode', supplierCodeValue); // This is the key for Apps Script
+            const supplierCodeValue = supplierCodeInputField.value;
+            formData.append('SupplierCode', supplierCodeValue); // Key for Apps Script
 
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 body: formData,
-                mode: 'no-cors' //  <--- Key change for Google Apps Script redirect behavior
+                // No mode: 'no-cors'
             })
             .then(response => {
-                // With mode: 'no-cors', we can't read response.json() or response.ok reliably.
-                // We assume success if the request itself didn't throw a network error.
-                // The data is being saved, so this assumption is generally safe for this setup.
-                console.log('Request sent (no-cors mode). Assuming data saved.');
-                formStatusDiv.textContent = 'تم إرسال بيانات المورد. يفترض أن تكون قد حفظت بنجاح.';
-                formStatusDiv.className = 'success';
-                form.reset();
-                supplierCodeInputField.value = ''; // Reset supplier code input field
-                clearErrorMessages(); // Clear any validation messages
+                if (!response.ok) {
+                    // Try to parse JSON error from Apps Script first
+                    return response.json().catch(() => {
+                        // If response is not JSON, create a generic error
+                        throw new Error(`خطأ من الخادم: ${response.status} ${response.statusText}`);
+                    }).then(errorData => {
+                        // If JSON is parsed, use its message
+                        throw new Error(errorData.message || errorData.error.message || `خطأ من الخادم: ${response.status}`);
+                    });
+                }
+                return response.json(); // Expect JSON from Apps Script
+            })
+            .then(data => {
+                if (data.status === 'success') {
+                    formStatusDiv.textContent = data.message || 'تم حفظ بيانات المورد بنجاح.';
+                    formStatusDiv.className = 'success';
+                    form.reset();
+                    supplierCodeInputField.value = '';
+                    clearErrorMessages();
+                } else {
+                    // Error reported by Apps Script (e.g., sheet issue)
+                    throw new Error(data.message || 'فشل حفظ البيانات من جهة الخادم.');
+                }
             })
             .catch(error => {
-                // This will catch fundamental network errors (e.g., server down, DNS issues)
-                console.error('Error submitting form (network or no-cors issue):', error);
-                formStatusDiv.textContent = 'فشل إرسال البيانات. الرجاء المحاولة مرة أخرى. الخطأ: ' + error;
+                console.error('Error submitting form:', error);
+                formStatusDiv.textContent = 'فشل إرسال البيانات. الخطأ: ' + error.message;
                 formStatusDiv.className = 'error';
             })
             .finally(() => {
@@ -543,7 +599,6 @@
             let supplierNameValue = document.getElementById('supplierName').value.trim() || "بيانات_مورد";
             const fileName = `نموذج_مورد_${supplierNameValue.replace(/\s+/g, '_')}.pdf`;
 
-
             const { jsPDF } = window.jspdf;
             const formToExport = document.querySelector('.container');
 
@@ -553,7 +608,7 @@
             if (formStatusElement) formStatusElement.style.display = 'none';
 
             const pdfTitleElement = document.createElement('h2');
-            const supplierCodeVal = supplierCodeInputField.value.trim(); // Use correct variable
+            const supplierCodeVal = supplierCodeInputField.value.trim();
             const supplierNameVal = document.getElementById('supplierName').value.trim();
 
             let titleText = "بيانات مورد جديد";
@@ -576,6 +631,7 @@
                 const input = document.getElementById(id);
                 if (input) {
                     originalValues[id] = input.value;
+                    // For PDF, we'll set these to blank in onclone
                 }
             });
 
@@ -594,7 +650,7 @@
                             documentClone.documentElement.setAttribute('dir', 'rtl');
                             if (documentClone.body) {
                                 documentClone.body.style.fontFamily = "'Cairo', sans-serif";
-                                documentClone.body.style.fontSize = "16px";
+                                documentClone.body.style.fontSize = "16px"; // Base font size for clone
                             }
 
                             const clonedContainer = documentClone.querySelector('.container');
@@ -608,73 +664,63 @@
                                     const clonedEl = clonedInputs[index];
                                     const computedStyle = getComputedStyle(originalInput);
                                     let textToRender = originalInput.value;
-                                    let isBlankableField = fieldsToBlankInPdf.includes(originalInput.id);
-
-                                    // For the supplierCode input, its ID is 'supplierCode' which matches the 'fieldsToBlankInPdf'
-                                    // but it's outside the main form, so its originalInput.id might not be 'supplierCode' if you select all inputs from `element`
-                                    // Let's handle it specifically for the supplier code input field
-                                    if (originalInput.id === 'supplierCode') { // This ID is on the input field itself
-                                        isBlankableField = true;
-                                    }
-
+                                    
+                                    // Check if this field's ID is in the list of fields to be blanked for PDF
+                                    const isBlankableField = fieldsToBlankInPdf.includes(originalInput.id);
 
                                     if (isBlankableField) {
                                         textToRender = ""; // Make it blank for PDF printout
                                         if (originalInput.type === 'date') {
-                                            clonedEl.removeAttribute('value');
+                                            clonedEl.removeAttribute('value'); // Helps with placeholder visibility
                                         }
                                     } else if (originalInput.tagName === 'SELECT') {
                                         const selectedIndex = originalInput.selectedIndex;
                                         if (selectedIndex > -1 && originalInput.options[selectedIndex] && originalInput.options[selectedIndex].value !== "") {
                                             textToRender = originalInput.options[selectedIndex].text;
                                         } else {
-                                            textToRender = ".......................";
+                                            textToRender = "......................."; // Placeholder for empty select
                                         }
-                                        clonedEl.style.appearance = 'none';
+                                        clonedEl.style.appearance = 'none'; // Visual cleanup for PDF
                                         clonedEl.style.backgroundImage = 'none';
-                                    } else if (!textToRender && originalInput.tagName !== 'SELECT') {
+                                    } else if (!textToRender && (originalInput.tagName === 'INPUT' || originalInput.tagName === 'TEXTAREA') && !isBlankableField) {
+                                        // For empty text/number/date inputs not explicitly blanked
                                         textToRender = ".......................";
                                     }
+                                    
+                                    clonedEl.value = textToRender; // Set the value (blank or actual or placeholder)
 
-                                    // For the supplier code input that's outside the form, we need to ensure its value is correctly set in the clone
-                                    if (originalInput.id === 'supplierCodeInput' && clonedEl.id === 'supplierCodeInput') { // This is the input with name="supplierCodeInput"
-                                        if(fieldsToBlankInPdf.includes('supplierCode')){ // Check if 'supplierCode' (the concept) should be blank
-                                             textToRender = "";
-                                        } else {
-                                            textToRender = supplierCodeInputField.value; // Get value from the actual input field
-                                        }
-                                    }
-
-
-                                    clonedEl.value = textToRender;
-
-                                    clonedEl.style.fontFamily = "'Cairo', sans-serif";
+                                    // Apply styles for PDF rendering
+                                    clonedEl.style.fontFamily = "'Cairo', sans-serif"; // Ensure font
                                     clonedEl.style.fontSize = computedStyle.fontSize;
                                     clonedEl.style.fontWeight = computedStyle.fontWeight;
                                     clonedEl.style.color = computedStyle.color;
-                                    clonedEl.style.backgroundColor = "#ffffff";
-                                    clonedEl.style.border = "1px solid #777";
+                                    clonedEl.style.backgroundColor = "#ffffff"; // Ensure white background
+                                    clonedEl.style.border = "1px solid #777"; // Consistent border
                                     clonedEl.style.borderRadius = computedStyle.borderRadius;
                                     clonedEl.style.boxSizing = 'border-box';
-                                    clonedEl.style.margin = '0';
+                                    clonedEl.style.margin = '0'; // Reset margin
                                     clonedEl.style.minHeight = computedStyle.minHeight;
-
                                     clonedEl.style.height = computedStyle.height === 'auto' ? clonedEl.style.minHeight : computedStyle.height;
-                                    clonedEl.style.display = 'flex';
-                                    clonedEl.style.alignItems = 'center';
+                                    
+                                    clonedEl.style.display = 'flex'; // Use flex for alignment
+                                    clonedEl.style.alignItems = 'center'; // Vertical centering
 
-                                    if (['text', 'number', 'tel', 'date'].includes(originalInput.type) || originalInput.id === 'supplierCodeInput') { // Check for the actual ID of the supplier code input
-                                       clonedEl.style.justifyContent = 'center';
+                                    if (['text', 'number', 'tel', 'date'].includes(originalInput.type) || originalInput.id === 'supplierCode') {
+                                       clonedEl.style.justifyContent = 'center'; // Horizontal centering
                                        clonedEl.style.textAlign = 'center';
-                                       clonedEl.style.padding = `0`;
-                                    } else {
+                                       clonedEl.style.padding = `0`; // Remove padding for centered text
+                                    } else if (originalInput.type === 'email'){
                                        clonedEl.style.justifyContent = 'flex-start';
+                                       clonedEl.style.textAlign = 'left'; // Email is LTR
+                                       clonedEl.style.padding = `0 ${computedStyle.paddingRight || '12px'} 0 ${computedStyle.paddingLeft || '12px'}`;
+                                    } else { // Selects, etc.
+                                       clonedEl.style.justifyContent = 'flex-start'; // Align to start (right for RTL)
                                        clonedEl.style.textAlign = 'right';
-                                       clonedEl.style.padding = `0 ${computedStyle.paddingLeft || '12px'}`;
+                                       clonedEl.style.padding = `0 ${computedStyle.paddingRight || '12px'} 0 ${computedStyle.paddingLeft || '12px'}`;
                                     }
 
                                     if (originalInput.type === 'checkbox' || originalInput.type === 'radio') {
-                                        clonedEl.style.display = '';
+                                        clonedEl.style.display = ''; // Revert flex for these
                                         clonedEl.checked = originalInput.checked;
                                     }
                                 }
@@ -686,22 +732,17 @@
                                 leg.style.padding = '2px 8px';
                             });
 
-
                         } catch (cloneError) { console.error("Error during onclone:", cloneError); }
                         console.log("html2canvas onclone finished.");
                     }
                 }).then(canvas => {
-                    fieldsToBlankInPdf.forEach(id => { // Restore original values if they were changed for PDF
+                    // Restore original values if they were changed for PDF blanking
+                    fieldsToBlankInPdf.forEach(id => {
                         const input = document.getElementById(id);
                         if (input && originalValues.hasOwnProperty(id)) {
                             input.value = originalValues[id];
                         }
                     });
-                     // Also restore the supplierCode input field outside the form
-                    if (originalValues.hasOwnProperty('supplierCode')) {
-                         supplierCodeInputField.value = originalValues['supplierCode'];
-                    }
-
 
                     buttons.forEach(btn => btn.style.display = '');
                     if (formStatusElement) formStatusElement.style.display = '';
@@ -722,19 +763,14 @@
                     const imgWidth = imgProps.width;
                     const imgHeight = imgProps.height;
 
-                    // Calculate ratio to fit within A4, leaving some margin
-                    const pageMargin = 10; // 10mm margin on each side
+                    const pageMargin = 10;
                     const availableWidth = pdfWidth - (2 * pageMargin);
                     const availableHeight = pdfHeight - (2 * pageMargin);
-
                     const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
-
                     const finalImgWidth = imgWidth * ratio;
                     const finalImgHeight = imgHeight * ratio;
-
                     const xPos = (pdfWidth - finalImgWidth) / 2;
                     const yPos = (pdfHeight - finalImgHeight) / 2;
-
 
                     pdf.addImage(imgData, 'PNG', xPos, yPos, finalImgWidth, finalImgHeight);
                     pdf.save(fileName);
@@ -743,15 +779,12 @@
                     formStatusDiv.className = 'success';
 
                 }).catch(err => {
-                    fieldsToBlankInPdf.forEach(id => { // Restore original values on error
+                    fieldsToBlankInPdf.forEach(id => {
                         const input = document.getElementById(id);
                         if (input && originalValues.hasOwnProperty(id)) {
                             input.value = originalValues[id];
                         }
                     });
-                    if (originalValues.hasOwnProperty('supplierCode')) {
-                         supplierCodeInputField.value = originalValues['supplierCode'];
-                    }
 
                     buttons.forEach(btn => btn.style.display = '');
                     if (formStatusElement) formStatusElement.style.display = '';
@@ -761,16 +794,12 @@
                     formStatusDiv.className = 'error';
                 });
             } catch (outerError) {
-                fieldsToBlankInPdf.forEach(id => { // Restore original values on outer error
+                 fieldsToBlankInPdf.forEach(id => {
                     const input = document.getElementById(id);
                     if (input && originalValues.hasOwnProperty(id)) {
                         input.value = originalValues[id];
                     }
                 });
-                 if (originalValues.hasOwnProperty('supplierCode')) {
-                     supplierCodeInputField.value = originalValues['supplierCode'];
-                }
-
                 buttons.forEach(btn => btn.style.display = '');
                 if (formStatusElement) formStatusElement.style.display = '';
                 if (pdfTitleElement) pdfTitleElement.remove();
