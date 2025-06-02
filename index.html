@@ -479,15 +479,15 @@
             }
         }
 
-            function escapeHTML(str) {
-            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
-            return str.replace(/[&<>"']/g, match => ({
-                '&': '&',
-                '<': '<',
-                '>': '>',
-                '"': '"',
-                "'": '''  // Corrected single quote and other escapes
-            }[match]));
+           function escapeHTML(str) {
+    if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
+    return str.replace(/[&<>"']/g, match => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;' // Correct single quote escape
+    }[match]));
         }
         }
 
