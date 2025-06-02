@@ -479,8 +479,8 @@
             }
         }
 
-              function escapeHTML(str) {
-            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str); // Handle non-strings better
+            function escapeHTML(str) {
+            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
             return str.replace(/[&<>"']/g, match => ({
                 '&': '&',
                 '<': '<',
