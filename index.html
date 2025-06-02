@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>نموذج تسجيل مورد جديد</title>
-    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Basic empty favicon to prevent 404 -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS styles remain largely the same as the previous version with enhanced borders/fonts */
-        /* Key is that input fields have a min-height to be visible when empty */
         body {
             font-family: 'Cairo', sans-serif;
             direction: rtl;
@@ -19,7 +17,6 @@
             line-height: 1.55;
             font-size: 16px;
         }
-
         .container {
             max-width: 790px;
             margin: 20px auto;
@@ -29,7 +26,6 @@
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
             border: 1px solid #c5cdd4;
         }
-
         header {
             display: flex;
             justify-content: space-between;
@@ -38,14 +34,12 @@
             padding-bottom: 15px;
             border-bottom: 2px solid #0062cc;
         }
-
         header h1 {
             color: #004085;
             font-size: 28px;
             font-weight: 700;
             margin: 0;
         }
-
         .supplier-code-container {
             display: flex;
             align-items: center;
@@ -53,14 +47,12 @@
             padding: 8px 12px;
             border-radius: 6px;
         }
-
         .supplier-code-container label {
             margin-left: 10px;
             font-weight: 600;
             color: #343a40;
             font-size: 0.95em;
         }
-
         .supplier-code-container input[type="text"] {
             border: 1px solid #b0bac5;
             padding: 8px 10px;
@@ -74,7 +66,6 @@
             text-align: center;
             font-weight: 600;
         }
-
         fieldset {
             border: 2px solid #aab8c5;
             border-radius: 8px;
@@ -82,7 +73,6 @@
             margin-bottom: 18px;
             background-color: #f8f9fa;
         }
-
         legend {
             font-size: 1.3em;
             font-weight: 700;
@@ -91,25 +81,10 @@
             margin-right: 10px;
             background-color: #fff;
         }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-row {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .form-row .form-group {
-            flex: 1;
-            margin-bottom: 0;
-        }
-        fieldset > .form-row {
-            margin-bottom: 15px;
-        }
-
+        .form-group { margin-bottom: 15px; }
+        .form-row { display: flex; gap: 20px; align-items: flex-start; }
+        .form-row .form-group { flex: 1; margin-bottom: 0; }
+        fieldset > .form-row { margin-bottom: 15px; }
         .form-group label {
             display: block;
             margin-bottom: 7px;
@@ -117,18 +92,8 @@
             color: #3e4d5c;
             font-size: 1.0em;
         }
-
-        .form-group label .required {
-            color: #c82333;
-            margin-left: 4px;
-            font-weight: 700;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="tel"],
-        input[type="email"],
-        select {
+        .form-group label .required { color: #c82333; margin-left: 4px; font-weight: 700; }
+        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], select, input[type="date"] {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #b0bac5;
@@ -140,36 +105,12 @@
             min-height: 38px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
             background-color: #fff;
-            font-weight: 400;
         }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="tel"] {
+        input[type="text"], input[type="number"], input[type="tel"], input[type="date"] {
             text-align: center;
             font-weight: 600;
         }
-        input[type="email"] {
-             text-align: left;
-             font-weight: 400;
-        }
-
-
-        input[type="date"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #b0bac5;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 1.0em;
-            line-height: 1.3;
-            height: auto;
-            min-height: 38px;
-            background-color: #fff;
-            text-align: center;
-            font-weight: 600;
-        }
-
+        input[type="email"] { text-align: left; font-weight: 400; }
         input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field,
         input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-month-field,
         input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-day-field,
@@ -177,47 +118,30 @@
             color: transparent !important;
         }
         input[type="date"]::before{
-            content: 'DD-MM-YYYY'; /* This acts as a visual hint on screen for empty date fields */
+            content: 'DD-MM-YYYY';
             display: block;
-            color: #99aabb; /* Lighter placeholder-like color */
+            color: #99aabb;
             text-align: center;
             width: 100%;
         }
-        input[type="date"][value]:not([value=""])::before {
-            display: none;
-        }
-
-
-        input:focus,
-        select:focus {
+        input[type="date"][value]:not([value=""])::before { display: none; }
+        input:focus, select:focus {
             border-color: #0056b3;
             box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25);
             outline: none;
         }
-
-        /* General placeholder styling for inputs that will have them */
-        input::placeholder {
-            color: #778899;
-            font-size: 0.95em;
-            text-align: right; /* Default for RTL */
-            font-weight: 400;
-        }
-        /* Centered placeholders for specific input types */
-        input[type="text"]::placeholder,
-        input[type="number"]::placeholder,
-        input[type="tel"]::placeholder {
+        input::placeholder { color: #778899; font-size: 0.95em; text-align: right; font-weight: 400; }
+        input[type="text"]::placeholder, input[type="number"]::placeholder, input[type="tel"]::placeholder {
             text-align: center;
         }
-
         .form-actions {
-            text-align: center; /* Center buttons */
+            text-align: center;
             margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid #dee2e6;
         }
-
         button {
-            background-color: #0062cc; /* Primary button color */
+            background-color: #0062cc;
             color: white;
             padding: 12px 25px;
             border: none;
@@ -226,20 +150,11 @@
             font-size: 1.05em;
             font-weight: 600;
             transition: background-color 0.2s ease;
-            margin: 5px 8px; /* Added vertical margin for stacking */
+            margin: 5px 8px;
         }
-
-        button[type="button"] {
-            background-color: #5a6268; /* Secondary button color */
-        }
-
-        button:hover {
-            background-color: #004a99; /* Darker shade on hover */
-        }
-        button[type="button"]:hover {
-            background-color: #474c52;
-        }
-
+        button[type="button"] { background-color: #5a6268; }
+        button:hover { background-color: #004a99; }
+        button[type="button"]:hover { background-color: #474c52; }
         #formStatus {
             margin-top: 15px;
             padding: 10px;
@@ -247,45 +162,16 @@
             text-align: center;
             font-weight: 600;
         }
-        #formStatus.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        #formStatus.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .error-message { /* Added style for inline error messages */
-            color: #c82333;
-            font-size: 0.85em;
-            display: block;
-            margin-top: 4px;
-        }
-
+        #formStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        #formStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .error-message { color: #c82333; font-size: 0.85em; display: block; margin-top: 4px; }
         @media (max-width: 768px) {
-            .form-row {
-                flex-direction: column;
-                gap: 0; /* No gap if they stack, margin-bottom on form-group handles spacing */
-            }
-            .form-row .form-group {
-                 margin-bottom: 15px; /* Add back margin when stacked */
-            }
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            header h1 {
-                margin-bottom: 10px;
-            }
-             .supplier-code-container {
-                width: 100%;
-                justify-content: space-between; /* Make label and input take available space */
-            }
-            .supplier-code-container input[type="text"] {
-                flex-grow: 1; /* Allow input to grow */
-            }
+            .form-row { flex-direction: column; gap: 0; }
+            .form-row .form-group { margin-bottom: 15px; }
+            header { flex-direction: column; align-items: flex-start; }
+            header h1 { margin-bottom: 10px; }
+            .supplier-code-container { width: 100%; justify-content: space-between; }
+            .supplier-code-container input[type="text"] { flex-grow: 1; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -297,7 +183,7 @@
             <h1>نموذج تسجيل مورد جديد</h1>
             <div class="supplier-code-container">
                 <label for="supplierCode">كود المورد:</label>
-                <input type="text" id="supplierCode" name="supplierCodeInput"> <!-- Name is supplierCodeInput, ID is supplierCode -->
+                <input type="text" id="supplierCode" name="supplierCodeInput">
             </div>
         </header>
 
@@ -426,13 +312,14 @@
         const formStatusDiv = document.getElementById('formStatus');
         const supplierCodeInputField = document.getElementById('supplierCode');
 
-        // *** REPLACE WITH YOUR NEWLY DEPLOYED GOOGLE APPS SCRIPT WEB APP URL ***
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyV_FTG1ucBGVDVlfq8sV0eNT1oodGwXRS23HVFYwSTihLyn7BvNSxybmDkhvym9P_/exec'; // <<<<<<< IMPORTANT: UPDATE THIS
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyV_FTG1ucBGVDVlfq8sV0eNT1oodGwXRS23HVFYwSTihLyn7BvNSxybmDkhvym9P_/exec';
 
         function isGoogleScriptUrlSet() {
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbyyV_FTG1ucBGVDVlfq8sV0eNT1oodGwXRS23HVFYwSTihLyn7BvNSxybmDkhvym9P_/exec' || GOOGLE_SCRIPT_URL.includes("AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA")) {
-                 // The long string is an example placeholder, you might have a different one from testing
-                formStatusDiv.textContent = 'خطأ: لم يتم تكوين عنوان URL الخاص بـ Google Apps Script. يرجى تحديثه في الكود.';
+            const placeholderOriginal = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL'; // Original placeholder string
+            const placeholderExamplePart = 'AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA'; // An old example placeholder segment
+
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart)) {
+                formStatusDiv.textContent = 'خطأ: لم يتم تكوين عنوان URL الخاص بـ Google Apps Script بشكل صحيح. يرجى تحديثه في الكود بالقيمة الصحيحة.';
                 formStatusDiv.className = 'error';
                 console.error('Google Apps Script URL is not set or is still a placeholder.');
                 return false;
@@ -440,12 +327,9 @@
             return true;
         }
 
-
         function clearErrorMessages() {
-            const errorMessages = form.querySelectorAll('.error-message');
-            errorMessages.forEach(msg => msg.remove());
-            const errorInputs = form.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]');
-            errorInputs.forEach(input => input.style.borderColor = '#b0bac5');
+            form.querySelectorAll('.error-message').forEach(msg => msg.remove());
+            form.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]').forEach(input => input.style.borderColor = '#b0bac5');
         }
 
         function validateForm() {
@@ -454,8 +338,7 @@
             formStatusDiv.innerHTML = '';
             formStatusDiv.className = '';
 
-            const requiredFields = form.querySelectorAll('[required]');
-            requiredFields.forEach(field => {
+            form.querySelectorAll('[required]').forEach(field => {
                 if (!field.value.trim()) {
                     isValid = false;
                     field.style.borderColor = '#c82333';
@@ -482,7 +365,6 @@
                  taxRegNumInput.style.borderColor = '#b0bac5';
             }
 
-
             if (!isValid) {
                 formStatusDiv.textContent = 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.';
                 formStatusDiv.className = 'error';
@@ -498,24 +380,16 @@
             checkConnectionBtn.disabled = true;
 
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkConnection`, {
-                    method: 'GET',
-                });
-
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=checkConnection`, { method: 'GET' });
                 if (!response.ok) {
                     let errorText = `فشل الاتصال بالخادم: ${response.status}`;
                     try {
                         const errData = await response.json();
-                        errorText = errData.message || errData.error.message || errorText;
-                    } catch (e) {
-                        // If response is not JSON, use statusText
-                        errorText = `${errorText} (${response.statusText})`;
-                    }
+                        errorText = errData.message || errData.error?.message || errorText;
+                    } catch (e) { errorText = `${errorText} (${response.statusText})`; }
                     throw new Error(errorText);
                 }
-
                 const data = await response.json();
-
                 if (data.status === 'success') {
                     formStatusDiv.textContent = data.message || 'تم الاتصال بقاعدة البيانات بنجاح.';
                     formStatusDiv.className = 'success';
@@ -532,41 +406,29 @@
             }
         });
 
-
         form.addEventListener('submit', function (event) {
             event.preventDefault();
-            formStatusDiv.innerHTML = '';
-            formStatusDiv.className = '';
-
-            if (!validateForm()) return;
-            if (!isGoogleScriptUrlSet()) return;
+            if (!validateForm() || !isGoogleScriptUrlSet()) return;
 
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = 'جاري الإرسال...';
             formStatusDiv.textContent = 'جاري حفظ البيانات...';
+            formStatusDiv.className = '';
 
             const formData = new FormData(form);
-            const supplierCodeValue = supplierCodeInputField.value;
-            formData.append('SupplierCode', supplierCodeValue); // Key for Apps Script
+            formData.append('SupplierCode', supplierCodeInputField.value);
 
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                body: formData,
-                // No mode: 'no-cors'
-            })
+            fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData })
             .then(response => {
                 if (!response.ok) {
-                    // Try to parse JSON error from Apps Script first
                     return response.json().catch(() => {
-                        // If response is not JSON, create a generic error
                         throw new Error(`خطأ من الخادم: ${response.status} ${response.statusText}`);
                     }).then(errorData => {
-                        // If JSON is parsed, use its message
-                        throw new Error(errorData.message || errorData.error.message || `خطأ من الخادم: ${response.status}`);
+                        throw new Error(errorData.message || errorData.error?.message || `خطأ من الخادم: ${response.status}`);
                     });
                 }
-                return response.json(); // Expect JSON from Apps Script
+                return response.json();
             })
             .then(data => {
                 if (data.status === 'success') {
@@ -576,7 +438,6 @@
                     supplierCodeInputField.value = '';
                     clearErrorMessages();
                 } else {
-                    // Error reported by Apps Script (e.g., sheet issue)
                     throw new Error(data.message || 'فشل حفظ البيانات من جهة الخادم.');
                 }
             })
@@ -617,44 +478,32 @@
             if (!supplierNameVal && !supplierCodeVal) titleText = "بيانات مورد (للملء)";
 
             pdfTitleElement.textContent = titleText;
-            pdfTitleElement.style.textAlign = 'center';
-            pdfTitleElement.style.color = '#004085';
-            pdfTitleElement.style.marginBottom = '20px';
-            pdfTitleElement.style.fontSize = '22px';
-            pdfTitleElement.style.fontFamily = "'Cairo', sans-serif";
+            pdfTitleElement.style.cssText = "text-align: center; color: #004085; margin-bottom: 20px; font-size: 22px; font-family: 'Cairo', sans-serif;";
             formToExport.insertBefore(pdfTitleElement, form);
 
             const originalValues = {};
-            const fieldsToBlankInPdf = ['supplierCode', 'requestDate', 'registrationDate']; // IDs of fields
+            const fieldsToBlankInPdf = ['supplierCode', 'requestDate', 'registrationDate'];
 
             fieldsToBlankInPdf.forEach(id => {
                 const input = document.getElementById(id);
-                if (input) {
-                    originalValues[id] = input.value;
-                    // For PDF, we'll set these to blank in onclone
-                }
+                if (input) originalValues[id] = input.value;
             });
 
             console.log("Starting html2canvas...");
             try {
                 html2canvas(formToExport, {
-                    scale: 1.8,
-                    useCORS: true,
-                    logging: true,
-                    allowTaint: true,
-                    removeContainer: false,
-                    imageTimeout: 0,
+                    scale: 1.8, useCORS: true, logging: true, allowTaint: true,
+                    removeContainer: false, imageTimeout: 0,
                     onclone: (documentClone, element) => {
                         console.log("html2canvas onclone started.");
                         try {
                             documentClone.documentElement.setAttribute('dir', 'rtl');
                             if (documentClone.body) {
                                 documentClone.body.style.fontFamily = "'Cairo', sans-serif";
-                                documentClone.body.style.fontSize = "16px"; // Base font size for clone
+                                documentClone.body.style.fontSize = "16px";
                             }
+                            documentClone.querySelector('.container')?.style.setProperty('direction', 'rtl', 'important');
 
-                            const clonedContainer = documentClone.querySelector('.container');
-                            if (clonedContainer && clonedContainer.style) clonedContainer.style.direction = 'rtl';
 
                             const originalInputs = element.querySelectorAll('input, select, textarea');
                             const clonedInputs = documentClone.querySelectorAll('input, select, textarea');
@@ -664,145 +513,107 @@
                                     const clonedEl = clonedInputs[index];
                                     const computedStyle = getComputedStyle(originalInput);
                                     let textToRender = originalInput.value;
-                                    
-                                    // Check if this field's ID is in the list of fields to be blanked for PDF
                                     const isBlankableField = fieldsToBlankInPdf.includes(originalInput.id);
 
                                     if (isBlankableField) {
-                                        textToRender = ""; // Make it blank for PDF printout
-                                        if (originalInput.type === 'date') {
-                                            clonedEl.removeAttribute('value'); // Helps with placeholder visibility
-                                        }
+                                        textToRender = "";
+                                        if (originalInput.type === 'date') clonedEl.removeAttribute('value');
                                     } else if (originalInput.tagName === 'SELECT') {
-                                        const selectedIndex = originalInput.selectedIndex;
-                                        if (selectedIndex > -1 && originalInput.options[selectedIndex] && originalInput.options[selectedIndex].value !== "") {
-                                            textToRender = originalInput.options[selectedIndex].text;
-                                        } else {
-                                            textToRender = "......................."; // Placeholder for empty select
-                                        }
-                                        clonedEl.style.appearance = 'none'; // Visual cleanup for PDF
+                                        const selIdx = originalInput.selectedIndex;
+                                        textToRender = (selIdx > -1 && originalInput.options[selIdx]?.value !== "") ? originalInput.options[selIdx].text : ".......................";
+                                        clonedEl.style.appearance = 'none';
                                         clonedEl.style.backgroundImage = 'none';
                                     } else if (!textToRender && (originalInput.tagName === 'INPUT' || originalInput.tagName === 'TEXTAREA') && !isBlankableField) {
-                                        // For empty text/number/date inputs not explicitly blanked
                                         textToRender = ".......................";
                                     }
                                     
-                                    clonedEl.value = textToRender; // Set the value (blank or actual or placeholder)
-
-                                    // Apply styles for PDF rendering
-                                    clonedEl.style.fontFamily = "'Cairo', sans-serif"; // Ensure font
+                                    clonedEl.value = textToRender;
+                                    clonedEl.style.fontFamily = "'Cairo', sans-serif";
                                     clonedEl.style.fontSize = computedStyle.fontSize;
                                     clonedEl.style.fontWeight = computedStyle.fontWeight;
                                     clonedEl.style.color = computedStyle.color;
-                                    clonedEl.style.backgroundColor = "#ffffff"; // Ensure white background
-                                    clonedEl.style.border = "1px solid #777"; // Consistent border
+                                    clonedEl.style.backgroundColor = "#ffffff";
+                                    clonedEl.style.border = "1px solid #777";
                                     clonedEl.style.borderRadius = computedStyle.borderRadius;
                                     clonedEl.style.boxSizing = 'border-box';
-                                    clonedEl.style.margin = '0'; // Reset margin
+                                    clonedEl.style.margin = '0';
                                     clonedEl.style.minHeight = computedStyle.minHeight;
                                     clonedEl.style.height = computedStyle.height === 'auto' ? clonedEl.style.minHeight : computedStyle.height;
-                                    
-                                    clonedEl.style.display = 'flex'; // Use flex for alignment
-                                    clonedEl.style.alignItems = 'center'; // Vertical centering
+                                    clonedEl.style.display = 'flex';
+                                    clonedEl.style.alignItems = 'center';
 
                                     if (['text', 'number', 'tel', 'date'].includes(originalInput.type) || originalInput.id === 'supplierCode') {
-                                       clonedEl.style.justifyContent = 'center'; // Horizontal centering
+                                       clonedEl.style.justifyContent = 'center';
                                        clonedEl.style.textAlign = 'center';
-                                       clonedEl.style.padding = `0`; // Remove padding for centered text
+                                       clonedEl.style.padding = `0`;
                                     } else if (originalInput.type === 'email'){
                                        clonedEl.style.justifyContent = 'flex-start';
-                                       clonedEl.style.textAlign = 'left'; // Email is LTR
+                                       clonedEl.style.textAlign = 'left';
                                        clonedEl.style.padding = `0 ${computedStyle.paddingRight || '12px'} 0 ${computedStyle.paddingLeft || '12px'}`;
-                                    } else { // Selects, etc.
-                                       clonedEl.style.justifyContent = 'flex-start'; // Align to start (right for RTL)
+                                    } else {
+                                       clonedEl.style.justifyContent = 'flex-start';
                                        clonedEl.style.textAlign = 'right';
                                        clonedEl.style.padding = `0 ${computedStyle.paddingRight || '12px'} 0 ${computedStyle.paddingLeft || '12px'}`;
                                     }
-
                                     if (originalInput.type === 'checkbox' || originalInput.type === 'radio') {
-                                        clonedEl.style.display = ''; // Revert flex for these
+                                        clonedEl.style.display = '';
                                         clonedEl.checked = originalInput.checked;
                                     }
                                 }
                             });
-                            const legends = documentClone.querySelectorAll('legend');
-                            legends.forEach(leg => {
-                                leg.style.backgroundColor = '#f8f9fa';
-                                leg.style.border = '1px solid #aab8c5';
-                                leg.style.padding = '2px 8px';
+                            documentClone.querySelectorAll('legend').forEach(leg => {
+                                leg.style.cssText = "background-color: #f8f9fa; border: 1px solid #aab8c5; padding: 2px 8px;";
                             });
-
                         } catch (cloneError) { console.error("Error during onclone:", cloneError); }
                         console.log("html2canvas onclone finished.");
                     }
                 }).then(canvas => {
-                    // Restore original values if they were changed for PDF blanking
                     fieldsToBlankInPdf.forEach(id => {
                         const input = document.getElementById(id);
-                        if (input && originalValues.hasOwnProperty(id)) {
-                            input.value = originalValues[id];
-                        }
+                        if (input && originalValues.hasOwnProperty(id)) input.value = originalValues[id];
                     });
-
                     buttons.forEach(btn => btn.style.display = '');
                     if (formStatusElement) formStatusElement.style.display = '';
-                    if (pdfTitleElement) pdfTitleElement.remove();
+                    pdfTitleElement?.remove();
 
                     const imgData = canvas.toDataURL('image/png', 1.0);
-                    const pdf = new jsPDF({
-                        orientation: 'p',
-                        unit: 'mm',
-                        format: 'a4',
-                        putOnlyUsedFonts: true,
-                        floatPrecision: 16
-                    });
-
+                    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4', putOnlyUsedFonts: true, floatPrecision: 16 });
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const pdfHeight = pdf.internal.pageSize.getHeight();
                     const imgProps = pdf.getImageProperties(imgData);
-                    const imgWidth = imgProps.width;
-                    const imgHeight = imgProps.height;
-
                     const pageMargin = 10;
                     const availableWidth = pdfWidth - (2 * pageMargin);
                     const availableHeight = pdfHeight - (2 * pageMargin);
-                    const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
-                    const finalImgWidth = imgWidth * ratio;
-                    const finalImgHeight = imgHeight * ratio;
+                    const ratio = Math.min(availableWidth / imgProps.width, availableHeight / imgProps.height);
+                    const finalImgWidth = imgProps.width * ratio;
+                    const finalImgHeight = imgProps.height * ratio;
                     const xPos = (pdfWidth - finalImgWidth) / 2;
                     const yPos = (pdfHeight - finalImgHeight) / 2;
 
                     pdf.addImage(imgData, 'PNG', xPos, yPos, finalImgWidth, finalImgHeight);
                     pdf.save(fileName);
-
                     formStatusDiv.textContent = 'تم تصدير النموذج كملف PDF بنجاح.';
                     formStatusDiv.className = 'success';
-
                 }).catch(err => {
                     fieldsToBlankInPdf.forEach(id => {
                         const input = document.getElementById(id);
-                        if (input && originalValues.hasOwnProperty(id)) {
-                            input.value = originalValues[id];
-                        }
+                        if (input && originalValues.hasOwnProperty(id)) input.value = originalValues[id];
                     });
-
                     buttons.forEach(btn => btn.style.display = '');
                     if (formStatusElement) formStatusElement.style.display = '';
-                    if (pdfTitleElement) pdfTitleElement.remove();
+                    pdfTitleElement?.remove();
                     console.error("PDF Export Error (html2canvas):", err);
                     formStatusDiv.textContent = 'فشل تصدير PDF. خطأ: ' + (err.message || err);
                     formStatusDiv.className = 'error';
                 });
             } catch (outerError) {
-                 fieldsToBlankInPdf.forEach(id => {
+                fieldsToBlankInPdf.forEach(id => {
                     const input = document.getElementById(id);
-                    if (input && originalValues.hasOwnProperty(id)) {
-                        input.value = originalValues[id];
-                    }
+                    if (input && originalValues.hasOwnProperty(id)) input.value = originalValues[id];
                 });
                 buttons.forEach(btn => btn.style.display = '');
                 if (formStatusElement) formStatusElement.style.display = '';
-                if (pdfTitleElement) pdfTitleElement.remove();
+                pdfTitleElement?.remove();
                 console.error("PDF Export Outer Error:", outerError);
                 formStatusDiv.textContent = 'فشل تصدير PDF. خطأ خارجي: ' + (outerError.message || outerError);
                 formStatusDiv.className = 'error';
