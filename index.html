@@ -405,7 +405,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdW8U9hpC12x0lRwWnrSH6H9h554AFAk8fe6VIVwZpkTuf-HsUAH5hRtEGyldThMn4rg/exec';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec';
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
@@ -438,7 +438,7 @@
         // --- HELPER FUNCTIONS ---
         function isGoogleScriptUrlSet() {
             console.log("Checking Google Script URL:", GOOGLE_SCRIPT_URL);
-            const placeholderOriginal = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec';
             const placeholderExamplePart = 'AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA'; // An old example
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) ) {
                 showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح في الكود البرمجي.', 'error');
