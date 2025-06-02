@@ -18,7 +18,7 @@
             font-size: 16px;
         }
         .container {
-            max-width: 95%; /* Wider for table view */
+            max-width: 95%;
             margin: 20px auto;
             background-color: #ffffff;
             padding: 25px 30px;
@@ -52,7 +52,7 @@
             font-weight: 700;
             color: #0056b3;
             padding: 0 12px;
-            margin-right: 10px; /* RTL */
+            margin-right: 10px;
             background-color: #fff;
         }
         .form-group { margin-bottom: 15px; }
@@ -82,7 +82,7 @@
         }
         input[type="text"], input[type="number"], input[type="tel"], input[type="date"] {
             text-align: center;
-            font-weight: normal; /* Keep it normal for easier reading, can be 600 if preferred */
+            font-weight: normal;
         }
         input[type="email"] { text-align: left; font-weight: 400; }
         input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field,
@@ -92,7 +92,7 @@
             color: transparent !important;
         }
         input[type="date"]::before{
-            content: 'YYYY-MM-DD'; /* Adjusted for standard date format */
+            content: 'YYYY-MM-DD';
             display: block;
             color: #99aabb;
             text-align: center;
@@ -114,14 +114,14 @@
             padding-top: 20px;
             border-top: 1px solid #dee2e6;
         }
-        button, .button { /* Added .button class for consistency */
+        button, .button {
             background-color: #0062cc;
             color: white;
-            padding: 10px 20px; /* Slightly smaller padding for toolbar */
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1.0em; /* Unified font size */
+            font-size: 1.0em;
             font-weight: 600;
             transition: background-color 0.2s ease;
             margin: 5px 8px;
@@ -137,7 +137,7 @@
             border-radius: 5px;
             text-align: center;
             font-weight: 600;
-            display: none; /* Hidden by default */
+            display: none;
         }
         #formStatus.success, #modalFormStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
         #formStatus.error, #modalFormStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
@@ -145,7 +145,7 @@
 
         .toolbar {
             display: flex;
-            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
             align-items: center;
@@ -153,23 +153,16 @@
         .toolbar input[type="text"] {
             flex-grow: 1;
             min-width: 200px;
-            padding: 10px 12px; /* Match other inputs */
+            padding: 10px 12px;
             font-size: 1em;
         }
-        .toolbar button {
-            flex-shrink: 0; /* Prevent buttons from shrinking too much */
-        }
-         button.primary-btn {
-            background-color: #28a745; /* Green for add */
-        }
-        button.primary-btn:hover {
-            background-color: #218838;
-        }
-
+        .toolbar button { flex-shrink: 0; }
+         button.primary-btn { background-color: #28a745; }
+        button.primary-btn:hover { background-color: #218838; }
 
         #dataTableContainer {
             overflow-x: auto;
-            min-height: 100px; /* So loading message is visible */
+            min-height: 100px;
         }
         #dataTableContainer table {
             width: 100%;
@@ -184,10 +177,10 @@
             vertical-align: middle;
         }
         #dataTableContainer th {
-            background-color: #e9ecef; /* Lighter header */
+            background-color: #e9ecef;
             font-weight: 600;
             color: #212529;
-            position: sticky; /* Sticky header for scrolling */
+            position: sticky;
             top: 0;
             z-index: 10;
         }
@@ -195,20 +188,18 @@
         #dataTableContainer tr:hover {background-color: #e2e6ea;}
         #dataTableContainer .actions-cell button {
             margin: 2px 3px;
-            padding: 6px 10px; /* Consistent padding */
-            font-size: 0.9em; /* Smaller font for action buttons */
+            padding: 6px 10px;
+            font-size: 0.9em;
         }
-        #dataTableContainer .actions-cell .edit-btn {
-            background-color: #ffc107; color: black;
-        }
+        #dataTableContainer .actions-cell .edit-btn { background-color: #ffc107; color: black; }
         #dataTableContainer .actions-cell .edit-btn:hover { background-color: #e0a800; }
         #dataTableContainer .actions-cell .delete-btn { background-color: #dc3545; }
         #dataTableContainer .actions-cell .delete-btn:hover { background-color: #c82333; }
-        #loadingMessage { text-align: center; padding: 20px; font-style: italic; }
-        #dataTableContainer p.error { color: #721c24; background-color: #f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:5px;}
+        #loadingMessage { text-align: center; padding: 20px; font-style: italic; color: #555;}
+        #dataTableContainer p.error { color: #721c24; background-color: #f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:5px; text-align: center;}
+        #dataTableContainer p:not(.error) { text-align: center; padding: 15px; color: #555;}
 
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -222,11 +213,11 @@
         }
         .modal-content {
             background-color: #fefefe;
-            margin: 3% auto; /* Adjusted margin */
+            margin: 3% auto;
             padding: 25px 35px;
             border: 1px solid #888;
             width: 90%;
-            max-width: 800px; /* Slightly wider modal */
+            max-width: 800px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             position: relative;
@@ -237,12 +228,10 @@
             float: left;
             font-size: 30px;
             font-weight: bold;
-            line-height: 0.8; /* Align better */
+            line-height: 0.8;
             padding: 5px;
         }
-        .close-button:hover, .close-button:focus {
-            color: black; text-decoration: none; cursor: pointer;
-        }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
         #modalTitle {
             color: #004085;
             margin-top: 0;
@@ -279,23 +268,23 @@
         </div>
 
         <div id="dataTableContainer">
+            <!-- This p tag is crucial for the initial loading message -->
             <p id="loadingMessage">جاري تحميل البيانات...</p>
         </div>
-        <div id="formStatus"></div> <!-- For general status messages like delete -->
+        <div id="formStatus"></div>
 
-    </div> <!-- .container -->
+    </div>
 
-    <!-- Modal for Adding/Editing Supplier -->
     <div id="supplierModal" class="modal">
         <div class="modal-content">
             <span class="close-button" title="إغلاق">×</span>
             <h2 id="modalTitle">إضافة مورد جديد</h2>
             <form id="supplierModalForm">
-                <input type="hidden" id="modalRecordId" name="recordId"> <!-- For row ID during edit -->
+                <input type="hidden" id="modalRecordId" name="recordId">
 
                 <fieldset>
                     <legend>البيانات الأساسية</legend>
-                    <div class="form-group"> <!-- Supplier Code is now inside the modal form -->
+                    <div class="form-group">
                         <label for="modalSupplierCode">كود المورد:</label>
                         <input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي (إذا كان مدعوماً)">
                     </div>
@@ -415,25 +404,8 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // --- CONFIGURATION ---
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxdW8U9hpC12x0lRwWnrSH6H9h554AFAk8fe6VIVwZpkTuf-HsUAH5hRtEGyldThMn4rg/exec';
-
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const addNewSupplierBtn = document.getElementById('addNewSupplierBtn');
-        const refreshDataBtn = document.getElementById('refreshDataBtn');
-        const dataTableContainer = document.getElementById('dataTableContainer');
-        const loadingMessageElement = document.getElementById('loadingMessage'); // Get ref to loading message p
-        const formStatusDiv = document.getElementById('formStatus');
-
-        const supplierModal = document.getElementById('supplierModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const supplierModalForm = document.getElementById('supplierModalForm');
-        const modalRecordIdInput = document.getElementById('modalRecordId');
-        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        const modalCancelBtn = document.getElementById('modalCancelBtn');
-        const modalCloseBtn = supplierModal.querySelector('.close-button');
-        const modalFormStatusDiv = document.getElementById('modalFormStatus');
-
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
@@ -445,41 +417,76 @@
         };
         const DISPLAY_HEADERS_KEYS = Object.keys(DISPLAY_HEADERS_MAPPING);
 
+        // --- DOM ELEMENTS ---
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const addNewSupplierBtn = document.getElementById('addNewSupplierBtn');
+        const refreshDataBtn = document.getElementById('refreshDataBtn');
+        const dataTableContainer = document.getElementById('dataTableContainer');
+        const loadingMessageElement = document.getElementById('loadingMessage');
+        const formStatusDiv = document.getElementById('formStatus');
+
+        const supplierModal = document.getElementById('supplierModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const supplierModalForm = document.getElementById('supplierModalForm');
+        const modalRecordIdInput = document.getElementById('modalRecordId');
+        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+        const modalCancelBtn = document.getElementById('modalCancelBtn');
+        const modalCloseBtn = supplierModal.querySelector('.close-button');
+        const modalFormStatusDiv = document.getElementById('modalFormStatus');
+
+        // --- HELPER FUNCTIONS ---
         function isGoogleScriptUrlSet() {
+            console.log("Checking Google Script URL:", GOOGLE_SCRIPT_URL);
             const placeholderOriginal = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
-            const placeholderExamplePart = 'AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA';
+            const placeholderExamplePart = 'AKfycbxUlmPyoUxMdfOG1kvo-iWCQ2BfQKo_wbR76pOFey8xAErgLf51b2XirOivcMoVIeHdkA'; // An old example
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) ) {
-                showStatus(formStatusDiv, 'خطأ: URL الخاص بـ Google Apps Script غير مُكوَّن.', 'error');
-                console.error('Google Apps Script URL is not set or is a placeholder.');
+                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح في الكود البرمجي.', 'error');
+                console.error('FATAL: Google Apps Script URL is not set or is a placeholder:', GOOGLE_SCRIPT_URL);
                 return false;
             }
             return true;
         }
 
         function showLoading(isLoading) {
+            console.log("showLoading called with:", isLoading);
             if (isLoading) {
-                dataTableContainer.innerHTML = ''; // Clear previous table
-                if (loadingMessageElement) loadingMessageElement.style.display = 'block';
-                 dataTableContainer.appendChild(loadingMessageElement); // Ensure it's in the container
+                dataTableContainer.innerHTML = ''; // Clear previous table or messages
+                if (loadingMessageElement) {
+                    loadingMessageElement.style.display = 'block';
+                    dataTableContainer.appendChild(loadingMessageElement); // Ensure it's visible
+                }
                 formStatusDiv.style.display = 'none';
             } else {
                  if (loadingMessageElement) loadingMessageElement.style.display = 'none';
             }
         }
 
-        function showStatus(element, message, type = '') { // type can be 'success', 'error', or empty for neutral
-            if (!element) return;
+        function showStatus(element, message, type = '') {
+            if (!element) {
+                console.warn("showStatus called with null element for message:", message);
+                return;
+            }
+            console.log(`showStatus on element ${element.id}: ${message}, type: ${type}`);
             element.textContent = message;
-            element.className = type; // This will clear previous classes if type is empty
-            element.style.display = 'block';
+            element.className = type;
+            element.style.display = message ? 'block' : 'none'; // Hide if message is empty
+
             if (type === 'success' || type === 'error') {
                 setTimeout(() => {
                     if (element) element.style.display = 'none';
-                }, type === 'success' ? 3000 : 7000);
+                }, type === 'success' ? 3500 : 7000); // Longer for errors
             }
         }
 
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/[&<>"']/g, match => ({'&':'&','<':'<','>':'>','"':'"',"'":'''})[match]);
+        }
+
+        // --- DATA FETCHING AND RENDERING ---
         async function fetchData(searchTerm = '') {
+            console.log(`fetchData called. Search term: "${searchTerm}"`);
             if (!isGoogleScriptUrlSet()) return;
             showLoading(true);
 
@@ -487,15 +494,22 @@
             if (searchTerm) {
                 url = `${GOOGLE_SCRIPT_URL}?action=searchSuppliers&term=${encodeURIComponent(searchTerm)}`;
             }
+            console.log("Fetching from URL:", url);
 
             try {
                 const response = await fetch(url);
+                console.log("Fetch response status:", response.status);
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({ message: `فشل جلب البيانات: ${response.status}` }));
-                    throw new Error(errData.message);
+                    const errText = await response.text(); // Get text for better debugging
+                    console.error("Fetch error response text:", errText);
+                    let errMessage = `فشل جلب البيانات: ${response.status}`;
+                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
+                    catch (e) { /* Use default if not JSON */ }
+                    throw new Error(errMessage);
                 }
                 const result = await response.json();
-                showLoading(false); // Hide loading before processing results
+                console.log("Fetch result:", result);
+                showLoading(false);
                 if (result.status === 'success') {
                     if (result.data && result.data.length > 0) {
                         renderTable(result.data);
@@ -505,17 +519,17 @@
                         dataTableContainer.innerHTML = '<p>لا يوجد موردين مسجلين حالياً. انقر فوق "إضافة مورد جديد" للبدء.</p>';
                     }
                 } else {
-                    throw new Error(result.message || 'فشل جلب البيانات من الخادم.');
+                    throw new Error(result.message || 'فشل جلب البيانات من الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error during fetchData:', error);
                 showLoading(false);
                 dataTableContainer.innerHTML = `<p class="error">خطأ في تحميل البيانات: ${error.message}</p>`;
-                // showStatus(formStatusDiv, error.message, 'error'); // Show error in main status if table fails
             }
         }
 
         function renderTable(data) {
+            console.log("renderTable called with data count:", data.length);
             let tableHTML = '<table><thead><tr>';
             DISPLAY_HEADERS_KEYS.forEach(key => {
                 tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`;
@@ -525,8 +539,7 @@
             data.forEach(record => {
                 tableHTML += `<tr data-id="${record.RowID}">`;
                 DISPLAY_HEADERS_KEYS.forEach(key => {
-                    const value = record[key] !== null && record[key] !== undefined ? record[key] : "";
-                    tableHTML += `<td>${escapeHTML(String(value))}</td>`;
+                    tableHTML += `<td>${escapeHTML(record[key])}</td>`;
                 });
                 tableHTML += `<td class="actions-cell">
                                 <button class="edit-btn button" data-id="${record.RowID}">تعديل</button>
@@ -534,13 +547,9 @@
                              </td>`;
                 tableHTML += '</tr>';
             });
-
             tableHTML += '</tbody></table>';
             dataTableContainer.innerHTML = tableHTML;
             addTableActionListeners();
-        }
-        function escapeHTML(str) {
-            return str.replace(/[&<>"']/g, match => ({'&':'&','<':'<','>':'>','"':'"',"'":'''})[match]);
         }
 
         function addTableActionListeners() {
@@ -552,52 +561,57 @@
             });
         }
 
+        // --- MODAL LOGIC ---
         function openModal(mode = 'add', recordId = null) {
+            console.log(`openModal called. Mode: ${mode}, RecordID: ${recordId}`);
             supplierModalForm.reset();
             clearModalErrorMessages();
-            showStatus(modalFormStatusDiv, '', ''); // Clear status
-            modalFormStatusDiv.style.display = 'none';
-
+            showStatus(modalFormStatusDiv, '', ''); // Clear and hide
 
             if (mode === 'add') {
                 modalTitle.textContent = 'إضافة مورد جديد';
                 modalRecordIdInput.value = '';
                 modalSubmitBtn.textContent = 'إضافة المورد';
                 supplierModal.style.display = 'block';
-                document.getElementById('modalSupplierName').focus(); // Focus on first main field
+                document.getElementById('modalSupplierName').focus();
             } else if (mode === 'edit' && recordId) {
                 modalTitle.textContent = 'تعديل بيانات المورد';
                 modalRecordIdInput.value = recordId;
                 modalSubmitBtn.textContent = 'حفظ التعديلات';
-                loadRecordForEdit(recordId); // This will show modal after loading
+                loadRecordForEdit(recordId);
             }
         }
 
         function closeModal() {
+            console.log("closeModal called.");
             supplierModal.style.display = 'none';
         }
 
         async function loadRecordForEdit(recordId) {
+            console.log("loadRecordForEdit called for RecordID:", recordId);
             if (!isGoogleScriptUrlSet()) return;
             showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
-            modalFormStatusDiv.style.display = 'block';
-
 
             try {
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${recordId}`);
+                console.log("Load record response status:", response.status);
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({ message: `فشل تحميل بيانات المورد: ${response.status}`}));
-                    throw new Error(errData.message);
+                    const errText = await response.text();
+                    console.error("Load record error response text:", errText);
+                    let errMessage = `فشل تحميل بيانات المورد: ${response.status}`;
+                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
+                    catch (e) { /* Use default */ }
+                    throw new Error(errMessage);
                 }
                 const result = await response.json();
+                console.log("Load record result:", result);
                 if (result.status === 'success' && result.data) {
                     populateModalForm(result.data);
                     showStatus(modalFormStatusDiv, '', ''); // Clear loading
-                     modalFormStatusDiv.style.display = 'none';
                     supplierModal.style.display = 'block';
                     document.getElementById('modalSupplierName').focus();
                 } else {
-                    throw new Error(result.message || 'فشل تحميل بيانات المورد.');
+                    throw new Error(result.message || 'فشل تحميل بيانات المورد (الحالة ليست نجاح).');
                 }
             } catch (error) {
                 console.error('Error loading record for edit:', error);
@@ -606,6 +620,7 @@
         }
 
         function populateModalForm(record) {
+            console.log("populateModalForm with record:", record);
             for (const key in record) {
                 if (record.hasOwnProperty(key)) {
                     const inputElement = supplierModalForm.elements[key];
@@ -613,29 +628,30 @@
                         if (inputElement.type === 'date' && record[key]) {
                             try {
                                 const date = new Date(record[key]);
-                                // Check if date is valid before formatting
                                 if (!isNaN(date.getTime())) {
                                    inputElement.value = date.toISOString().split('T')[0];
                                 } else {
-                                    console.warn(`Invalid date for ${key}: ${record[key]}`);
-                                    inputElement.value = ''; // or record[key] as fallback if preferred
+                                    console.warn(`Invalid date value for ${key}: "${record[key]}" - Setting to empty.`);
+                                    inputElement.value = '';
                                 }
                             } catch (e) {
-                                console.warn(`Could not parse date for ${key}: ${record[key]}`, e);
-                                inputElement.value = record[key];
+                                console.warn(`Error parsing date for ${key}: "${record[key]}"`, e);
+                                inputElement.value = ''; // Default to empty on error
                             }
                         } else {
                             inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
                         }
+                    } else {
+                        // console.warn(`No form element found for key: ${key}`);
                     }
                 }
             }
         }
 
         function validateModalForm() {
+            console.log("validateModalForm called.");
             let isValid = true;
             clearModalErrorMessages();
-            // No need to clear modalFormStatusDiv here, submit handler does it
 
             supplierModalForm.querySelectorAll('[required]').forEach(field => {
                 if (!field.value.trim()) {
@@ -646,7 +662,7 @@
                     errorMsg.classList.add('error-message');
                     field.parentNode.insertBefore(errorMsg, field.nextSibling);
                 } else {
-                    field.style.borderColor = ''; // Reset to default
+                    field.style.borderColor = '';
                 }
             });
 
@@ -666,6 +682,9 @@
 
             if (!isValid) {
                 showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.', 'error');
+                console.warn("Modal form validation failed.");
+            } else {
+                console.log("Modal form validation passed.");
             }
             return isValid;
         }
@@ -675,6 +694,7 @@
             supplierModalForm.querySelectorAll('[style*="border-color: rgb(200, 35, 51)"]').forEach(input => input.style.borderColor = '');
         }
 
+        // --- EVENT LISTENERS ---
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') fetchData(searchInput.value.trim());
@@ -692,12 +712,10 @@
             }
         });
 
-
         supplierModalForm.addEventListener('submit', async function (event) {
             event.preventDefault();
-            showStatus(modalFormStatusDiv, '', ''); // Clear previous status
-            modalFormStatusDiv.style.display = 'none';
-
+            console.log("Modal form submitted.");
+            showStatus(modalFormStatusDiv, '', ''); // Clear previous
 
             if (!validateModalForm() || !isGoogleScriptUrlSet()) return;
 
@@ -705,26 +723,32 @@
             const originalButtonText = modalSubmitBtn.textContent;
             modalSubmitBtn.textContent = 'جاري الحفظ...';
             showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', '');
-            modalFormStatusDiv.style.display = 'block';
-
 
             const formData = new FormData(supplierModalForm);
             const action = modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier';
             formData.append('action', action);
+            console.log("Form data to submit (Action: " + action + "):", Object.fromEntries(formData));
+
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
+                console.log("Submit form response status:", response.status);
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({ message: `فشل حفظ البيانات: ${response.status}` }));
-                    throw new Error(errData.message);
+                    const errText = await response.text();
+                    console.error("Submit form error response text:", errText);
+                    let errMessage = `فشل حفظ البيانات: ${response.status}`;
+                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
+                    catch (e) { /* Use default */ }
+                    throw new Error(errMessage);
                 }
                 const result = await response.json();
+                console.log("Submit form result:", result);
                 if (result.status === 'success') {
                     showStatus(modalFormStatusDiv, result.message, 'success');
                     fetchData(searchInput.value.trim());
                     setTimeout(closeModal, 1500);
                 } else {
-                    throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم.');
+                    throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
                 console.error('Error submitting modal form:', error);
@@ -737,43 +761,60 @@
 
         function handleEditClick(event) {
             const recordId = event.target.dataset.id;
+            console.log("Edit button clicked for RecordID:", recordId);
             openModal('edit', recordId);
         }
 
         async function handleDeleteClick(event) {
             const recordId = event.target.dataset.id;
+            console.log("Delete button clicked for RecordID:", recordId);
             if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                console.log("Delete cancelled by user or no RecordID.");
                 return;
             }
             if (!isGoogleScriptUrlSet()) return;
 
-            showStatus(formStatusDiv, 'جاري حذف المورد...', ''); // Use main status for delete
-            formStatusDiv.style.display = 'block';
-
+            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
 
             const formData = new FormData();
             formData.append('action', 'deleteSupplier');
             formData.append('recordId', recordId);
+            console.log("Form data to delete:", Object.fromEntries(formData));
+
 
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
+                console.log("Delete response status:", response.status);
                 if (!response.ok) {
-                    const errData = await response.json().catch(() => ({ message: `فشل حذف المورد: ${response.status}` }));
-                    throw new Error(errData.message);
+                    const errText = await response.text();
+                    console.error("Delete error response text:", errText);
+                    let errMessage = `فشل حذف المورد: ${response.status}`;
+                    try { const errData = JSON.parse(errText); errMessage = errData.message || errMessage; }
+                    catch (e) { /* Use default */ }
+                    throw new Error(errMessage);
                 }
                 const result = await response.json();
+                console.log("Delete result:", result);
                 if (result.status === 'success') {
                     showStatus(formStatusDiv, result.message, 'success');
                     fetchData(searchInput.value.trim());
                 } else {
-                    throw new Error(result.message || 'فشل حذف المورد من جهة الخادم.');
+                    throw new Error(result.message || 'فشل حذف المورد من جهة الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
                 console.error('Error deleting supplier:', error);
                 showStatus(formStatusDiv, error.message, 'error');
             }
         }
-        fetchData(); // Initial data load
+
+        // --- INITIALIZATION ---
+        console.log("DOM fully loaded. Initializing app.");
+        if(isGoogleScriptUrlSet()){
+            fetchData(); // Initial data load
+        } else {
+            showLoading(false); // Hide loading if URL not set
+            // The error message about URL not being set is already shown by isGoogleScriptUrlSet
+        }
     });
     </script>
 </body>
