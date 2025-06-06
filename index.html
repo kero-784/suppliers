@@ -179,40 +179,52 @@
             #modalTitle { font-size: 1.5em; }
         }
 
-        /* --- NEW & IMPROVED Print Styles --- */
+        /* --- UPDATED & COMPACT Print Styles --- */
         .print-only { display: none; }
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0; /* We control margin with padding on the container */
+            }
+            body {
+                -webkit-print-color-adjust: exact !important; /* Ensures colors print in Chrome/Safari */
+                print-color-adjust: exact !important; /* Standard */
+            }
             body > *:not(.print-only) {
                 display: none !important;
             }
             .print-only {
                 display: block;
                 font-family: 'Cairo', sans-serif;
-                font-size: 11pt;
                 color: #000;
             }
             .print-container {
-                padding: 1cm;
-                margin: 0;
+                padding: 1cm; /* A reasonable margin for the page */
+                margin: 0 auto;
                 width: 100%;
+                box-sizing: border-box;
+                /* Reduce scale slightly to help fit on one page */
+                transform: scale(0.95);
+                transform-origin: top center;
             }
             .print-container h2 {
                 text-align: center;
                 color: #004085;
-                margin-bottom: 25px;
+                font-size: 1.5em;
+                margin-bottom: 20px;
                 border-bottom: 2px solid #0062cc;
-                padding-bottom: 10px;
+                padding-bottom: 8px;
             }
             .print-container fieldset {
                 border: 1px solid #aaa !important;
                 border-radius: 8px;
-                padding: 15px;
-                margin-bottom: 15px;
+                padding: 10px 15px;
+                margin-bottom: 10px; /* Reduced margin */
                 background: none !important;
-                page-break-inside: avoid; /* Prevents fieldsets from splitting across pages */
+                page-break-inside: avoid;
             }
             .print-container legend {
-                font-size: 1.2em;
+                font-size: 1.1em; /* Reduced font size */
                 font-weight: 700;
                 color: #0056b3;
                 padding: 0 10px;
@@ -220,35 +232,34 @@
             }
             .print-container .form-row {
                 display: flex;
-                gap: 20px;
+                gap: 15px; /* Reduced gap */
                 align-items: flex-start;
                 width: 100%;
             }
             .print-container .form-group {
                 flex: 1;
-                margin-bottom: 15px;
+                margin-bottom: 10px; /* Reduced margin */
             }
              .print-container .form-group label {
                 font-weight: 600;
                 color: #333;
-                margin-bottom: 5px;
+                font-size: 0.9em; /* Reduced font size */
+                margin-bottom: 4px; /* Reduced margin */
             }
-            /* Style for the static data that replaces inputs */
             .print-value {
                 display: block;
                 width: 100%;
-                padding: 8px 12px;
+                padding: 6px 10px; /* Reduced padding */
                 border: 1px solid #ccc;
                 border-radius: 5px;
                 box-sizing: border-box;
-                min-height: 38px;
-                line-height: 1.3;
+                line-height: 1.2; /* Reduced line height */
                 background-color: #f9f9f9;
                 text-align: center;
-                word-wrap: break-word; /* handle long values */
+                word-wrap: break-word;
+                font-size: 10pt; /* Explicitly set font size for value */
             }
             .print-value.align-left { text-align: left; }
-            /* Hide buttons and other non-essentials */
             .print-container .form-actions {
                 display: none !important;
             }
@@ -281,7 +292,8 @@
             <h2 id="modalTitle">إضافة مورد جديد</h2>
             <form id="supplierModalForm">
                 <input type="hidden" id="modalRecordId" name="recordId">
-
+                
+                <!-- Form fields remain unchanged -->
                 <fieldset>
                     <legend>البيانات الأساسية</legend>
                     <div class="form-group">
@@ -407,8 +419,7 @@
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // Ensure this is your correct deployed URL
-        // ... (rest of configuration is the same)
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec';
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
@@ -440,9 +451,8 @@
         const printableArea = document.getElementById('printableArea');
 
         // --- HELPER FUNCTIONS ---
-        // ... (isGoogleScriptUrlSet, showLoading, showStatus, escapeHTML are the same)
         function isGoogleScriptUrlSet() {
-            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec';
+            const placeholderOriginal = 'YOUR_GOOGLE_SCRIPT_URL_HERE';
             const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE';
             if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
                 showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح أو هو رابط وضع التطوير. يرجى استخدام رابط التنفيذ (exec) المنشور.', 'error');
@@ -484,13 +494,10 @@
             return div.innerHTML;
         }
 
-        // --- NEW & IMPROVED Print Handler ---
         function handlePrint() {
-            // 1. Clone the form and title to avoid affecting the live modal
             const formClone = supplierModalForm.cloneNode(true);
             const titleClone = modalTitle.cloneNode(true);
 
-            // 2. Process the cloned form to replace inputs with static text
             formClone.querySelectorAll('input, select').forEach(input => {
                 const parent = input.parentNode;
                 if (!parent) return;
@@ -500,20 +507,17 @@
                     value = input.options[input.selectedIndex]?.text || '';
                 }
                 
-                // Create a static div to hold the value
                 const printValueDiv = document.createElement('div');
                 printValueDiv.className = 'print-value';
                 if(input.type === 'email') {
                     printValueDiv.classList.add('align-left');
                 }
-                printValueDiv.textContent = value || ' '; // Use a space for empty values to maintain height
+                printValueDiv.textContent = value || ' '; 
 
-                // Replace the input/select with the static div
                 parent.replaceChild(printValueDiv, input);
             });
 
-            // 3. Prepare the printable area
-            printableArea.innerHTML = ''; // Clear previous content
+            printableArea.innerHTML = '';
             const printContainer = document.createElement('div');
             printContainer.className = 'print-container';
             
@@ -521,16 +525,12 @@
             printContainer.appendChild(formClone);
             printableArea.appendChild(printContainer);
 
-            // 4. Trigger the print dialog
             window.print();
         }
 
-        // --- EVENT LISTENERS ---
-        // ... (other listeners are the same)
-        modalPrintBtn.addEventListener('click', handlePrint); // Connect the new function
-
-        // --- The rest of the script remains unchanged ---
-        // --- DATA FETCHING AND RENDERING ---
+        // --- All other JavaScript functions (fetchData, renderTable, modal logic, etc.) remain unchanged ---
+        // They are included here for completeness.
+        
         async function fetchData(searchTerm = '') {
             if (!isGoogleScriptUrlSet()) return;
             showLoading(true);
@@ -593,7 +593,6 @@
             });
         }
 
-        // --- MODAL LOGIC ---
         function openModal(mode = 'add', recordId = null) {
             supplierModalForm.reset();
             clearModalErrorMessages();
@@ -690,7 +689,8 @@
                 input.style.borderColor = '';
             });
         }
-
+        
+        modalPrintBtn.addEventListener('click', handlePrint);
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
         searchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') fetchData(searchInput.value.trim());
