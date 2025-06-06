@@ -7,7 +7,6 @@
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* --- Base screen styles --- */
         body {
             font-family: 'Cairo', sans-serif;
             direction: rtl;
@@ -86,6 +85,29 @@
             font-weight: normal;
         }
         input[type="email"] { text-align: left; font-weight: 400; }
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-month-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-day-field,
+        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-text {
+            color: transparent !important;
+        }
+        input[type="date"]::before{
+            content: 'YYYY-MM-DD';
+            display: block;
+            color: #99aabb;
+            text-align: center;
+            width: 100%;
+        }
+        input[type="date"][value]:not([value=""])::before { display: none; }
+        input:focus, select:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25);
+            outline: none;
+        }
+        input::placeholder { color: #778899; font-size: 0.95em; text-align: right; font-weight: 400; }
+        input[type="text"]::placeholder, input[type="number"]::placeholder, input[type="tel"]::placeholder {
+            text-align: center;
+        }
         .form-actions {
             text-align: center;
             margin-top: 25px;
@@ -93,127 +115,172 @@
             border-top: 1px solid #dee2e6;
         }
         button, .button {
-            background-color: #0062cc; color: white; padding: 10px 20px; border: none;
-            border-radius: 5px; cursor: pointer; font-size: 1.0em; font-weight: 600;
-            transition: background-color 0.2s ease; margin: 5px 8px; line-height: 1.5;
+            background-color: #0062cc;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.0em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            margin: 5px 8px;
+            line-height: 1.5;
         }
-        button.print-btn { background-color: #17a2b8; }
-        button.print-btn:hover { background-color: #138496; }
         button[type="button"], .button.secondary { background-color: #5a6268; }
         button:hover, .button:hover { background-color: #004a99; }
         button[type="button"]:hover, .button.secondary:hover { background-color: #474c52; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fefefe; margin: 3% auto; padding: 25px 35px; border: 1px solid #888; width: 90%; max-width: 800px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
-        .close-button { color: #777; float: left; font-size: 30px; font-weight: bold; line-height: 0.8; padding: 5px; }
-        #modalTitle { color: #004085; margin-top: 0; margin-bottom: 25px; text-align: center; font-size: 1.8em; }
-        #dataTableContainer { overflow-x: auto; min-height: 100px; }
-        #dataTableContainer table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        #dataTableContainer th, #dataTableContainer td { border: 1px solid #ddd; padding: 8px 10px; text-align: right; vertical-align: middle; }
-        #dataTableContainer th { background-color: #e9ecef; font-weight: 600; color: #212529; position: sticky; top: 0; z-index: 10; }
-        #dataTableContainer tr:hover {background-color: #e2e6ea;}
-        #loadingMessage { text-align: center; padding: 20px; font-style: italic; color: #555;}
-        
-        /* --- Final, Compact Print Styles --- */
-        .print-only { display: none; }
-        @media print {
-            @page {
-                size: A4 portrait;
-                margin: 0.5cm;
-            }
-            body {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            body > *:not(.print-only) {
-                display: none !important;
-            }
-            .print-only {
-                display: block;
-                font-family: 'Cairo', sans-serif;
-                color: #000;
-            }
-            .print-container {
-                padding: 0;
-                margin: 0 auto;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .print-container h2 {
-                text-align: center;
-                color: #004085;
-                font-size: 16pt;
-                margin-bottom: 15px;
-                border-bottom: 2px solid #0062cc;
-                padding-bottom: 8px;
-            }
-            .print-container fieldset {
-                border: 1px solid #999 !important;
-                border-radius: 6px;
-                padding: 8px 12px;
-                margin-bottom: 8px;
-                background: #fff !important;
-                page-break-inside: avoid;
-            }
-            .print-container legend {
-                font-size: 11pt;
-                font-weight: 700;
-                color: #0056b3;
-                padding: 0 8px;
-                margin-right: 5px;
-            }
-            .print-container .form-row {
-                display: flex !important;
-                gap: 10px !important;
-                align-items: flex-start;
-                width: 100%;
-            }
-            .print-container .form-group {
-                flex: 1;
-                margin-bottom: 8px;
-            }
-            .print-container .form-group label {
-                font-weight: 600;
-                color: #333;
-                font-size: 9pt;
-                margin-bottom: 3px;
-            }
-            .print-value {
-                display: block;
-                width: 100%;
-                padding: 5px 8px;
-                border: 1px solid #ccc;
-                border-radius: 4px;
-                box-sizing: border-box;
-                line-height: 1.2;
-                background-color: #f8f9fa !important;
-                text-align: center;
-                word-wrap: break-word;
-                font-size: 10pt;
-                min-height: 28px;
-            }
-            .print-value.align-left { text-align: left; }
-            .print-container .form-actions {
-                display: none !important;
-            }
-            .print-signature-area {
-                margin-top: 25px;
-                padding-top: 15px;
-                border-top: 1px solid #ccc;
-                display: flex;
-                justify-content: space-around;
-                font-size: 10pt;
-                page-break-inside: avoid;
-            }
-            .print-signature-area > div {
-                text-align: center;
-            }
-            .print-signature-area .line {
-                border-bottom: 1px solid #555;
-                width: 180px;
-                margin-top: 40px;
-            }
+
+        #formStatus, #modalFormStatus {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
         }
-    </style>
+        #formStatus.success, #modalFormStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        #formStatus.error, #modalFormStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .error-message { color: #c82333; font-size: 0.85em; display: block; margin-top: 4px; }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .toolbar input[type="text"] {
+            flex-grow: 1;
+            min-width: 200px;
+            padding: 10px 12px;
+            font-size: 1em;
+        }
+        .toolbar button { flex-shrink: 0; }
+         button.primary-btn { background-color: #28a745; }
+        button.primary-btn:hover { background-color: #218838; }
+
+        #dataTableContainer {
+            overflow-x: auto;
+            min-height: 100px;
+        }
+        #dataTableContainer table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        #dataTableContainer th, #dataTableContainer td {
+            border: 1px solid #ddd;
+            padding: 8px 10px;
+            text-align: right;
+            vertical-align: middle;
+        }
+        #dataTableContainer th {
+            background-color: #e9ecef;
+            font-weight: 600;
+            color: #212529;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        #dataTableContainer tr:nth-child(even){background-color: #f8f9fa;}
+        #dataTableContainer tr:hover {background-color: #e2e6ea;}
+        #dataTableContainer .actions-cell button {
+            margin: 2px 3px;
+            padding: 6px 10px;
+            font-size: 0.9em;
+        }
+        #dataTableContainer .actions-cell .edit-btn { background-color: #ffc107; color: black; }
+        #dataTableContainer .actions-cell .edit-btn:hover { background-color: #e0a800; }
+        #dataTableContainer .actions-cell .delete-btn { background-color: #dc3545; }
+        #dataTableContainer .actions-cell .delete-btn:hover { background-color: #c82333; }
+        #loadingMessage { text-align: center; padding: 20px; font-style: italic; color: #555;}
+        #dataTableContainer p.error { color: #721c24; background-color: #f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:5px; text-align: center;}
+        #dataTableContainer p:not(.error) { text-align: center; padding: 15px; color: #555;}
+
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 3% auto;
+            padding: 25px 35px;
+            border: 1px solid #888;
+            width: 90%;
+            max-width: 800px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .modal-content fieldset { background-color: #fdfdfd; }
+        .close-button {
+            color: #777;
+            float: left;
+            font-size: 30px;
+            font-weight: bold;
+            line-height: 0.8;
+            padding: 5px;
+        }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
+        #modalTitle {
+            color: #004085;
+            margin-top: 0;
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.8em;
+        }
+        .modal-content .form-group { margin-bottom: 12px; }
+        .modal-content .form-actions button { font-size: 1em; padding: 12px 25px;}
+
+        @media (max-width: 768px) {
+            .container { max-width: 100%; padding: 15px; }
+            header h1 { font-size: 22px; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .toolbar input[type="text"], .toolbar button { width: 100%; margin-bottom: 10px; }
+            .form-row { flex-direction: column; gap: 0; }
+            .form-row .form-group { margin-bottom: 15px; }
+            .modal-content { width: 95%; margin: 5% auto; padding: 20px;}
+            #modalTitle { font-size: 1.5em; }
+        }
+    
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #supplierModal, #supplierModal * {
+        visibility: visible;
+    }
+    #supplierModal {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background-color: white !important;
+        padding: 20px;
+    }
+    .modal-content {
+        box-shadow: none;
+        border: none;
+    }
+    .form-actions {
+        display: none; /* Hide action buttons during print */
+    }
+    .close-button {
+        display: none; /* Hide close button */
+    }
+}
+
+</style>
 </head>
 <body>
     <div class="container">
@@ -229,6 +296,7 @@
         </div>
 
         <div id="dataTableContainer">
+            <!-- This p tag is crucial for the initial loading message -->
             <p id="loadingMessage">جاري تحميل البيانات...</p>
         </div>
         <div id="formStatus"></div>
@@ -241,47 +309,118 @@
             <h2 id="modalTitle">إضافة مورد جديد</h2>
             <form id="supplierModalForm">
                 <input type="hidden" id="modalRecordId" name="recordId">
-                <!-- Form fields -->
+
                 <fieldset>
                     <legend>البيانات الأساسية</legend>
-                    <div class="form-group"><label for="modalSupplierCode">كود المورد <span class="required">*</span></label><input type="text" id="modalSupplierCode" name="SupplierCode" required placeholder="ادخل كود المورد الفريد"></div>
-                    <div class="form-group"><label for="modalSupplierName">اسم المورد <span class="required">*</span></label><input type="text" id="modalSupplierName" name="SupplierName" required placeholder="ادخل اسم المورد كاملاً"></div>
-                    <div class="form-row">
-                        <div class="form-group"><label for="modalCommercialReg">السجل التجاري <span class="required">*</span></label><input type="text" id="modalCommercialReg" name="CommercialReg" required placeholder="رقم السجل التجاري"></div>
-                        <div class="form-group"><label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label><input type="text" id="modalTaxRegNum" name="TaxRegNum" required pattern="\d{3}-\d{3}-\d{3}" title="الرجاء إدخال 9 أرقام مفصولة بشرطات (123-456-789)" placeholder="XXX-XXX-XXX"></div>
+                    <div class="form-group">
+                        <label for="modalSupplierCode">كود المورد:</label>
+                        <input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي (إذا كان مدعوماً)">
                     </div>
-                    <div class="form-group"><label for="modalTaxStatus">الحالة الضريبية <span class="required">*</span></label><select id="modalTaxStatus" name="TaxStatus" required><option value="خاضع">خاضع</option><option value="معفي">معفي</option></select></div>
+                    <div class="form-group">
+                        <label for="modalSupplierName">اسم المورد <span class="required">*</span></label>
+                        <input type="text" id="modalSupplierName" name="SupplierName" required placeholder="ادخل اسم المورد كاملاً">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalCommercialReg">السجل التجاري <span class="required">*</span></label>
+                            <input type="text" id="modalCommercialReg" name="CommercialReg" required placeholder="رقم السجل التجاري">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label>
+                            <input type="text" id="modalTaxRegNum" name="TaxRegNum" required
+                                   pattern="\d{3}-\d{3}-\d{3}"
+                                   title="الرجاء إدخال 9 أرقام مفصولة بشرطات (123-456-789)"
+                                   placeholder="XXX-XXX-XXX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalTaxStatus">الحالة الضريبية <span class="required">*</span></label>
+                        <select id="modalTaxStatus" name="TaxStatus" required>
+                            <option value="خاضع">خاضع</option>
+                            <option value="معفي">معفي</option>
+                        </select>
+                    </div>
                 </fieldset>
-                <fieldset>
+
+                 <fieldset>
                     <legend>البيانات المالية</legend>
                     <div class="form-row">
-                        <div class="form-group"><label for="modalInvoiceDiscount">خصم الفاتورة (%)</label><input type="text" id="modalInvoiceDiscount" name="InvoiceDiscount" placeholder="مثال: 5 أو 'حسب الاتفاق'"></div>
-                        <div class="form-group"><label for="modalDeferredDiscount">خصم مؤجل (%)</label><input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01"></div>
+                        <div class="form-group">
+                            <label for="modalInvoiceDiscount">خصم الفاتورة (%)</label>
+                            <input type="number" id="modalInvoiceDiscount" name="InvoiceDiscount" min="0" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalDeferredDiscount">خصم مؤجل (%)</label>
+                            <input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01">
+                        </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label for="modalCodingFees">رسوم تكويد</label><input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01" placeholder="بالعملة المحلية"></div>
-                        <div class="form-group"><label for="modalPaymentMethod">طريقة السداد <span class="required">*</span></label><select id="modalPaymentMethod" name="PaymentMethod" required><option value="">اختر طريقة...</option><option value="نقدي">نقدي</option><option value="تحويل بنكي">تحويل بنكي</option><option value="شيك">شيك</option></select></div>
+                        <div class="form-group">
+                            <label for="modalCodingFees">رسوم تكويد</label>
+                            <input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01" placeholder="بالعملة المحلية">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalPaymentMethod">طريقة السداد <span class="required">*</span></label>
+                            <select id="modalPaymentMethod" name="PaymentMethod" required>
+                                <option value="">اختر طريقة...</option>
+                                <option value="نقدي">نقدي</option>
+                                <option value="تحويل بنكي">تحويل بنكي</option>
+                                <option value="شيك">شيك</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label for="modalPaymentPeriod">فترة السداد (أيام)</label><input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0"></div>
-                        <div class="form-group"><label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label><input type="text" id="modalReturnPeriod" name="ReturnPeriod" placeholder="مثال: 30 أو 'حسب الاتفاق'"></div>
+                        <div class="form-group">
+                            <label for="modalPaymentPeriod">فترة السداد (أيام)</label>
+                            <input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label>
+                            <input type="number" id="modalReturnPeriod" name="ReturnPeriod" min="0">
+                        </div>
                     </div>
                 </fieldset>
+
                 <fieldset>
                     <legend>بيانات الاتصال</legend>
-                    <div class="form-group"><label for="modalContactPerson">اسم المسؤول <span class="required">*</span></label><input type="text" id="modalContactPerson" name="ContactPerson" required placeholder="اسم مسؤول الاتصال"></div>
-                    <div class="form-group"><label for="modalJobTitle">المسمى الوظيفي</label><input type="text" id="modalJobTitle" name="JobTitle"></div>
-                    <div class="form-group"><label for="modalPhoneNumber">رقم التليفون <span class="required">*</span></label><input type="tel" id="modalPhoneNumber" name="PhoneNumber" pattern="[0-9\s\-\+\(\)]+" required placeholder="مثال: +201XXXXXXXXX"></div>
-                    <div class="form-group"><label for="modalEmail">البريد الإلكتروني <span class="required">*</span></label><input type="email" id="modalEmail" name="Email" required placeholder="example@domain.com"></div>
+                    <div class="form-group">
+                        <label for="modalContactPerson">اسم المسؤول <span class="required">*</span></label>
+                        <input type="text" id="modalContactPerson" name="ContactPerson" required placeholder="اسم مسؤول الاتصال">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalJobTitle">المسمى الوظيفي</label>
+                        <input type="text" id="modalJobTitle" name="JobTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalPhoneNumber">رقم التليفون <span class="required">*</span></label>
+                        <input type="tel" id="modalPhoneNumber" name="PhoneNumber" pattern="[0-9\s\-\+\(\)]+" required placeholder="مثال: +201XXXXXXXXX">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalEmail">البريد الإلكتروني <span class="required">*</span></label>
+                        <input type="email" id="modalEmail" name="Email" required placeholder="example@domain.com">
+                    </div>
                 </fieldset>
+
                 <fieldset>
                     <legend>بيانات أخرى</legend>
-                    <div class="form-group"><label for="modalRequesterName">صاحب الطلب</label><input type="text" id="modalRequesterName" name="RequesterName" placeholder="اسم مقدم الطلب"></div>
-                    <div class="form-row"><div class="form-group"><label for="modalRequestDate">تاريخ الطلب</label><input type="date" id="modalRequestDate" name="RequestDate"></div><div class="form-group"><label for="modalRegistrationDate">تاريخ التسجيل</label><input type="date" id="modalRegistrationDate" name="RegistrationDate"></div></div>
+                    <div class="form-group">
+                        <label for="modalRequesterName">صاحب الطلب</label>
+                        <input type="text" id="modalRequesterName" name="RequesterName" placeholder="اسم مقدم الطلب">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalRequestDate">تاريخ الطلب</label>
+                            <input type="date" id="modalRequestDate" name="RequestDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalRegistrationDate">تاريخ التسجيل</label>
+                            <input type="date" id="modalRegistrationDate" name="RegistrationDate">
+                        </div>
+                    </div>
                 </fieldset>
+
                 <div class="form-actions">
                     <button type="submit" id="modalSubmitBtn" class="button">حفظ</button>
-                    <button type="button" id="modalPrintBtn" class="button print-btn">طباعة</button>
                     <button type="button" id="modalCancelBtn" class="button secondary">إلغاء</button>
                 </div>
             </form>
@@ -289,15 +428,18 @@
         </div>
     </div>
 
-    <div class="print-only" id="printableArea"></div>
-
     <script>
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // IMPORTANT: Make sure this is your correct URL
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // Ensure this is your correct deployed URL
         const DISPLAY_HEADERS_MAPPING = {
-            "SupplierCode": "كود المورد", "SupplierName": "اسم المورد", "CommercialReg": "السجل التجاري", "TaxRegNum": "رقم التسجيل الضريبي",
-            "PhoneNumber": "رقم التليفون", "ContactPerson": "اسم المسؤول", "Email": "البريد الإلكتروني",
+            "SupplierCode": "كود المورد",
+            "SupplierName": "اسم المورد",
+            "CommercialReg": "السجل التجاري",
+            "TaxRegNum": "رقم التسجيل الضريبي",
+            "PhoneNumber": "رقم التليفون",
+            "ContactPerson": "اسم المسؤول",
+            "Email": "البريد الإلكتروني",
         };
         const DISPLAY_HEADERS_KEYS = Object.keys(DISPLAY_HEADERS_MAPPING);
 
@@ -309,33 +451,36 @@
         const dataTableContainer = document.getElementById('dataTableContainer');
         const loadingMessageElement = document.getElementById('loadingMessage');
         const formStatusDiv = document.getElementById('formStatus');
+
         const supplierModal = document.getElementById('supplierModal');
         const modalTitle = document.getElementById('modalTitle');
         const supplierModalForm = document.getElementById('supplierModalForm');
         const modalRecordIdInput = document.getElementById('modalRecordId');
         const modalSubmitBtn = document.getElementById('modalSubmitBtn');
         const modalCancelBtn = document.getElementById('modalCancelBtn');
-        const modalPrintBtn = document.getElementById('modalPrintBtn');
         const modalCloseBtn = supplierModal.querySelector('.close-button');
         const modalFormStatusDiv = document.getElementById('modalFormStatus');
-        const printableArea = document.getElementById('printableArea');
 
-        // --- ALL JAVASCRIPT FUNCTIONS ARE FULLY RESTORED BELOW ---
-
+        // --- HELPER FUNCTIONS ---
         function isGoogleScriptUrlSet() {
-            if (!GOOGLE_SCRIPT_URL || !GOOGLE_SCRIPT_URL.includes('/exec')) {
-                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح. يرجى استخدام رابط التنفيذ (exec) المنشور.', 'error');
+            console.log("Checking Google Script URL:", GOOGLE_SCRIPT_URL);
+            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec'; // Example old placeholder
+            const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE'; // Generic placeholder part
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
+                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح أو هو رابط وضع التطوير. يرجى استخدام رابط التنفيذ (exec) المنشور.', 'error');
+                console.error('FATAL: Google Apps Script URL is not set correctly, is a placeholder, or is a /dev URL:', GOOGLE_SCRIPT_URL);
                 return false;
             }
             return true;
         }
 
         function showLoading(isLoading) {
+            console.log("showLoading called with:", isLoading);
             if (isLoading) {
-                dataTableContainer.innerHTML = '';
+                dataTableContainer.innerHTML = ''; // Clear previous table or messages
                 if (loadingMessageElement) {
                     loadingMessageElement.style.display = 'block';
-                    dataTableContainer.appendChild(loadingMessageElement);
+                    dataTableContainer.appendChild(loadingMessageElement); // Ensure it's visible
                 }
                 formStatusDiv.style.display = 'none';
             } else {
@@ -344,34 +489,62 @@
         }
 
         function showStatus(element, message, type = '') {
-            if (!element) return;
+            if (!element) {
+                console.warn("showStatus called with null element for message:", message);
+                return;
+            }
+            console.log(`showStatus on element ${element.id}: ${message}, type: ${type}`);
             element.textContent = message;
-            element.className = type;
-            element.style.display = message ? 'block' : 'none';
+            element.className = type; // This will overwrite existing classes, ensure it's just for status
+            element.style.display = message ? 'block' : 'none'; // Hide if message is empty
+
             if (type === 'success' || type === 'error') {
-                setTimeout(() => { if (element) element.style.display = 'none'; }, 5000);
+                setTimeout(() => {
+                    if (element) element.style.display = 'none';
+                }, type === 'success' ? 3500 : 7000); // Longer for errors
             }
         }
-        
-        function escapeHTML(str) {
-            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
 
+      function escapeHTML(str) {
+    if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+      // --- DATA FETCHING AND RENDERING ---
         async function fetchData(searchTerm = '') {
+            console.log(`fetchData called. Search term: "${searchTerm}"`);
             if (!isGoogleScriptUrlSet()) return;
             showLoading(true);
+
             let url = `${GOOGLE_SCRIPT_URL}?action=getAllSuppliers`;
             if (searchTerm) {
                 url = `${GOOGLE_SCRIPT_URL}?action=searchSuppliers&term=${encodeURIComponent(searchTerm)}`;
             }
+            console.log("Fetching from URL:", url);
+
             try {
                 const response = await fetch(url);
+                console.log("Fetch response status:", response.status);
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error("Fetch error response text:", errText);
+                    let errMessage = `فشل جلب البيانات: ${response.status}`;
+                    try {
+                        const errData = JSON.parse(errText);
+                        // Check if the GAS script returned its own error structure
+                        if (errData && errData.status === 'error' && errData.message) {
+                             errMessage = `خطأ من الخادم: ${errData.message}`;
+                        } else if (errData && errData.message) { // Generic JSON error
+                            errMessage = errData.message;
+                        }
+                    } catch (e) { /* Use default if not JSON or unexpected JSON */ }
+                    throw new Error(errMessage);
+                }
                 const result = await response.json();
+                console.log("Fetch result:", result);
                 showLoading(false);
-                if (response.ok && result.status === 'success') {
+                if (result.status === 'success') {
                     if (result.data && result.data.length > 0) {
                         renderTable(result.data);
                     } else if (searchTerm) {
@@ -380,22 +553,32 @@
                         dataTableContainer.innerHTML = '<p>لا يوجد موردين مسجلين حالياً. انقر فوق "إضافة مورد جديد" للبدء.</p>';
                     }
                 } else {
-                    throw new Error(result.message || `فشل جلب البيانات: ${response.status}`);
+                    throw new Error(result.message || 'فشل جلب البيانات من الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
+                console.error('Error during fetchData:', error);
                 showLoading(false);
                 dataTableContainer.innerHTML = `<p class="error">خطأ في تحميل البيانات: ${error.message}</p>`;
             }
         }
 
         function renderTable(data) {
+            console.log("renderTable called with data count:", data.length);
             let tableHTML = '<table><thead><tr>';
-            DISPLAY_HEADERS_KEYS.forEach(key => { tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`; });
+            DISPLAY_HEADERS_KEYS.forEach(key => {
+                tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`;
+            });
             tableHTML += '<th>إجراءات</th></tr></thead><tbody>';
+
             data.forEach(record => {
-                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`;
-                DISPLAY_HEADERS_KEYS.forEach(key => { tableHTML += `<td>${escapeHTML(record[key])}</td>`; });
-                tableHTML += `<td class="actions-cell"><button class="edit-btn button" data-id="${escapeHTML(String(record.RowID))}">تعديل</button><button class="delete-btn button" data-id="${escapeHTML(String(record.RowID))}">حذف</button></td>`;
+                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`; // Ensure RowID is escaped and string
+                DISPLAY_HEADERS_KEYS.forEach(key => {
+                    tableHTML += `<td>${escapeHTML(record[key])}</td>`;
+                });
+                tableHTML += `<td class="actions-cell">
+                                <button class="edit-btn button" data-id="${escapeHTML(String(record.RowID))}">تعديل</button>
+                                <button class="delete-btn button" data-id="${escapeHTML(String(record.RowID))}">حذف</button>
+                             </td>`;
                 tableHTML += '</tr>';
             });
             tableHTML += '</tbody></table>';
@@ -404,20 +587,27 @@
         }
 
         function addTableActionListeners() {
-            dataTableContainer.querySelectorAll('.edit-btn').forEach(button => button.addEventListener('click', handleEditClick));
-            dataTableContainer.querySelectorAll('.delete-btn').forEach(button => button.addEventListener('click', handleDeleteClick));
+            dataTableContainer.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', handleEditClick);
+            });
+            dataTableContainer.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', handleDeleteClick);
+            });
         }
 
+        // --- MODAL LOGIC ---
         function openModal(mode = 'add', recordId = null) {
+            console.log(`openModal called. Mode: ${mode}, RecordID: ${recordId}`);
             supplierModalForm.reset();
             clearModalErrorMessages();
-            showStatus(modalFormStatusDiv, '', '');
+            showStatus(modalFormStatusDiv, '', ''); // Clear and hide
+
             if (mode === 'add') {
                 modalTitle.textContent = 'إضافة مورد جديد';
                 modalRecordIdInput.value = '';
                 modalSubmitBtn.textContent = 'إضافة المورد';
                 supplierModal.style.display = 'block';
-                document.getElementById('modalSupplierCode').focus();
+                document.getElementById('modalSupplierName').focus();
             } else if (mode === 'edit' && recordId) {
                 modalTitle.textContent = 'تعديل بيانات المورد';
                 modalRecordIdInput.value = recordId;
@@ -427,134 +617,298 @@
         }
 
         function closeModal() {
+            console.log("closeModal called.");
             supplierModal.style.display = 'none';
         }
 
         async function loadRecordForEdit(recordId) {
+            console.log("loadRecordForEdit called for RecordID:", recordId);
             if (!isGoogleScriptUrlSet()) return;
             showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
+
             try {
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
+                console.log("Load record response status:", response.status);
+                if (!response.ok) {
+                    const errText = await response.text();
+                    console.error("Load record error response text:", errText);
+                    let errMessage = `فشل تحميل بيانات المورد: ${response.status}`;
+                     try {
+                        const errData = JSON.parse(errText);
+                        if (errData && errData.status === 'error' && errData.message) {
+                             errMessage = `خطأ من الخادم: ${errData.message}`;
+                        } else if (errData && errData.message) {
+                            errMessage = errData.message;
+                        }
+                    } catch (e) { /* Use default */ }
+                    throw new Error(errMessage);
+                }
                 const result = await response.json();
-                if (response.ok && result.status === 'success' && result.data) {
+                console.log("Load record result:", result);
+                if (result.status === 'success' && result.data) {
                     populateModalForm(result.data);
-                    showStatus(modalFormStatusDiv, '', '');
+                    showStatus(modalFormStatusDiv, '', ''); // Clear loading
                     supplierModal.style.display = 'block';
+                    document.getElementById('modalSupplierName').focus();
                 } else {
-                    throw new Error(result.message || 'فشل تحميل بيانات المورد.');
+                    throw new Error(result.message || 'فشل تحميل بيانات المورد (الحالة ليست نجاح).');
                 }
             } catch (error) {
+                console.error('Error loading record for edit:', error);
                 showStatus(modalFormStatusDiv, error.message, 'error');
             }
         }
 
         function populateModalForm(record) {
+            console.log("populateModalForm with record:", record);
             for (const key in record) {
-                const inputElement = supplierModalForm.elements[key];
-                if (inputElement) {
-                    inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
+                if (record.hasOwnProperty(key)) {
+                    const inputElement = supplierModalForm.elements[key];
+                    if (inputElement) {
+                        if (inputElement.type === 'date' && record[key]) {
+                            try {
+                                // Ensure record[key] is a valid date string or can be parsed
+                                // Google Sheets might return dates as serial numbers if not formatted,
+                                // but GAS should format them as YYYY-MM-DD.
+                                let dateStr = String(record[key]);
+                                if (dateStr.includes('T')) { // Handle ISO datetime strings if they appear
+                                    dateStr = dateStr.split('T')[0];
+                                }
+                                const date = new Date(dateStr); // Try to parse
+                                // Check if the dateStr itself is valid (e.g. "2023-13-01" is invalid)
+                                // and if the resulting Date object is valid
+                                const isValidDateStr = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
+
+                                if (isValidDateStr && !isNaN(date.getTime())) {
+                                   // Add timezone offset to prevent date from shifting by one day
+                                   const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                                   const localISOTime = (new Date(date.valueOf() + tzoffset)).toISOString().split('T')[0];
+                                   inputElement.value = localISOTime;
+                                } else {
+                                    console.warn(`Invalid date value or format for ${key}: "${record[key]}" - Setting to empty.`);
+                                    inputElement.value = '';
+                                }
+                            } catch (e) {
+                                console.warn(`Error parsing date for ${key}: "${record[key]}"`, e);
+                                inputElement.value = ''; // Default to empty on error
+                            }
+                        } else {
+                            inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
+                        }
+                    }
                 }
             }
+        }
+
+        function validateModalForm() {
+            console.log("validateModalForm called.");
+            let isValid = true;
+            clearModalErrorMessages();
+
+            supplierModalForm.querySelectorAll('[required]').forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#c82333';
+                    const errorMsg = document.createElement('small');
+                    errorMsg.textContent = 'هذا الحقل مطلوب';
+                    errorMsg.classList.add('error-message');
+                    // Ensure error message is not duplicated
+                    if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
+                        field.parentNode.insertBefore(errorMsg, field.nextSibling);
+                    }
+                } else {
+                    field.style.borderColor = ''; // Reset border color if valid
+                }
+            });
+
+            const taxRegNumInput = document.getElementById('modalTaxRegNum');
+            if (taxRegNumInput.value.trim() && !taxRegNumInput.checkValidity()) {
+                isValid = false;
+                taxRegNumInput.style.borderColor = '#c82333';
+                const errorMsg = document.createElement('small');
+                errorMsg.textContent = taxRegNumInput.title || 'تنسيق غير صحيح.';
+                errorMsg.classList.add('error-message');
+                if (!taxRegNumInput.nextElementSibling || !taxRegNumInput.nextElementSibling.classList.contains('error-message')) {
+                    taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextSibling);
+                }
+            } else if (taxRegNumInput.value.trim() && taxRegNumInput.checkValidity()){
+                 taxRegNumInput.style.borderColor = ''; // Reset border color if valid
+            }
+
+            if (!isValid) {
+                showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.', 'error');
+                console.warn("Modal form validation failed.");
+            } else {
+                 showStatus(modalFormStatusDiv, '', ''); // Clear status if validation passes
+                console.log("Modal form validation passed.");
+            }
+            return isValid;
         }
 
         function clearModalErrorMessages() {
             supplierModalForm.querySelectorAll('.error-message').forEach(msg => msg.remove());
-        }
-
-        function handlePrint() {
-            const formClone = supplierModalForm.cloneNode(true);
-            const titleClone = modalTitle.cloneNode(true);
-            formClone.querySelectorAll('input, select').forEach(input => {
-                const parent = input.parentNode;
-                if (!parent) return;
-                let value = input.value.trim();
-                if (input.tagName.toLowerCase() === 'select') {
-                    value = input.options[input.selectedIndex]?.text || '';
-                }
-                const printValueDiv = document.createElement('div');
-                printValueDiv.className = 'print-value';
-                if (input.type === 'email') printValueDiv.classList.add('align-left');
-                printValueDiv.textContent = value || ' '; 
-                parent.replaceChild(printValueDiv, input);
+            supplierModalForm.querySelectorAll('input[required], select[required], input[pattern]').forEach(input => {
+                input.style.borderColor = ''; // Reset border for all validated fields
             });
-            const signatureArea = document.createElement('div');
-            signatureArea.className = 'print-signature-area';
-            signatureArea.innerHTML = `<div><span>مقدم الطلب</span><div class="line"></div></div><div><span>المراجعة المالية</span><div class="line"></div></div><div><span>اعتماد</span><div class="line"></div></div>`;
-            formClone.appendChild(signatureArea);
-            printableArea.innerHTML = '';
-            const printContainer = document.createElement('div');
-            printContainer.className = 'print-container';
-            printContainer.appendChild(titleClone);
-            printContainer.appendChild(formClone);
-            printableArea.appendChild(printContainer);
-            window.print();
         }
 
-        // --- Event Listeners ---
+
+        // --- EVENT LISTENERS ---
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
-        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchData(searchInput.value.trim());
+        });
         addNewSupplierBtn.addEventListener('click', () => openModal('add'));
-        refreshDataBtn.addEventListener('click', () => { searchInput.value = ''; fetchData(); });
+        refreshDataBtn.addEventListener('click', () => {
+            searchInput.value = ''; // Clear search input on refresh
+            fetchData();
+        });
         modalCloseBtn.addEventListener('click', closeModal);
         modalCancelBtn.addEventListener('click', closeModal);
-        modalPrintBtn.addEventListener('click', handlePrint);
-        window.addEventListener('click', (event) => { if (event.target === supplierModal) closeModal(); });
-        window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && supplierModal.style.display === 'block') closeModal(); });
+const modalPrintBtn = document.getElementById('modalPrintBtn');
+modalPrintBtn.addEventListener('click', () => {
+    console.log("Print button clicked.");
+    window.print();
+});
+
+        window.addEventListener('click', (event) => {
+            if (event.target === supplierModal) closeModal();
+        });
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && supplierModal.style.display === 'block') {
+                closeModal();
+            }
+        });
 
         supplierModalForm.addEventListener('submit', async function (event) {
             event.preventDefault();
-            if (!isGoogleScriptUrlSet()) return;
+            console.log("Modal form submitted.");
+            showStatus(modalFormStatusDiv, '', ''); // Clear previous
+
+            if (!validateModalForm()) return; // Stop if client-side validation fails
+            if (!isGoogleScriptUrlSet()) return; // Stop if URL is not configured
+
             modalSubmitBtn.disabled = true;
+            const originalButtonText = modalSubmitBtn.textContent;
             modalSubmitBtn.textContent = 'جاري الحفظ...';
+            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', ''); // Non-error status
+
             const formData = new FormData(supplierModalForm);
             const action = modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier';
             formData.append('action', action);
+            // Log form data for debugging
+            // console.log("Form data to submit (Action: " + action + "):", Object.fromEntries(formData));
+
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (response.ok && result.status === 'success') {
+                console.log("Submit form response status:", response.status);
+                const responseText = await response.text(); // Get text first for robust parsing
+                console.log("Submit form response text:", responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("Failed to parse JSON response:", e);
+                    console.error("Response text was:", responseText);
+                    throw new Error(`فشل تحليل استجابة الخادم. الاستجابة لم تكن بتنسيق JSON صحيح. (${response.status})`);
+                }
+
+
+                if (!response.ok) { // Check HTTP status after parsing attempt
+                    let errMessage = `فشل حفظ البيانات: ${response.status}`;
+                    if (result && result.message) {
+                        errMessage = `خطأ من الخادم: ${result.message}`;
+                    }
+                    throw new Error(errMessage);
+                }
+
+                console.log("Submit form result (parsed):", result);
+                if (result.status === 'success') {
                     showStatus(modalFormStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim());
+                    fetchData(searchInput.value.trim()); // Refresh table
                     setTimeout(closeModal, 1500);
                 } else {
-                    throw new Error(result.message || 'فشل حفظ البيانات.');
+                     // Handle cases where response.ok is true, but GAS script returns status: 'error'
+                    throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
+                console.error('Error submitting modal form:', error);
                 showStatus(modalFormStatusDiv, error.message, 'error');
             } finally {
                 modalSubmitBtn.disabled = false;
-                modalSubmitBtn.textContent = modalRecordIdInput.value ? 'حفظ التعديلات' : 'إضافة المورد';
+                modalSubmitBtn.textContent = originalButtonText;
             }
         });
 
         function handleEditClick(event) {
-            openModal('edit', event.target.dataset.id);
+            const recordId = event.target.dataset.id;
+            console.log("Edit button clicked for RecordID:", recordId);
+            openModal('edit', recordId);
         }
 
         async function handleDeleteClick(event) {
             const recordId = event.target.dataset.id;
-            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟')) return;
+            console.log("Delete button clicked for RecordID:", recordId);
+            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) {
+                console.log("Delete cancelled by user or no RecordID.");
+                return;
+            }
             if (!isGoogleScriptUrlSet()) return;
-            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
+
+            showStatus(formStatusDiv, 'جاري حذف المورد...', ''); // Non-error status
+
             const formData = new FormData();
             formData.append('action', 'deleteSupplier');
             formData.append('recordId', recordId);
+            // console.log("Form data to delete:", Object.fromEntries(formData));
+
+
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (response.ok && result.status === 'success') {
+                console.log("Delete response status:", response.status);
+                const responseText = await response.text();
+                console.log("Delete response text:", responseText);
+
+                let result;
+                try {
+                    result = JSON.parse(responseText);
+                } catch (e) {
+                    console.error("Failed to parse JSON response from delete:", e);
+                    console.error("Response text was:", responseText);
+                    throw new Error(`فشل تحليل استجابة الخادم عند الحذف. (${response.status})`);
+                }
+
+                if (!response.ok) {
+                    let errMessage = `فشل حذف المورد: ${response.status}`;
+                     if (result && result.message) {
+                        errMessage = `خطأ من الخادم: ${result.message}`;
+                    }
+                    throw new Error(errMessage);
+                }
+
+                console.log("Delete result (parsed):", result);
+                if (result.status === 'success') {
                     showStatus(formStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim());
+                    fetchData(searchInput.value.trim()); // Refresh table
                 } else {
-                    throw new Error(result.message || 'فشل حذف المورد.');
+                    throw new Error(result.message || 'فشل حذف المورد من جهة الخادم (الحالة ليست نجاح).');
                 }
             } catch (error) {
+                console.error('Error deleting supplier:', error);
                 showStatus(formStatusDiv, error.message, 'error');
             }
         }
 
         // --- INITIALIZATION ---
-        fetchData();
+        console.log("DOM fully loaded. Initializing app.");
+        if(isGoogleScriptUrlSet()){
+            fetchData(); // Initial data load
+        } else {
+            showLoading(false); // Hide loading if URL not set
+            // The error message about URL not being set is already shown by isGoogleScriptUrlSet
+        }
     });
     </script>
 </body>
