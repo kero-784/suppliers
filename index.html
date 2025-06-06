@@ -285,8 +285,8 @@
                 <fieldset>
                     <legend>البيانات الأساسية</legend>
                     <div class="form-group">
-                        <label for="modalSupplierCode">كود المورد:</label>
-                        <input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي (إذا كان مدعوماً)">
+                        <label for="modalSupplierCode">كود المورد <span class="required">*</span></label>
+                        <input type="text" id="modalSupplierCode" name="SupplierCode" required placeholder="ادخل كود المورد الفريد">
                     </div>
                     <div class="form-group">
                         <label for="modalSupplierName">اسم المورد <span class="required">*</span></label>
@@ -319,7 +319,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label for="modalInvoiceDiscount">خصم الفاتورة (%)</label>
-                            <input type="number" id="modalInvoiceDiscount" name="InvoiceDiscount" min="0" step="0.01">
+                            <input type="text" id="modalInvoiceDiscount" name="InvoiceDiscount" placeholder="مثال: 5 أو 'حسب الاتفاق'">
                         </div>
                         <div class="form-group">
                             <label for="modalDeferredDiscount">خصم مؤجل (%)</label>
@@ -348,7 +348,7 @@
                         </div>
                         <div class="form-group">
                             <label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label>
-                            <input type="number" id="modalReturnPeriod" name="ReturnPeriod" min="0">
+                            <input type="text" id="modalReturnPeriod" name="ReturnPeriod" placeholder="مثال: 30 أو 'حسب الاتفاق'">
                         </div>
                     </div>
                 </fieldset>
@@ -579,7 +579,7 @@
                 modalRecordIdInput.value = '';
                 modalSubmitBtn.textContent = 'إضافة المورد';
                 supplierModal.style.display = 'block';
-                document.getElementById('modalSupplierName').focus();
+                document.getElementById('modalSupplierCode').focus();
             } else if (mode === 'edit' && recordId) {
                 modalTitle.textContent = 'تعديل بيانات المورد';
                 modalRecordIdInput.value = recordId;
