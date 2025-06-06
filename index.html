@@ -142,7 +142,6 @@
 <body>
     <div class="app-shell">
         <aside class="sidebar">
-            <!-- Sidebar content is unchanged but still correct -->
             <div class="sidebar-header">
                 <div class="logo"><svg class="icon" style="width: 28px; height: 28px; fill: white;" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16.5 12c1.38 0 2.5-1.12 2.5-2.5S17.88 7 16.5 7C15.12 7 14 8.12 14 9.5s1.12 2.5 2.5 2.5zM9 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm7.5 3c-1.83 0-5.5.92-5.5 2.75V19h11v-2.25c0-1.83-3.67-2.75-5.5-2.75zM9 13c-2.33 0-7 1.17-7 3.5V19h7v-2.25c0-.85.33-2.34 2.37-3.47C10.5 13.1 9.66 13 9 13z"/></svg></div>
                 <h1>إدارة الموردين</h1>
@@ -161,11 +160,11 @@
                 <button id="searchBtn" class="button">بحث</button>
             </header>
             <div id="formStatus"></div>
-            <div id="resultsContainer"><!-- Results will be injected here --></div>
+            <div id="resultsContainer"></div>
         </main>
     </div>
 
-    <!-- Modals remain structurally the same -->
+    <!-- Modals -->
     <div id="supplierModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -175,9 +174,9 @@
             <form id="supplierModalForm">
                 <div class="modal-body">
                     <input type="hidden" id="modalRecordId" name="recordId">
-                    <fieldset><legend>البيانات الأساسية</legend><div class="form-group"><label for="modalSupplierCode">كود المورد:</label><input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي"></div><div class="form-group"><label for="modalSupplierName">اسم المورد <span class="required">*</span></label><input type="text" id="modalSupplierName" name="SupplierName" required></div><div class="form-row"><div class="form-group"><label for="modalCommercialReg">السجل التجاري <span class="required">*</span></label><input type="text" id="modalCommercialReg" name="CommercialReg" required></div><div class="form-group"><label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label><input type="text" id="modalTaxRegNum" name="TaxRegNum" required></div></div><div class="form-group"><label for="modalTaxStatus">الحالة الضريبية <span class="required">*</span></label><select id="modalTaxStatus" name="TaxStatus" required><option value="خاضع">خاضع</option><option value="معفي">معفي</option></select></div></fieldset>
-                    <fieldset><legend>البيانات المالية</legend><div class="form-row"><div class="form-group"><label for="modalInvoiceDiscount">خصم الفاتورة (%)</label><input type="number" id="modalInvoiceDiscount" name="InvoiceDiscount" min="0" step="0.01"></div><div class="form-group"><label for="modalDeferredDiscount">خصم مؤجل (%)</label><input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01"></div></div><div class="form-row"><div class="form-group"><label for="modalCodingFees">رسوم تكويد</label><input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01"></div><div class="form-group"><label for="modalPaymentMethod">طريقة السداد <span class="required">*</span></label><select id="modalPaymentMethod" name="PaymentMethod" required><option value="">اختر...</option><option value="نقدي">نقدي</option><option value="تحويل بنكي">تحويل بنكي</option><option value="شيك">شيك</option></select></div></div><div class="form-row"><div class="form-group"><label for="modalPaymentPeriod">فترة السداد (أيام)</label><input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0"></div><div class="form-group"><label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label><input type="number" id="modalReturnPeriod" name="ReturnPeriod" min="0"></div></div></fieldset>
-                    <fieldset><legend>بيانات الاتصال</legend><div class="form-group"><label for="modalContactPerson">اسم المسؤول <span class="required">*</span></label><input type="text" id="modalContactPerson" name="ContactPerson" required></div><div class="form-group"><label for="modalJobTitle">المسمى الوظيفي</label><input type="text" id="modalJobTitle" name="JobTitle"></div><div class="form-group"><label for="modalPhoneNumber">رقم التليفون <span class="required">*</span></label><input type="tel" id="modalPhoneNumber" name="PhoneNumber" required></div><div class="form-group"><label for="modalEmail">البريد الإلكتروني <span class="required">*</span></label><input type="email" id="modalEmail" name="Email" required></div></fieldset>
+                    <fieldset><legend>البيانات الأساسية</legend><div class="form-group"><label for="modalSupplierCode">كود المورد:</label><input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي"></div><div class="form-group"><label for="modalSupplierName">اسم المورد <span class="required" style="color:var(--danger-color)">*</span></label><input type="text" id="modalSupplierName" name="SupplierName" required></div><div class="form-row"><div class="form-group"><label for="modalCommercialReg">السجل التجاري <span class="required" style="color:var(--danger-color)">*</span></label><input type="text" id="modalCommercialReg" name="CommercialReg" required></div><div class="form-group"><label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required" style="color:var(--danger-color)">*</span></label><input type="text" id="modalTaxRegNum" name="TaxRegNum" required></div></div><div class="form-group"><label for="modalTaxStatus">الحالة الضريبية <span class="required" style="color:var(--danger-color)">*</span></label><select id="modalTaxStatus" name="TaxStatus" required><option value="خاضع">خاضع</option><option value="معفي">معفي</option></select></div></fieldset>
+                    <fieldset><legend>البيانات المالية</legend><div class="form-row"><div class="form-group"><label for="modalInvoiceDiscount">خصم الفاتورة (%)</label><input type="number" id="modalInvoiceDiscount" name="InvoiceDiscount" min="0" step="0.01"></div><div class="form-group"><label for="modalDeferredDiscount">خصم مؤجل (%)</label><input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01"></div></div><div class="form-row"><div class="form-group"><label for="modalCodingFees">رسوم تكويد</label><input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01"></div><div class="form-group"><label for="modalPaymentMethod">طريقة السداد <span class="required" style="color:var(--danger-color)">*</span></label><select id="modalPaymentMethod" name="PaymentMethod" required><option value="">اختر...</option><option value="نقدي">نقدي</option><option value="تحويل بنكي">تحويل بنكي</option><option value="شيك">شيك</option></select></div></div><div class="form-row"><div class="form-group"><label for="modalPaymentPeriod">فترة السداد (أيام)</label><input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0"></div><div class="form-group"><label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label><input type="number" id="modalReturnPeriod" name="ReturnPeriod" min="0"></div></div></fieldset>
+                    <fieldset><legend>بيانات الاتصال</legend><div class="form-group"><label for="modalContactPerson">اسم المسؤول <span class="required" style="color:var(--danger-color)">*</span></label><input type="text" id="modalContactPerson" name="ContactPerson" required></div><div class="form-group"><label for="modalJobTitle">المسمى الوظيفي</label><input type="text" id="modalJobTitle" name="JobTitle"></div><div class="form-group"><label for="modalPhoneNumber">رقم التليفون <span class="required" style="color:var(--danger-color)">*</span></label><input type="tel" id="modalPhoneNumber" name="PhoneNumber" required></div><div class="form-group"><label for="modalEmail">البريد الإلكتروني <span class="required" style="color:var(--danger-color)">*</span></label><input type="email" id="modalEmail" name="Email" required></div></fieldset>
                     <fieldset><legend>بيانات أخرى</legend><div class="form-group"><label for="modalRequesterName">صاحب الطلب</label><input type="text" id="modalRequesterName" name="RequesterName"></div><div class="form-row"><div class="form-group"><label for="modalRequestDate">تاريخ الطلب</label><input type="date" id="modalRequestDate" name="RequestDate"></div><div class="form-group"><label for="modalRegistrationDate">تاريخ التسجيل</label><input type="date" id="modalRegistrationDate" name="RegistrationDate"></div></div></fieldset>
                     <div id="modalFormStatus"></div>
                 </div>
@@ -195,7 +194,7 @@
                     <h2 id="detailModalTitle" class="modal-title">تفاصيل المورد</h2>
                     <button class="close-button" title="إغلاق">×</button>
                 </div>
-                <div class="modal-body" id="detailContent"><!-- Detail content injected here --></div>
+                <div class="modal-body" id="detailContent"></div>
             </div>
             <div class="modal-footer">
                 <button id="detailPrintBtn" class="button success">طباعة</button>
@@ -207,8 +206,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // --- CONFIG & ICONS ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // IMPORTANT: Replace if needed
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec';
         const ICONS = {
             user: `<svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path></svg>`,
             phone: `<svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path></svg>`,
@@ -218,258 +216,30 @@
             initial: `<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75l-2.489-2.489m0 0a3.375 3.375 0 10-4.773-4.773 3.375 3.375 0 004.774 4.774zM21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`,
             empty: `<svg class="icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>`
         };
-
-        // --- DOM ELEMENTS ---
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const addNewSupplierBtn = document.getElementById('addNewSupplierBtn');
-        const resultsContainer = document.getElementById('resultsContainer');
-        const formStatusDiv = document.getElementById('formStatus');
-
-        // Modals & Forms
-        const supplierModal = document.getElementById('supplierModal');
-        const detailModal = document.getElementById('supplierDetailModal');
-        const supplierModalForm = document.getElementById('supplierModalForm');
-        const modalRecordIdInput = document.getElementById('modalRecordId');
-        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        const modalFormStatusDiv = document.getElementById('modalFormStatus');
-        const detailContent = document.getElementById('detailContent');
-        const detailModalTitle = document.getElementById('detailModalTitle');
-
-        // --- HELPER & UI FUNCTIONS ---
+        const searchInput = document.getElementById('searchInput'), searchBtn = document.getElementById('searchBtn'), addNewSupplierBtn = document.getElementById('addNewSupplierBtn'), resultsContainer = document.getElementById('resultsContainer'), formStatusDiv = document.getElementById('formStatus'), supplierModal = document.getElementById('supplierModal'), detailModal = document.getElementById('supplierDetailModal'), supplierModalForm = document.getElementById('supplierModalForm'), modalRecordIdInput = document.getElementById('modalRecordId'), modalSubmitBtn = document.getElementById('modalSubmitBtn'), modalFormStatusDiv = document.getElementById('modalFormStatus'), detailContent = document.getElementById('detailContent'), detailModalTitle = document.getElementById('detailModalTitle');
         const escapeHTML = str => String(str ?? '').replace(/[&<>"']/g, m => ({ '&': '&', '<': '<', '>': '>', '"': '"', "'": ''' })[m]);
-
-        const showMainStatus = (message, type) => {
-            formStatusDiv.textContent = message;
-            formStatusDiv.className = type; // 'success', 'error', 'info'
-            formStatusDiv.style.display = message ? 'block' : 'none';
-            if (type === 'success' || type === 'error') {
-                setTimeout(() => { formStatusDiv.style.display = 'none'; }, type === 'success' ? 4000 : 8000);
-            }
-        };
-
-        const showModalStatus = (message, type) => {
-            modalFormStatusDiv.textContent = message;
-            modalFormStatusDiv.className = type;
-            modalFormStatusDiv.style.display = message ? 'block' : 'none';
-        };
-
-        const showMessageInContainer = (type, title, text) => {
-            const icon = type === 'initial' ? ICONS.initial : ICONS.empty;
-            resultsContainer.innerHTML = `<div class="message-container">${icon}<h3>${title}</h3><p>${text}</p></div>`;
-        };
-        
-        const showLoading = (isLoading) => {
-            if (isLoading) {
-                resultsContainer.innerHTML = `<div class="loader-container"><div class="loader"></div></div>`;
-            }
-        };
-
-        const toggleModal = (modal, show) => {
-            if (show) modal.classList.add('visible');
-            else modal.classList.remove('visible');
-        };
-
-        // --- DATA FETCHING & RENDERING ---
-        async function fetchData(searchTerm = '') {
-            showLoading(true);
-            const url = new URL(GOOGLE_SCRIPT_URL);
-            url.searchParams.append('action', 'searchSuppliers');
-            url.searchParams.append('term', searchTerm);
-            
-            try {
-                const response = await fetch(url);
-                const result = await response.json();
-                if (result.status === 'success') {
-                    if (result.data && result.data.length > 0) renderCards(result.data);
-                    else showMessageInContainer('empty', 'لا توجد نتائج', 'لم يتم العثور على موردين يطابقون بحثك. حاول بكلمات أخرى.');
-                } else { throw new Error(result.message); }
-            } catch (error) {
-                console.error('Error during fetchData:', error);
-                showMessageInContainer('empty', 'حدث خطأ', `فشل تحميل البيانات: ${error.message}`);
-            }
-        }
-
-        function renderCards(data) {
-            resultsContainer.innerHTML = '';
-            data.forEach(record => {
-                const card = document.createElement('div');
-                card.className = 'supplier-card';
-                card.innerHTML = `
-                    <div class="card-header"><h3>${escapeHTML(record.SupplierName)}</h3><span class="code">الكود: ${escapeHTML(record.SupplierCode) || 'N/A'}</span></div>
-                    <div class="card-body">
-                        <div class="card-info-item">${ICONS.user}<span>${escapeHTML(record.ContactPerson)}</span></div>
-                        <div class="card-info-item">${ICONS.phone}<span>${escapeHTML(record.PhoneNumber)}</span></div>
-                        <div class="card-info-item">${ICONS.email}<span dir="ltr">${escapeHTML(record.Email)}</span></div>
-                    </div>
-                    <div class="card-footer">
-                        <button class="button view-btn" data-id="${escapeHTML(record.RowID)}">${ICONS.view} عرض</button>
-                        <button class="button danger delete-btn" data-id="${escapeHTML(record.RowID)}">${ICONS.delete} حذف</button>
-                    </div>`;
-                resultsContainer.appendChild(card);
-            });
-            // Re-attach listeners to new cards
-            resultsContainer.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', (e) => showSupplierDetails(e.currentTarget.dataset.id)));
-            resultsContainer.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', (e) => handleDeleteClick(e.currentTarget.dataset.id)));
-        }
-
-        // --- MODAL LOGIC (STABLE & CORRECTED) ---
-        function openFormModal(mode = 'add', recordId = null) {
-            supplierModalForm.reset();
-            showModalStatus('', ''); // Clear any previous modal messages
-            clearValidationErrors();
-
-            document.getElementById('modalTitle').textContent = mode === 'add' ? 'إضافة مورد جديد' : 'تعديل بيانات المورد';
-            modalRecordIdInput.value = recordId || '';
-            modalSubmitBtn.textContent = 'حفظ';
-            
-            if (mode === 'edit' && recordId) {
-                loadRecordForEdit(recordId);
-            } else {
-                toggleModal(supplierModal, true);
-                document.getElementById('modalSupplierName').focus();
-            }
-        }
-        
-        async function loadRecordForEdit(recordId) {
-            showModalStatus('جاري تحميل البيانات...', 'info');
-            const url = new URL(GOOGLE_SCRIPT_URL);
-            url.searchParams.append('action', 'getSupplierById');
-            url.searchParams.append('id', recordId);
-            try {
-                const response = await fetch(url);
-                const result = await response.json();
-                if (result.status === 'success' && result.data) {
-                    Object.keys(result.data).forEach(key => {
-                        const input = supplierModalForm.elements[key];
-                        if (input) {
-                             if (input.type === 'date' && result.data[key]) input.value = result.data[key].split('T')[0];
-                             else input.value = result.data[key] ?? '';
-                        }
-                    });
-                    showModalStatus('', ''); // Clear loading message
-                    toggleModal(supplierModal, true);
-                    document.getElementById('modalSupplierName').focus();
-                } else { throw new Error(result.message); }
-            } catch (error) { showModalStatus(error.message, 'error'); }
-        }
-
-        async function showSupplierDetails(recordId) {
-            // This function from the new code is good, let's keep it.
-            const url = new URL(GOOGLE_SCRIPT_URL);
-            url.searchParams.append('action', 'getSupplierById');
-            url.search_params.append('id', recordId);
-            try {
-                const response = await fetch(url);
-                const result = await response.json();
-                if (result.status === 'success' && result.data) {
-                    const rec = result.data;
-                    const format = (val, isDate = false) => {
-                        if(isDate && val) return escapeHTML(val.split('T')[0]);
-                        return escapeHTML(val) || '<span style="color:var(--text-muted)">--</span>';
-                    };
-                    detailModalTitle.textContent = `تفاصيل: ${escapeHTML(rec.SupplierName)}`;
-                    detailContent.innerHTML = `
-                        <div class="detail-section"><h3>البيانات الأساسية</h3><div class="detail-grid"><div class="detail-item"><strong>كود المورد:</strong><span>${format(rec.SupplierCode)}</span></div><div class="detail-item"><strong>اسم المورد:</strong><span>${format(rec.SupplierName)}</span></div><div class="detail-item"><strong>السجل التجاري:</strong><span>${format(rec.CommercialReg)}</span></div><div class="detail-item"><strong>رقم التسجيل الضريبي:</strong><span>${format(rec.TaxRegNum)}</span></div><div class="detail-item"><strong>الحالة الضريبية:</strong><span>${format(rec.TaxStatus)}</span></div></div></div>
-                        <div class="detail-section"><h3>البيانات المالية</h3><div class="detail-grid"><div class="detail-item"><strong>خصم الفاتورة (%):</strong><span>${format(rec.InvoiceDiscount)}</span></div><div class="detail-item"><strong>خصم مؤجل (%):</strong><span>${format(rec.DeferredDiscount)}</span></div><div class="detail-item"><strong>رسوم تكويد:</strong><span>${format(rec.CodingFees)}</span></div><div class="detail-item"><strong>طريقة السداد:</strong><span>${format(rec.PaymentMethod)}</span></div><div class="detail-item"><strong>فترة السداد (أيام):</strong><span>${format(rec.PaymentPeriod)}</span></div><div class="detail-item"><strong>فترة رفع المرتجع (أيام):</strong><span>${format(rec.ReturnPeriod)}</span></div></div></div>
-                        <div class="detail-section"><h3>بيانات الاتصال</h3><div class="detail-grid"><div class="detail-item"><strong>اسم المسؤول:</strong><span>${format(rec.ContactPerson)}</span></div><div class="detail-item"><strong>المسمى الوظيفي:</strong><span>${format(rec.JobTitle)}</span></div><div class="detail-item"><strong>رقم التليفون:</strong><span>${format(rec.PhoneNumber)}</span></div><div class="detail-item"><strong>البريد الإلكتروني:</strong><span dir="ltr">${format(rec.Email)}</span></div></div></div>
-                        <div class="detail-section"><h3>بيانات أخرى</h3><div class="detail-grid"><div class="detail-item"><strong>صاحب الطلب:</strong><span>${format(rec.RequesterName)}</span></div><div class="detail-item"><strong>تاريخ الطلب:</strong><span>${format(rec.RequestDate, true)}</span></div><div class="detail-item"><strong>تاريخ التسجيل:</strong><span>${format(rec.RegistrationDate, true)}</span></div></div></div>`;
-                    detailModal.dataset.recordId = recordId;
-                    toggleModal(detailModal, true);
-                } else { throw new Error(result.message); }
-            } catch (error) { showMainStatus(error.message, 'error'); }
-        }
-
-        function clearValidationErrors() {
-            supplierModalForm.querySelectorAll('.error-message').forEach(m => m.remove());
-            supplierModalForm.querySelectorAll('[required]').forEach(f => f.style.borderColor = '');
-        }
-
-        function validateModalForm() {
-            clearValidationErrors();
-            let isValid = true;
-            supplierModalForm.querySelectorAll('[required]').forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.style.borderColor = 'var(--danger-color)';
-                    const errorMsg = document.createElement('small');
-                    errorMsg.textContent = 'هذا الحقل مطلوب';
-                    errorMsg.className = 'error-message';
-                    field.parentNode.insertBefore(errorMsg, field.nextSibling);
-                }
-            });
-            if (!isValid) showModalStatus('الرجاء ملء جميع الحقول المطلوبة.', 'error');
-            return isValid;
-        }
-
-        // --- EVENT LISTENERS ---
+        const showMainStatus = (message, type) => { formStatusDiv.textContent = message; formStatusDiv.className = type; formStatusDiv.style.display = message ? 'block' : 'none'; if (type === 'success' || type === 'error') { setTimeout(() => { formStatusDiv.style.display = 'none'; }, type === 'success' ? 4000 : 8000); } };
+        const showModalStatus = (message, type) => { modalFormStatusDiv.textContent = message; modalFormStatusDiv.className = type; modalFormStatusDiv.style.display = message ? 'block' : 'none'; };
+        const showMessageInContainer = (type, title, text) => { const icon = type === 'initial' ? ICONS.initial : ICONS.empty; resultsContainer.innerHTML = `<div class="message-container">${icon}<h3>${title}</h3><p>${text}</p></div>`; };
+        const showLoading = isLoading => { if (isLoading) { resultsContainer.innerHTML = `<div class="loader-container"><div class="loader"></div></div>`; } };
+        const toggleModal = (modal, show) => { if (show) modal.classList.add('visible'); else modal.classList.remove('visible'); };
+        async function fetchData(searchTerm = '') { showLoading(true); const url = new URL(GOOGLE_SCRIPT_URL); url.searchParams.append('action', 'searchSuppliers'); url.searchParams.append('term', searchTerm); try { const response = await fetch(url); const result = await response.json(); if (result.status === 'success') { if (result.data && result.data.length > 0) renderCards(result.data); else showMessageInContainer('empty', 'لا توجد نتائج', 'لم يتم العثور على موردين يطابقون بحثك.'); } else { throw new Error(result.message); } } catch (error) { console.error('Error during fetchData:', error); showMessageInContainer('empty', 'حدث خطأ', `فشل تحميل البيانات: ${error.message}`); } }
+        function renderCards(data) { resultsContainer.innerHTML = ''; data.forEach(record => { const card = document.createElement('div'); card.className = 'supplier-card'; card.innerHTML = `<div class="card-header"><h3>${escapeHTML(record.SupplierName)}</h3><span class="code">الكود: ${escapeHTML(record.SupplierCode) || 'N/A'}</span></div><div class="card-body"><div class="card-info-item">${ICONS.user}<span>${escapeHTML(record.ContactPerson)}</span></div><div class="card-info-item">${ICONS.phone}<span>${escapeHTML(record.PhoneNumber)}</span></div><div class="card-info-item">${ICONS.email}<span dir="ltr">${escapeHTML(record.Email)}</span></div></div><div class="card-footer"><button class="button view-btn" data-id="${escapeHTML(record.RowID)}">${ICONS.view} عرض</button><button class="button danger delete-btn" data-id="${escapeHTML(record.RowID)}">${ICONS.delete} حذف</button></div>`; resultsContainer.appendChild(card); }); resultsContainer.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', e => showSupplierDetails(e.currentTarget.dataset.id))); resultsContainer.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', e => handleDeleteClick(e.currentTarget.dataset.id))); }
+        function openFormModal(mode = 'add', recordId = null) { supplierModalForm.reset(); showModalStatus('', ''); clearValidationErrors(); document.getElementById('modalTitle').textContent = mode === 'add' ? 'إضافة مورد جديد' : 'تعديل بيانات المورد'; modalRecordIdInput.value = recordId || ''; modalSubmitBtn.textContent = 'حفظ'; if (mode === 'edit' && recordId) { loadRecordForEdit(recordId); } else { toggleModal(supplierModal, true); document.getElementById('modalSupplierName').focus(); } }
+        async function loadRecordForEdit(recordId) { showModalStatus('جاري تحميل البيانات...', 'info'); const url = new URL(GOOGLE_SCRIPT_URL); url.searchParams.append('action', 'getSupplierById'); url.searchParams.append('id', recordId); try { const response = await fetch(url); const result = await response.json(); if (result.status === 'success' && result.data) { Object.keys(result.data).forEach(key => { const input = supplierModalForm.elements[key]; if (input) { if (input.type === 'date' && result.data[key]) input.value = result.data[key].split('T')[0]; else input.value = result.data[key] ?? ''; } }); showModalStatus('', ''); toggleModal(supplierModal, true); document.getElementById('modalSupplierName').focus(); } else { throw new Error(result.message); } } catch (error) { showModalStatus(error.message, 'error'); } }
+        async function showSupplierDetails(recordId) { const url = new URL(GOOGLE_SCRIPT_URL); url.searchParams.append('action', 'getSupplierById'); url.searchParams.append('id', recordId); /* CORRECTED LINE */ try { const response = await fetch(url); const result = await response.json(); if (result.status === 'success' && result.data) { const rec = result.data; const format = (val, isDate = false) => { if (isDate && val) return escapeHTML(val.split('T')[0]); return escapeHTML(val) || '<span style="color:var(--text-muted)">--</span>'; }; detailModalTitle.textContent = `تفاصيل: ${escapeHTML(rec.SupplierName)}`; detailContent.innerHTML = `<div class="detail-section"><h3>البيانات الأساسية</h3><div class="detail-grid"><div class="detail-item"><strong>كود المورد:</strong><span>${format(rec.SupplierCode)}</span></div><div class="detail-item"><strong>اسم المورد:</strong><span>${format(rec.SupplierName)}</span></div><div class="detail-item"><strong>السجل التجاري:</strong><span>${format(rec.CommercialReg)}</span></div><div class="detail-item"><strong>رقم التسجيل الضريبي:</strong><span>${format(rec.TaxRegNum)}</span></div><div class="detail-item"><strong>الحالة الضريبية:</strong><span>${format(rec.TaxStatus)}</span></div></div></div><div class="detail-section"><h3>البيانات المالية</h3><div class="detail-grid"><div class="detail-item"><strong>خصم الفاتورة (%):</strong><span>${format(rec.InvoiceDiscount)}</span></div><div class="detail-item"><strong>خصم مؤجل (%):</strong><span>${format(rec.DeferredDiscount)}</span></div><div class="detail-item"><strong>رسوم تكويد:</strong><span>${format(rec.CodingFees)}</span></div><div class="detail-item"><strong>طريقة السداد:</strong><span>${format(rec.PaymentMethod)}</span></div><div class="detail-item"><strong>فترة السداد (أيام):</strong><span>${format(rec.PaymentPeriod)}</span></div><div class="detail-item"><strong>فترة رفع المرتجع (أيام):</strong><span>${format(rec.ReturnPeriod)}</span></div></div></div><div class="detail-section"><h3>بيانات الاتصال</h3><div class="detail-grid"><div class="detail-item"><strong>اسم المسؤول:</strong><span>${format(rec.ContactPerson)}</span></div><div class="detail-item"><strong>المسمى الوظيفي:</strong><span>${format(rec.JobTitle)}</span></div><div class="detail-item"><strong>رقم التليفون:</strong><span>${format(rec.PhoneNumber)}</span></div><div class="detail-item"><strong>البريد الإلكتروني:</strong><span dir="ltr">${format(rec.Email)}</span></div></div></div><div class="detail-section"><h3>بيانات أخرى</h3><div class="detail-grid"><div class="detail-item"><strong>صاحب الطلب:</strong><span>${format(rec.RequesterName)}</span></div><div class="detail-item"><strong>تاريخ الطلب:</strong><span>${format(rec.RequestDate, true)}</span></div><div class="detail-item"><strong>تاريخ التسجيل:</strong><span>${format(rec.RegistrationDate, true)}</span></div></div></div>`; detailModal.dataset.recordId = recordId; toggleModal(detailModal, true); } else { throw new Error(result.message); } } catch (error) { showMainStatus(error.message, 'error'); } }
+        function clearValidationErrors() { supplierModalForm.querySelectorAll('.error-message').forEach(m => m.remove()); supplierModalForm.querySelectorAll('[required]').forEach(f => f.style.borderColor = ''); }
+        function validateModalForm() { clearValidationErrors(); let isValid = true; supplierModalForm.querySelectorAll('[required]').forEach(field => { if (!field.value.trim()) { isValid = false; field.style.borderColor = 'var(--danger-color)'; const errorMsg = document.createElement('small'); errorMsg.textContent = 'هذا الحقل مطلوب'; errorMsg.className = 'error-message'; field.parentNode.insertBefore(errorMsg, field.nextSibling); } }); if (!isValid) showModalStatus('الرجاء ملء جميع الحقول المطلوبة.', 'error'); return isValid; }
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
-        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
+        searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
         addNewSupplierBtn.addEventListener('click', () => openFormModal('add'));
-
-        [supplierModal, detailModal].forEach(modal => {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal) toggleModal(modal, false);
-            });
-            modal.querySelector('.close-button').addEventListener('click', () => toggleModal(modal, false));
-        });
+        [supplierModal, detailModal].forEach(modal => { modal.addEventListener('click', e => { if (e.target === modal) toggleModal(modal, false); }); modal.querySelector('.close-button').addEventListener('click', () => toggleModal(modal, false)); });
         supplierModal.querySelector('.modal-cancel-btn').addEventListener('click', () => toggleModal(supplierModal, false));
         document.getElementById('detailCloseBtn').addEventListener('click', () => toggleModal(detailModal, false));
         document.getElementById('detailPrintBtn').addEventListener('click', () => window.print());
-        document.getElementById('detailEditBtn').addEventListener('click', () => {
-            toggleModal(detailModal, false);
-            openFormModal('edit', detailModal.dataset.recordId);
-        });
-
-        supplierModalForm.addEventListener('submit', async function (e) {
-            e.preventDefault();
-            if (!validateModalForm()) return;
-
-            modalSubmitBtn.disabled = true;
-            modalSubmitBtn.textContent = 'جاري الحفظ...';
-            showModalStatus('جاري حفظ البيانات...', 'info');
-
-            const formData = new FormData(supplierModalForm);
-            formData.append('action', modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier');
-            
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    toggleModal(supplierModal, false);
-                    showMainStatus(result.message, 'success');
-                    fetchData(searchInput.value.trim()); // Refresh list
-                    if (result.data && result.data.RowID) {
-                        setTimeout(() => showSupplierDetails(result.data.RowID), 500);
-                    }
-                } else { throw new Error(result.message); }
-            } catch (error) {
-                showModalStatus(error.message, 'error');
-            } finally {
-                modalSubmitBtn.disabled = false;
-                modalSubmitBtn.textContent = 'حفظ';
-            }
-        });
-
-        async function handleDeleteClick(recordId) {
-            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) return;
-            
-            showMainStatus('جاري حذف المورد...', 'info');
-            const formData = new FormData();
-            formData.append('action', 'deleteSupplier');
-            formData.append('recordId', recordId);
-
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const result = await response.json();
-                if (result.status === 'success') {
-                    showMainStatus(result.message, 'success');
-                    fetchData(searchInput.value.trim());
-                } else { throw new Error(result.message); }
-            } catch (error) { showMainStatus(error.message, 'error'); }
-        }
-
-        // --- INITIALIZATION ---
+        document.getElementById('detailEditBtn').addEventListener('click', () => { toggleModal(detailModal, false); openFormModal('edit', detailModal.dataset.recordId); });
+        supplierModalForm.addEventListener('submit', async function (e) { e.preventDefault(); if (!validateModalForm()) return; modalSubmitBtn.disabled = true; modalSubmitBtn.textContent = 'جاري الحفظ...'; showModalStatus('جاري حفظ البيانات...', 'info'); const formData = new FormData(supplierModalForm); formData.append('action', modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier'); try { const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData }); const result = await response.json(); if (result.status === 'success') { toggleModal(supplierModal, false); showMainStatus(result.message, 'success'); fetchData(searchInput.value.trim()); if (result.data && result.data.RowID) { setTimeout(() => showSupplierDetails(result.data.RowID), 500); } } else { throw new Error(result.message); } } catch (error) { showModalStatus(error.message, 'error'); } finally { modalSubmitBtn.disabled = false; modalSubmitBtn.textContent = 'حفظ'; } });
+        async function handleDeleteClick(recordId) { if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟')) return; showMainStatus('جاري حذف المورد...', 'info'); const formData = new FormData(); formData.append('action', 'deleteSupplier'); formData.append('recordId', recordId); try { const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData }); const result = await response.json(); if (result.status === 'success') { showMainStatus(result.message, 'success'); fetchData(searchInput.value.trim()); } else { throw new Error(result.message); } } catch (error) { showMainStatus(error.message, 'error'); } }
         showMessageInContainer('initial', 'مرحباً بك في نظام إدارة الموردين', 'استخدم شريط البحث أعلاه للبدء، أو أضف موردًا جديدًا.');
     });
     </script>
