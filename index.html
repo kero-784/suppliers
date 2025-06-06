@@ -113,6 +113,9 @@
             margin-top: 25px;
             padding-top: 20px;
             border-top: 1px solid #dee2e6;
+            display: flex; /* <!-- NEW/MODIFIED --> */
+            justify-content: center; /* <!-- NEW/MODIFIED --> */
+            flex-wrap: wrap; /* <!-- NEW/MODIFIED --> */
         }
         button, .button {
             background-color: #0062cc;
@@ -128,8 +131,13 @@
             line-height: 1.5;
         }
         button[type="button"], .button.secondary { background-color: #5a6268; }
+        /* <!-- NEW/MODIFIED --> */
+        .button.info { background-color: #17a2b8; }
         button:hover, .button:hover { background-color: #004a99; }
         button[type="button"]:hover, .button.secondary:hover { background-color: #474c52; }
+        /* <!-- NEW/MODIFIED --> */
+        .button.info:hover { background-color: #138496; }
+
 
         #formStatus, #modalFormStatus {
             margin-top: 15px;
@@ -241,6 +249,71 @@
         }
         .modal-content .form-group { margin-bottom: 12px; }
         .modal-content .form-actions button { font-size: 1em; padding: 12px 25px;}
+
+        /* <!-- NEW/MODIFIED: Styles for the printable report --> */
+        #printableArea {
+            display: none; /* Hidden by default on screen */
+        }
+        .print-fieldset {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+        .print-legend {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #0056b3;
+            margin: 0 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        .print-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+        }
+        .print-item {
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+        }
+        .print-label {
+            font-weight: 600;
+            color: #3e4d5c;
+            font-size: 1em;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .print-value {
+            font-size: 1em;
+            color: #2c3e50;
+            padding-right: 10px;
+        }
+
+        /* <!-- NEW/MODIFIED: Styles specifically for printing --> */
+        @media print {
+            body, .container {
+                visibility: hidden; /* Hide everything on the page */
+                margin: 0;
+                padding: 0;
+                background-color: #fff;
+            }
+            #printableArea, #printableArea * {
+                visibility: visible; /* Show only the printable area and its content */
+            }
+            #printableArea {
+                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                margin: 0;
+            }
+        }
 
         @media (max-width: 768px) {
             .container { max-width: 100%; padding: 15px; }
@@ -391,11 +464,15 @@
                     </div>
                 </fieldset>
 
+                <!-- <!-- NEW/MODIFIED: Buttons re-ordered and Print button added --> -->
                 <div class="form-actions">
                     <button type="submit" id="modalSubmitBtn" class="button">حفظ</button>
+                    <button type="button" id="printModalBtn" class="button info">طباعة</button>
                     <button type="button" id="modalCancelBtn" class="button secondary">إلغاء</button>
                 </div>
             </form>
+            <!-- <!-- NEW/MODIFIED: Container for printable content --> -->
+            <div id="printableArea"></div>
             <div id="modalFormStatus"></div>
         </div>
     </div>
@@ -404,8 +481,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // Ensure this is your correct deployed URL
-        
-        // UPDATED: Added InvoiceDiscount and ReturnPeriod to the table display
+
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
@@ -436,13 +512,12 @@
         const modalCancelBtn = document.getElementById('modalCancelBtn');
         const modalCloseBtn = supplierModal.querySelector('.close-button');
         const modalFormStatusDiv = document.getElementById('modalFormStatus');
+        const printModalBtn = document.getElementById('printModalBtn'); // <!-- NEW/MODIFIED -->
 
         // --- HELPER FUNCTIONS ---
         function isGoogleScriptUrlSet() {
-            console.log("Checking Google Script URL:", GOOGLE_SCRIPT_URL);
-            const placeholderOriginal = 'https://script.google.com/macros/s/AKfycbyhMLXFHtDZW_NH9IaNsIGCpOaxXjwp6Zo2lNx9AGOAl_foc3k0GKWgszn5_28CBglFoQ/exec'; // Example old placeholder
-            const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE'; // Generic placeholder part
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL === placeholderOriginal || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
+            const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE';
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
                 showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح أو هو رابط وضع التطوير. يرجى استخدام رابط التنفيذ (exec) المنشور.', 'error');
                 console.error('FATAL: Google Apps Script URL is not set correctly, is a placeholder, or is a /dev URL:', GOOGLE_SCRIPT_URL);
                 return false;
@@ -451,12 +526,11 @@
         }
 
         function showLoading(isLoading) {
-            console.log("showLoading called with:", isLoading);
             if (isLoading) {
-                dataTableContainer.innerHTML = ''; // Clear previous table or messages
+                dataTableContainer.innerHTML = '';
                 if (loadingMessageElement) {
                     loadingMessageElement.style.display = 'block';
-                    dataTableContainer.appendChild(loadingMessageElement); // Ensure it's visible
+                    dataTableContainer.appendChild(loadingMessageElement);
                 }
                 formStatusDiv.style.display = 'none';
             } else {
@@ -465,82 +539,57 @@
         }
 
         function showStatus(element, message, type = '') {
-            if (!element) {
-                console.warn("showStatus called with null element for message:", message);
-                return;
-            }
-            console.log(`showStatus on element ${element.id}: ${message}, type: ${type}`);
+            if (!element) return;
             element.textContent = message;
-            element.className = type; // This will overwrite existing classes, ensure it's just for status
-            element.style.display = message ? 'block' : 'none'; // Hide if message is empty
+            element.className = type;
+            element.style.display = message ? 'block' : 'none';
 
             if (type === 'success' || type === 'error') {
                 setTimeout(() => {
                     if (element) element.style.display = 'none';
-                }, type === 'success' ? 3500 : 7000); // Longer for errors
+                }, type === 'success' ? 3500 : 7000);
             }
         }
 
-      function escapeHTML(str) {
-    if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
-}
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
       // --- DATA FETCHING AND RENDERING ---
         async function fetchData(searchTerm = '') {
-            console.log(`fetchData called. Search term: "${searchTerm}"`);
             if (!isGoogleScriptUrlSet()) return;
             showLoading(true);
-
             let url = `${GOOGLE_SCRIPT_URL}?action=getAllSuppliers`;
             if (searchTerm) {
                 url = `${GOOGLE_SCRIPT_URL}?action=searchSuppliers&term=${encodeURIComponent(searchTerm)}`;
             }
-            console.log("Fetching from URL:", url);
-
             try {
                 const response = await fetch(url);
-                console.log("Fetch response status:", response.status);
                 if (!response.ok) {
                     const errText = await response.text();
-                    console.error("Fetch error response text:", errText);
                     let errMessage = `فشل جلب البيانات: ${response.status}`;
-                    try {
-                        const errData = JSON.parse(errText);
-                        // Check if the GAS script returned its own error structure
-                        if (errData && errData.status === 'error' && errData.message) {
-                             errMessage = `خطأ من الخادم: ${errData.message}`;
-                        } else if (errData && errData.message) { // Generic JSON error
-                            errMessage = errData.message;
-                        }
-                    } catch (e) { /* Use default if not JSON or unexpected JSON */ }
+                    try { const errData = JSON.parse(errText); if (errData && errData.message) { errMessage = `خطأ من الخادم: ${errData.message}`; } } catch (e) {}
                     throw new Error(errMessage);
                 }
                 const result = await response.json();
-                console.log("Fetch result:", result);
                 showLoading(false);
                 if (result.status === 'success') {
-                    if (result.data && result.data.length > 0) {
-                        renderTable(result.data);
-                    } else if (searchTerm) {
-                        dataTableContainer.innerHTML = '<p>لا توجد نتائج بحث مطابقة.</p>';
-                    } else {
-                        dataTableContainer.innerHTML = '<p>لا يوجد موردين مسجلين حالياً. انقر فوق "إضافة مورد جديد" للبدء.</p>';
-                    }
+                    if (result.data && result.data.length > 0) { renderTable(result.data); }
+                    else if (searchTerm) { dataTableContainer.innerHTML = '<p>لا توجد نتائج بحث مطابقة.</p>'; }
+                    else { dataTableContainer.innerHTML = '<p>لا يوجد موردين مسجلين حالياً. انقر فوق "إضافة مورد جديد" للبدء.</p>'; }
                 } else {
-                    throw new Error(result.message || 'فشل جلب البيانات من الخادم (الحالة ليست نجاح).');
+                    throw new Error(result.message || 'فشل جلب البيانات من الخادم.');
                 }
             } catch (error) {
-                console.error('Error during fetchData:', error);
                 showLoading(false);
                 dataTableContainer.innerHTML = `<p class="error">خطأ في تحميل البيانات: ${error.message}</p>`;
             }
         }
 
-        // UPDATED: This function now formats InvoiceDiscount and ReturnPeriod for display
         function renderTable(data) {
-            console.log("renderTable called with data count:", data.length);
             let tableHTML = '<table><thead><tr>';
             DISPLAY_HEADERS_KEYS.forEach(key => {
                 tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`;
@@ -554,23 +603,14 @@
                     let displayValue;
 
                     if (cellValue === null || cellValue === undefined || String(cellValue).trim() === '') {
-                        displayValue = ''; // Keep cell empty for null/undefined/empty string
+                        displayValue = '';
                     } else if (key === 'InvoiceDiscount') {
-                        // If it's a number, add '%'. If it's text, show as is.
-                        if (!isNaN(parseFloat(cellValue)) && isFinite(cellValue)) {
-                            displayValue = `${escapeHTML(cellValue)}%`;
-                        } else {
-                            displayValue = escapeHTML(cellValue);
-                        }
+                        if (!isNaN(parseFloat(cellValue)) && isFinite(cellValue)) { displayValue = `${escapeHTML(cellValue)}%`; }
+                        else { displayValue = escapeHTML(cellValue); }
                     } else if (key === 'ReturnPeriod') {
-                        // If it's a number, add 'يوم'. If it's text, show as is.
-                        if (!isNaN(parseInt(cellValue, 10)) && isFinite(cellValue)) {
-                           displayValue = `${escapeHTML(cellValue)} يوم`;
-                        } else {
-                           displayValue = escapeHTML(cellValue);
-                        }
+                        if (!isNaN(parseInt(cellValue, 10)) && isFinite(cellValue)) { displayValue = `${escapeHTML(cellValue)} يوم`; }
+                        else { displayValue = escapeHTML(cellValue); }
                     } else {
-                        // Default behavior for all other fields
                         displayValue = escapeHTML(cellValue);
                     }
                     tableHTML += `<td>${displayValue}</td>`;
@@ -586,23 +626,16 @@
             addTableActionListeners();
         }
 
-
         function addTableActionListeners() {
-            dataTableContainer.querySelectorAll('.edit-btn').forEach(button => {
-                button.addEventListener('click', handleEditClick);
-            });
-            dataTableContainer.querySelectorAll('.delete-btn').forEach(button => {
-                button.addEventListener('click', handleDeleteClick);
-            });
+            dataTableContainer.querySelectorAll('.edit-btn').forEach(button => button.addEventListener('click', handleEditClick));
+            dataTableContainer.querySelectorAll('.delete-btn').forEach(button => button.addEventListener('click', handleDeleteClick));
         }
 
         // --- MODAL LOGIC ---
         function openModal(mode = 'add', recordId = null) {
-            console.log(`openModal called. Mode: ${mode}, RecordID: ${recordId}`);
             supplierModalForm.reset();
             clearModalErrorMessages();
-            showStatus(modalFormStatusDiv, '', ''); // Clear and hide
-
+            showStatus(modalFormStatusDiv, '', '');
             if (mode === 'add') {
                 modalTitle.textContent = 'إضافة مورد جديد';
                 modalRecordIdInput.value = '';
@@ -618,81 +651,49 @@
         }
 
         function closeModal() {
-            console.log("closeModal called.");
             supplierModal.style.display = 'none';
         }
 
         async function loadRecordForEdit(recordId) {
-            console.log("loadRecordForEdit called for RecordID:", recordId);
             if (!isGoogleScriptUrlSet()) return;
             showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
-
             try {
                 const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
-                console.log("Load record response status:", response.status);
                 if (!response.ok) {
                     const errText = await response.text();
-                    console.error("Load record error response text:", errText);
                     let errMessage = `فشل تحميل بيانات المورد: ${response.status}`;
-                     try {
-                        const errData = JSON.parse(errText);
-                        if (errData && errData.status === 'error' && errData.message) {
-                             errMessage = `خطأ من الخادم: ${errData.message}`;
-                        } else if (errData && errData.message) {
-                            errMessage = errData.message;
-                        }
-                    } catch (e) { /* Use default */ }
+                    try { const errData = JSON.parse(errText); if (errData && errData.message) { errMessage = `خطأ من الخادم: ${errData.message}`; } } catch (e) { }
                     throw new Error(errMessage);
                 }
                 const result = await response.json();
-                console.log("Load record result:", result);
                 if (result.status === 'success' && result.data) {
                     populateModalForm(result.data);
-                    showStatus(modalFormStatusDiv, '', ''); // Clear loading
+                    showStatus(modalFormStatusDiv, '', '');
                     supplierModal.style.display = 'block';
                     document.getElementById('modalSupplierName').focus();
                 } else {
-                    throw new Error(result.message || 'فشل تحميل بيانات المورد (الحالة ليست نجاح).');
+                    throw new Error(result.message || 'فشل تحميل بيانات المورد.');
                 }
             } catch (error) {
-                console.error('Error loading record for edit:', error);
                 showStatus(modalFormStatusDiv, error.message, 'error');
             }
         }
 
         function populateModalForm(record) {
-            console.log("populateModalForm with record:", record);
             for (const key in record) {
                 if (record.hasOwnProperty(key)) {
                     const inputElement = supplierModalForm.elements[key];
                     if (inputElement) {
                         if (inputElement.type === 'date' && record[key]) {
                             try {
-                                // Ensure record[key] is a valid date string or can be parsed
-                                // Google Sheets might return dates as serial numbers if not formatted,
-                                // but GAS should format them as YYYY-MM-DD.
-                                let dateStr = String(record[key]);
-                                if (dateStr.includes('T')) { // Handle ISO datetime strings if they appear
-                                    dateStr = dateStr.split('T')[0];
-                                }
-                                const date = new Date(dateStr); // Try to parse
-                                // Check if the dateStr itself is valid (e.g. "2023-13-01" is invalid)
-                                // and if the resulting Date object is valid
-                                const isValidDateStr = /^\d{4}-\d{2}-\d{2}$/.test(dateStr);
-
-                                if (isValidDateStr && !isNaN(date.getTime())) {
-                                   // Add timezone offset to prevent date from shifting by one day
-                                   const tzoffset = (new Date()).getTimezoneOffset() * 60000; //offset in milliseconds
+                                let dateStr = String(record[key]).split('T')[0];
+                                const date = new Date(dateStr);
+                                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(date.getTime())) {
+                                   const tzoffset = (new Date()).getTimezoneOffset() * 60000;
                                    const localISOTime = (new Date(date.valueOf() + tzoffset)).toISOString().split('T')[0];
                                    inputElement.value = localISOTime;
-                                } else {
-                                    console.warn(`Invalid date value or format for ${key}: "${record[key]}" - Setting to empty.`);
-                                    inputElement.value = '';
-                                }
-                            } catch (e) {
-                                console.warn(`Error parsing date for ${key}: "${record[key]}"`, e);
-                                inputElement.value = ''; // Default to empty on error
-                            }
+                                } else { inputElement.value = ''; }
+                            } catch (e) { inputElement.value = ''; }
                         } else {
                             inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
                         }
@@ -702,10 +703,8 @@
         }
 
         function validateModalForm() {
-            console.log("validateModalForm called.");
             let isValid = true;
             clearModalErrorMessages();
-
             supplierModalForm.querySelectorAll('[required]').forEach(field => {
                 if (!field.value.trim()) {
                     isValid = false;
@@ -713,15 +712,11 @@
                     const errorMsg = document.createElement('small');
                     errorMsg.textContent = 'هذا الحقل مطلوب';
                     errorMsg.classList.add('error-message');
-                    // Ensure error message is not duplicated
                     if (!field.nextElementSibling || !field.nextElementSibling.classList.contains('error-message')) {
                         field.parentNode.insertBefore(errorMsg, field.nextSibling);
                     }
-                } else {
-                    field.style.borderColor = ''; // Reset border color if valid
-                }
+                } else { field.style.borderColor = ''; }
             });
-
             const taxRegNumInput = document.getElementById('modalTaxRegNum');
             if (taxRegNumInput.value.trim() && !taxRegNumInput.checkValidity()) {
                 isValid = false;
@@ -733,15 +728,12 @@
                     taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextSibling);
                 }
             } else if (taxRegNumInput.value.trim() && taxRegNumInput.checkValidity()){
-                 taxRegNumInput.style.borderColor = ''; // Reset border color if valid
+                 taxRegNumInput.style.borderColor = '';
             }
-
             if (!isValid) {
                 showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.', 'error');
-                console.warn("Modal form validation failed.");
             } else {
-                 showStatus(modalFormStatusDiv, '', ''); // Clear status if validation passes
-                console.log("Modal form validation passed.");
+                 showStatus(modalFormStatusDiv, '', '');
             }
             return isValid;
         }
@@ -749,87 +741,108 @@
         function clearModalErrorMessages() {
             supplierModalForm.querySelectorAll('.error-message').forEach(msg => msg.remove());
             supplierModalForm.querySelectorAll('input[required], select[required], input[pattern]').forEach(input => {
-                input.style.borderColor = ''; // Reset border for all validated fields
+                input.style.borderColor = '';
             });
+        }
+        
+        // <!-- NEW/MODIFIED: Function to generate printable HTML report -->
+        function generatePrintableView() {
+            const form = document.getElementById('supplierModalForm');
+            const modalTitleText = document.getElementById('modalTitle').textContent;
+            const printTitle = modalTitleText.includes('إضافة') ? 'بيانات مورد جديد' : 'بيانات المورد';
+
+            let printableHTML = `<h2 style="text-align:center; color:#004085; border-bottom: 2px solid #0062cc; padding-bottom:10px; margin-bottom: 25px;">${printTitle}</h2>`;
+
+            form.querySelectorAll('fieldset').forEach(fieldset => {
+                let hasContent = false;
+                let fieldsetHTML = `<div class="print-fieldset">
+                                      <h3 class="print-legend">${fieldset.querySelector('legend').textContent}</h3>
+                                      <div class="print-grid">`;
+
+                fieldset.querySelectorAll('.form-group').forEach(group => {
+                    const labelEl = group.querySelector('label');
+                    const inputEl = group.querySelector('input, select');
+                    
+                    if (labelEl && inputEl && inputEl.value && String(inputEl.value).trim() !== '') {
+                        hasContent = true;
+                        const labelText = labelEl.innerHTML.replace(/<span class="required">.*?<\/span>/g, '').trim();
+                        let value = escapeHTML(inputEl.value);
+
+                        if (inputEl.tagName.toLowerCase() === 'select' && inputEl.selectedIndex >= 0) {
+                            value = escapeHTML(inputEl.options[inputEl.selectedIndex].text);
+                        }
+                        
+                        fieldsetHTML += `<div class="print-item">
+                                           <span class="print-label">${labelText}:</span>
+                                           <span class="print-value">${value}</span>
+                                         </div>`;
+                    }
+                });
+                
+                fieldsetHTML += `</div></div>`;
+                
+                if (hasContent) {
+                    printableHTML += fieldsetHTML;
+                }
+            });
+            return printableHTML;
         }
 
 
         // --- EVENT LISTENERS ---
         searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchData(searchInput.value.trim());
-        });
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
         addNewSupplierBtn.addEventListener('click', () => openModal('add'));
-        refreshDataBtn.addEventListener('click', () => {
-            searchInput.value = ''; // Clear search input on refresh
-            fetchData();
-        });
+        refreshDataBtn.addEventListener('click', () => { searchInput.value = ''; fetchData(); });
         modalCloseBtn.addEventListener('click', closeModal);
         modalCancelBtn.addEventListener('click', closeModal);
-        window.addEventListener('click', (event) => {
-            if (event.target === supplierModal) closeModal();
-        });
-        window.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape' && supplierModal.style.display === 'block') {
-                closeModal();
+        window.addEventListener('click', (event) => { if (event.target === supplierModal) closeModal(); });
+        window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && supplierModal.style.display === 'block') closeModal(); });
+        
+        // <!-- NEW/MODIFIED: Event listener for the new Print button -->
+        printModalBtn.addEventListener('click', () => {
+            const printableArea = document.getElementById('printableArea');
+            if (printableArea) {
+                printableArea.innerHTML = generatePrintableView();
+                window.print();
+            } else {
+                console.error("Printable area element (#printableArea) not found.");
             }
         });
 
         supplierModalForm.addEventListener('submit', async function (event) {
             event.preventDefault();
-            console.log("Modal form submitted.");
-            showStatus(modalFormStatusDiv, '', ''); // Clear previous
-
-            if (!validateModalForm()) return; // Stop if client-side validation fails
-            if (!isGoogleScriptUrlSet()) return; // Stop if URL is not configured
-
+            if (!validateModalForm() || !isGoogleScriptUrlSet()) return;
             modalSubmitBtn.disabled = true;
             const originalButtonText = modalSubmitBtn.textContent;
             modalSubmitBtn.textContent = 'جاري الحفظ...';
-            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', ''); // Non-error status
+            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', '');
 
             const formData = new FormData(supplierModalForm);
             const action = modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier';
             formData.append('action', action);
-            // Log form data for debugging
-            // console.log("Form data to submit (Action: " + action + "):", Object.fromEntries(formData));
-
-
+            
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                console.log("Submit form response status:", response.status);
-                const responseText = await response.text(); // Get text first for robust parsing
-                console.log("Submit form response text:", responseText);
-
+                const responseText = await response.text();
                 let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (e) {
-                    console.error("Failed to parse JSON response:", e);
-                    console.error("Response text was:", responseText);
-                    throw new Error(`فشل تحليل استجابة الخادم. الاستجابة لم تكن بتنسيق JSON صحيح. (${response.status})`);
-                }
+                try { result = JSON.parse(responseText); }
+                catch (e) { throw new Error(`فشل تحليل استجابة الخادم. (${response.status})`); }
 
-
-                if (!response.ok) { // Check HTTP status after parsing attempt
+                if (!response.ok) {
                     let errMessage = `فشل حفظ البيانات: ${response.status}`;
-                    if (result && result.message) {
-                        errMessage = `خطأ من الخادم: ${result.message}`;
-                    }
+                    if (result && result.message) { errMessage = `خطأ من الخادم: ${result.message}`; }
                     throw new Error(errMessage);
                 }
 
-                console.log("Submit form result (parsed):", result);
                 if (result.status === 'success') {
                     showStatus(modalFormStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim()); // Refresh table
+                    fetchData(searchInput.value.trim());
                     setTimeout(closeModal, 1500);
                 } else {
-                     // Handle cases where response.ok is true, but GAS script returns status: 'error'
-                    throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم (الحالة ليست نجاح).');
+                    throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم.');
                 }
             } catch (error) {
-                console.error('Error submitting modal form:', error);
                 showStatus(modalFormStatusDiv, error.message, 'error');
             } finally {
                 modalSubmitBtn.disabled = false;
@@ -837,72 +850,45 @@
             }
         });
 
-        function handleEditClick(event) {
-            const recordId = event.target.dataset.id;
-            console.log("Edit button clicked for RecordID:", recordId);
-            openModal('edit', recordId);
-        }
+        function handleEditClick(event) { openModal('edit', event.target.dataset.id); }
 
         async function handleDeleteClick(event) {
             const recordId = event.target.dataset.id;
-            console.log("Delete button clicked for RecordID:", recordId);
-            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) {
-                console.log("Delete cancelled by user or no RecordID.");
-                return;
-            }
+            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) return;
             if (!isGoogleScriptUrlSet()) return;
-
-            showStatus(formStatusDiv, 'جاري حذف المورد...', ''); // Non-error status
-
+            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
             const formData = new FormData();
             formData.append('action', 'deleteSupplier');
             formData.append('recordId', recordId);
-            // console.log("Form data to delete:", Object.fromEntries(formData));
-
-
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                console.log("Delete response status:", response.status);
                 const responseText = await response.text();
-                console.log("Delete response text:", responseText);
-
                 let result;
-                try {
-                    result = JSON.parse(responseText);
-                } catch (e) {
-                    console.error("Failed to parse JSON response from delete:", e);
-                    console.error("Response text was:", responseText);
-                    throw new Error(`فشل تحليل استجابة الخادم عند الحذف. (${response.status})`);
-                }
+                try { result = JSON.parse(responseText); }
+                catch (e) { throw new Error(`فشل تحليل استجابة الخادم عند الحذف. (${response.status})`); }
 
                 if (!response.ok) {
                     let errMessage = `فشل حذف المورد: ${response.status}`;
-                     if (result && result.message) {
-                        errMessage = `خطأ من الخادم: ${result.message}`;
-                    }
+                     if (result && result.message) { errMessage = `خطأ من الخادم: ${result.message}`; }
                     throw new Error(errMessage);
                 }
 
-                console.log("Delete result (parsed):", result);
                 if (result.status === 'success') {
                     showStatus(formStatusDiv, result.message, 'success');
-                    fetchData(searchInput.value.trim()); // Refresh table
+                    fetchData(searchInput.value.trim());
                 } else {
-                    throw new Error(result.message || 'فشل حذف المورد من جهة الخادم (الحالة ليست نجاح).');
+                    throw new Error(result.message || 'فشل حذف المورد من جهة الخادم.');
                 }
             } catch (error) {
-                console.error('Error deleting supplier:', error);
                 showStatus(formStatusDiv, error.message, 'error');
             }
         }
 
         // --- INITIALIZATION ---
-        console.log("DOM fully loaded. Initializing app.");
         if(isGoogleScriptUrlSet()){
-            fetchData(); // Initial data load
+            fetchData();
         } else {
-            showLoading(false); // Hide loading if URL not set
-            // The error message about URL not being set is already shown by isGoogleScriptUrlSet
+            showLoading(false);
         }
     });
     </script>
