@@ -404,13 +404,17 @@
     document.addEventListener('DOMContentLoaded', function () {
         // --- CONFIGURATION ---
         const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // Ensure this is your correct deployed URL
+        
+        // UPDATED: Added InvoiceDiscount and ReturnPeriod to the table display
         const DISPLAY_HEADERS_MAPPING = {
             "SupplierCode": "كود المورد",
             "SupplierName": "اسم المورد",
             "CommercialReg": "السجل التجاري",
             "TaxRegNum": "رقم التسجيل الضريبي",
-            "PhoneNumber": "رقم التليفون",
+            "InvoiceDiscount": "خصم الفاتورة",
+            "ReturnPeriod": "فترة المرتجع",
             "ContactPerson": "اسم المسؤول",
+            "PhoneNumber": "رقم التليفون",
             "Email": "البريد الإلكتروني",
         };
         const DISPLAY_HEADERS_KEYS = Object.keys(DISPLAY_HEADERS_MAPPING);
@@ -534,6 +538,7 @@
             }
         }
 
+        // UPDATED: This function now formats InvoiceDiscount and ReturnPeriod for display
         function renderTable(data) {
             console.log("renderTable called with data count:", data.length);
             let tableHTML = '<table><thead><tr>';
@@ -543,9 +548,32 @@
             tableHTML += '<th>إجراءات</th></tr></thead><tbody>';
 
             data.forEach(record => {
-                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`; // Ensure RowID is escaped and string
+                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`;
                 DISPLAY_HEADERS_KEYS.forEach(key => {
-                    tableHTML += `<td>${escapeHTML(record[key])}</td>`;
+                    let cellValue = record[key];
+                    let displayValue;
+
+                    if (cellValue === null || cellValue === undefined || String(cellValue).trim() === '') {
+                        displayValue = ''; // Keep cell empty for null/undefined/empty string
+                    } else if (key === 'InvoiceDiscount') {
+                        // If it's a number, add '%'. If it's text, show as is.
+                        if (!isNaN(parseFloat(cellValue)) && isFinite(cellValue)) {
+                            displayValue = `${escapeHTML(cellValue)}%`;
+                        } else {
+                            displayValue = escapeHTML(cellValue);
+                        }
+                    } else if (key === 'ReturnPeriod') {
+                        // If it's a number, add 'يوم'. If it's text, show as is.
+                        if (!isNaN(parseInt(cellValue, 10)) && isFinite(cellValue)) {
+                           displayValue = `${escapeHTML(cellValue)} يوم`;
+                        } else {
+                           displayValue = escapeHTML(cellValue);
+                        }
+                    } else {
+                        // Default behavior for all other fields
+                        displayValue = escapeHTML(cellValue);
+                    }
+                    tableHTML += `<td>${displayValue}</td>`;
                 });
                 tableHTML += `<td class="actions-cell">
                                 <button class="edit-btn button" data-id="${escapeHTML(String(record.RowID))}">تعديل</button>
@@ -557,6 +585,7 @@
             dataTableContainer.innerHTML = tableHTML;
             addTableActionListeners();
         }
+
 
         function addTableActionListeners() {
             dataTableContainer.querySelectorAll('.edit-btn').forEach(button => {
