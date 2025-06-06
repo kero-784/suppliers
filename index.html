@@ -3,148 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام إدارة الموردين (مصَحح)</title>
+    <title>إدارة الموردين</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --primary-color: #0056b3;
-            --primary-dark: #004085;
-            --border-color: #c5cdd4;
-            --bg-light: #f8f9fa;
-            --bg-main: #f0f2f5;
+            --primary-color: #0062cc;
+            --primary-dark: #004a99;
+            --secondary-color: #5a6268;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --light-bg: #f0f2f5;
+            --white-bg: #ffffff;
             --text-dark: #2c3e50;
-            --text-light: #495057;
-            --danger-color: #c82333;
+            --text-muted: #555;
+            --border-color: #c5cdd4;
         }
-
         body {
             font-family: 'Cairo', sans-serif;
             direction: rtl;
-            background-color: var(--bg-main);
+            background-color: var(--light-bg);
             margin: 0;
+            padding: 20px;
             color: var(--text-dark);
             line-height: 1.55;
             font-size: 16px;
         }
-
-        .app-container {
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 320px;
-            background-color: #fff;
-            border-left: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.05);
-        }
-
-        .sidebar-header {
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--primary-color);
-            margin-bottom: 20px;
-        }
-
-        .sidebar-header h2 {
-            margin: 0;
-            color: var(--primary-dark);
-            font-size: 22px;
-        }
-        
-        #newSupplierBtn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            margin-bottom: 20px;
-        }
-        #newSupplierBtn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        #searchInput {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 1em;
-            margin-bottom: 15px;
-        }
-
-        #supplierList {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-
-        #supplierList li {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e9ecef;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            border-radius: 4px;
-            margin-bottom: 5px;
-            display: flex;
-            flex-direction: column;
-        }
-        #supplierList li:hover {
-            background-color: #eef5ff;
-        }
-        #supplierList li.active {
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: 700;
-        }
-        #supplierList li .supplier-code-display {
-            font-size: 0.8em;
-            color: var(--text-light);
-            margin-top: 2px;
-        }
-        #supplierList li.active .supplier-code-display {
-             color: #e0e0e0;
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
-        
         .container {
-            max-width: 790px;
-            margin: 0 auto;
-            background-color: #ffffff;
+            max-width: 95%;
+            margin: 20px auto;
+            background-color: var(--white-bg);
             padding: 25px 30px;
             border-radius: 10px;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
             border: 1px solid var(--border-color);
         }
-        
-        .placeholder-view {
-            text-align: center;
-            padding: 100px 20px;
-            color: #778899;
-        }
-        .placeholder-view h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
         header {
             display: flex;
             justify-content: space-between;
@@ -153,452 +47,638 @@
             padding-bottom: 15px;
             border-bottom: 2px solid var(--primary-color);
         }
-        header h1 { color: var(--primary-dark); font-size: 28px; font-weight: 700; margin: 0; }
-        .supplier-code-container { display: flex; align-items: center; background-color: #e2e6ea; padding: 8px 12px; border-radius: 6px; }
-        .supplier-code-container label { margin-left: 10px; font-weight: 600; color: #343a40; font-size: 0.95em; }
-        .supplier-code-container input[type="text"] { border: 1px solid #b0bac5; padding: 8px 10px; border-radius: 4px; font-size: 0.95em; min-height: 30px; width: 150px; background-color: #fff; text-align: center; font-weight: 600; }
-
-        fieldset { border: 2px solid #aab8c5; border-radius: 8px; padding: 18px 25px; margin-bottom: 18px; background-color: var(--bg-light); }
-        legend { font-size: 1.3em; font-weight: 700; color: var(--primary-color); padding: 0 12px; margin-right: 10px; background-color: #fff; }
+        header h1 {
+            color: #004085;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+        fieldset {
+            border: 2px solid #aab8c5;
+            border-radius: 8px;
+            padding: 18px 25px;
+            margin-bottom: 18px;
+            background-color: #f8f9fa;
+        }
+        legend {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #0056b3;
+            padding: 0 12px;
+            margin-right: 10px;
+            background-color: var(--white-bg);
+        }
         .form-group { margin-bottom: 15px; }
         .form-row { display: flex; gap: 20px; align-items: flex-start; }
         .form-row .form-group { flex: 1; margin-bottom: 0; }
         fieldset > .form-row { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 7px; font-weight: 600; color: #3e4d5c; font-size: 1.0em; }
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #3e4d5c;
+            font-size: 1.0em;
+        }
         .form-group label .required { color: var(--danger-color); margin-left: 4px; font-weight: 700; }
-
         input[type="text"], input[type="number"], input[type="tel"], input[type="email"], select, input[type="date"] {
-            width: 100%; padding: 10px 12px; border: 1px solid #b0bac5; border-radius: 5px; box-sizing: border-box; font-size: 1.0em; min-height: 42px; transition: border-color 0.2s ease, box-shadow 0.2s ease; background-color: #fff;
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #b0bac5;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 1.0em;
+            line-height: 1.3;
+            height: auto;
+            min-height: 38px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--white-bg);
         }
-        input:focus, select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25); outline: none; }
-        input[type="text"], input[type="number"], input[type="tel"], input[type="date"] { text-align: center; font-weight: 600; }
-        input[type="email"] { text-align: left; font-weight: 400; direction: ltr; }
-        ::placeholder { color: #778899; font-size: 0.95em; text-align: right; font-weight: 400; }
-        input[type="text"]::placeholder, input[type="number"]::placeholder, input[type="tel"]::placeholder { text-align: center; }
+        input[type="text"], input[type="number"], input[type="tel"], input[type="date"] { text-align: center; }
+        input[type="email"] { text-align: left; direction: ltr; }
+        input:focus, select:focus {
+            border-color: var(--primary-dark);
+            box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25);
+            outline: none;
+        }
+        .form-actions { text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #dee2e6; }
+        button, .button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.0em;
+            font-weight: 600;
+            transition: background-color 0.2s ease;
+            margin: 5px 8px;
+            line-height: 1.5;
+        }
+        button[type="button"], .button.secondary { background-color: var(--secondary-color); }
+        button:hover, .button:hover { background-color: var(--primary-dark); }
+        button[type="button"]:hover, .button.secondary:hover { background-color: #474c52; }
 
-        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-        .form-actions button {
-            padding: 12px 25px; font-size: 16px; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease;
+        #formStatus, #modalFormStatus {
+            margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center; font-weight: 600; display: none;
         }
-        #submitBtn { background-color: var(--primary-color); color: white; }
-        #submitBtn:hover { background-color: var(--primary-dark); }
-        #exportPdfBtn, #viewTicketBtn { background-color: #5a6268; color: white; }
-        #exportPdfBtn:hover, #viewTicketBtn:hover { background-color: #495057; }
-        #deleteBtn { background-color: var(--danger-color); color: white; }
-        #deleteBtn:hover { background-color: #a71d2a; }
-        #submitBtn:active, #exportPdfBtn:active, #viewTicketBtn:active, #deleteBtn:active { transform: translateY(1px); }
+        #formStatus.success, #modalFormStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        #formStatus.error, #modalFormStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .error-message { color: var(--danger-color); font-size: 0.85em; display: block; margin-top: 4px; }
 
-        #formStatus { margin-top: 15px; padding: 12px; border-radius: 5px; text-align: center; font-weight: 600; display: none; }
-        #formStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        #formStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
+        .toolbar input[type="text"] { flex-grow: 1; min-width: 200px; }
+        button.primary-btn { background-color: var(--success-color); }
+        button.primary-btn:hover { background-color: #218838; }
 
-        /* Ticket View Modal */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; display: none; align-items: center; justify-content: center;
+        #dataTableContainer { overflow-x: auto; min-height: 100px; }
+        #dataTableContainer table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
+        #dataTableContainer th, #dataTableContainer td { border: 1px solid #ddd; padding: 8px 10px; text-align: right; vertical-align: middle; }
+        #dataTableContainer th { background-color: #e9ecef; font-weight: 600; color: #212529; position: sticky; top: 0; z-index: 10; }
+        #dataTableContainer tr:nth-child(even){background-color: #f8f9fa;}
+        #dataTableContainer tr:hover {background-color: #e2e6ea;}
+        #dataTableContainer .actions-cell button { margin: 2px 3px; padding: 6px 10px; font-size: 0.9em; }
+        #dataTableContainer .actions-cell .view-btn { background-color: var(--warning-color); color: black; }
+        #dataTableContainer .actions-cell .view-btn:hover { background-color: #e0a800; }
+        #dataTableContainer .actions-cell .delete-btn { background-color: var(--danger-color); }
+        #dataTableContainer .actions-cell .delete-btn:hover { background-color: #c82333; }
+        #initialMessage, #loadingMessage { text-align: center; padding: 20px; font-style: italic; color: var(--text-muted);}
+        #dataTableContainer p.error { color: #721c24; background-color: #f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:5px; text-align: center;}
+
+        /* Modal Styles */
+        .modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6);
         }
-        .ticket-view {
-            background: #fff; padding: 30px; border-radius: 10px; width: 500px; max-width: 90%; box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+        .modal-content {
+            background-color: var(--white-bg); margin: 3% auto; padding: 25px 35px; border: 1px solid #888; width: 90%; max-width: 800px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative;
         }
-        .ticket-header { text-align: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px; }
-        .ticket-header h2 { margin: 0; color: var(--primary-dark); }
-        .ticket-header p { margin: 5px 0 0; font-size: 1.1em; font-weight: 600; }
-        .ticket-section { margin-bottom: 20px; }
-        .ticket-section h3 { font-size: 1.2em; color: var(--primary-color); border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 15px; }
-        .ticket-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 1.1em; }
-        .ticket-item .label { font-weight: 600; color: var(--text-light); }
-        .ticket-item .value { font-weight: bold; color: var(--text-dark); }
-        .ticket-actions { text-align: center; margin-top: 30px; display: flex; gap: 15px; justify-content: center; }
-        .ticket-actions button { padding: 10px 30px; font-size: 1em; }
-        
+        .close-button {
+            color: #777; float: left; font-size: 30px; font-weight: bold; line-height: 0.8; padding: 5px;
+        }
+        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
+        .modal-title { color: #004085; margin-top: 0; margin-bottom: 25px; text-align: center; font-size: 1.8em; }
+
+        /* Detail Ticket Modal Specific Styles */
+        #supplierDetailModal .modal-content { max-width: 850px; }
+        .detail-section {
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 20px;
+        }
+        .detail-section h3 {
+            margin: -15px -20px 15px -20px;
+            padding: 10px 20px;
+            background-color: #e9ecef;
+            border-bottom: 1px solid #d0d5da;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-size: 1.3em;
+            color: #343a40;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px 25px;
+        }
+        .detail-item { font-size: 1.1em; }
+        .detail-item strong {
+            display: block;
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 3px;
+            font-size: 0.9em;
+        }
+        .detail-item span {
+            display: block;
+            padding: 6px 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+            min-height: 24px;
+            word-wrap: break-word;
+        }
+        #detailActions {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+        }
+        #detailActions .print-btn { background-color: var(--success-color); }
+        #detailActions .print-btn:hover { background-color: #218838; }
+        #detailActions .edit-btn { background-color: var(--warning-color); color: black; }
+        #detailActions .edit-btn:hover { background-color: #e0a800; }
+
+        @media (max-width: 768px) {
+            .container { max-width: 100%; padding: 15px; }
+            header h1 { font-size: 22px; }
+            .toolbar { flex-direction: column; align-items: stretch; }
+            .form-row { flex-direction: column; gap: 0; }
+            .form-row .form-group { margin-bottom: 15px; }
+            .modal-content { width: 95%; margin: 5% auto; padding: 20px;}
+            .modal-title { font-size: 1.5em; }
+            .detail-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Print Styles */
         @media print {
             body * { visibility: hidden; }
-            .ticket-view, .ticket-view * { visibility: visible; }
-            .ticket-view {
-                position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; border: none; box-shadow: none;
+            .modal-print-area, .modal-print-area * { visibility: visible; }
+            .modal-print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 10px;
+                border: none;
+                box-shadow: none;
             }
-            .ticket-actions { display: none; }
+            .modal-print-area .modal-title { font-size: 20pt; }
+            .modal-print-area #detailActions, .modal-print-area .close-button { display: none; }
+            .modal-print-area .detail-section { border: 1px solid #999; }
+            .modal-print-area .detail-section h3 { background-color: #eee; }
         }
     </style>
 </head>
 <body>
-
-    <div class="app-container">
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <h2>قائمة الموردين</h2>
-            </div>
-            <button id="newSupplierBtn">+ مورد جديد</button>
-            <input type="search" id="searchInput" placeholder="ابحث بالاسم أو الكود...">
-            <ul id="supplierList"></ul>
-        </aside>
-
-        <main class="main-content">
-            <div id="formContainer" class="container" style="display: none;">
-                <header>
-                    <h1 id="formTitle">نموذج تسجيل مورد جديد</h1>
-                    <div class="supplier-code-container">
-                        <label for="supplierCodeDisplay">كود المورد:</label>
-                        <input type="text" id="supplierCodeDisplay" name="supplierCodeDisplay" readonly>
-                    </div>
-                </header>
-
-                <form id="supplierForm">
-                    <fieldset>
-                        <legend>البيانات الأساسية</legend>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="supplierCode">كود المورد <span class="required">*</span></label>
-                                <input type="text" id="supplierCode" name="supplierCode" required placeholder="ادخل كود فريد للمورد">
-                            </div>
-                            <div class="form-group">
-                                <label for="supplierName">اسم المورد <span class="required">*</span></label>
-                                <input type="text" id="supplierName" name="supplierName" required placeholder="ادخل اسم المورد كاملاً">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="commercialReg">السجل التجاري <span class="required">*</span></label>
-                                <input type="text" id="commercialReg" name="commercialReg" required placeholder="رقم السجل التجاري">
-                            </div>
-                            <div class="form-group">
-                                <label for="taxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label>
-                                <input type="text" id="taxRegNum" name="taxRegNum" required pattern="\d{3}-\d{3}-\d{3}" title="الرجاء إدخال 9 أرقام مفصولة بشرطات (123-456-789)" placeholder="XXX-XXX-XXX">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="taxStatus">الحالة الضريبية <span class="required">*</span></label>
-                            <select id="taxStatus" name="taxStatus" required>
-                                <option value="خاضع">خاضع</option>
-                                <option value="معفي">معفي</option>
-                            </select>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>البيانات المالية</legend>
-                        <div class="form-row">
-                            <div class="form-group"><label for="invoiceDiscount">خصم الفاتورة (%)</label><input type="number" id="invoiceDiscount" name="invoiceDiscount" min="0" step="0.01"></div>
-                            <div class="form-group"><label for="deferredDiscount">خصم مؤجل (%)</label><input type="number" id="deferredDiscount" name="deferredDiscount" min="0" step="0.01"></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="codingFees">رسوم تكويد</label><input type="number" id="codingFees" name="codingFees" min="0" step="0.01" placeholder="بالعملة المحلية"></div>
-                            <div class="form-group"><label for="paymentMethod">طريقة السداد <span class="required">*</span></label><select id="paymentMethod" name="paymentMethod" required><option value="">اختر طريقة...</option><option value="نقدي">نقدي</option><option value="تحويل بنكي">تحويل بنكي</option><option value="شيك">شيك</option></select></div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="paymentPeriod">فترة السداد (أيام)</label><input type="number" id="paymentPeriod" name="paymentPeriod" min="0"></div>
-                            <div class="form-group"><label for="returnPeriod">فترة رفع المرتجع</label><input type="text" id="returnPeriod" name="returnPeriod" placeholder="أيام أو نص (مثال: حسب الاتفاق)"></div>
-                        </div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>بيانات الاتصال</legend>
-                        <div class="form-group"><label for="contactPerson">اسم المسؤول <span class="required">*</span></label><input type="text" id="contactPerson" name="contactPerson" required placeholder="اسم مسؤول الاتصال"></div>
-                        <div class="form-group"><label for="jobTitle">المسمى الوظيفي</label><input type="text" id="jobTitle" name="jobTitle"></div>
-                        <div class="form-group"><label for="phoneNumber">رقم التليفون <span class="required">*</span></label><input type="tel" id="phoneNumber" name="phoneNumber" required pattern="[0-9\s\-\+\(\)]+"></div>
-                        <div class="form-group"><label for="email">البريد الإلكتروني <span class="required">*</span></label><input type="email" id="email" name="email" required placeholder="example@domain.com"></div>
-                    </fieldset>
-
-                    <fieldset>
-                        <legend>بيانات أخرى</legend>
-                        <div class="form-group"><label for="requesterName">صاحب الطلب</label><input type="text" id="requesterName" name="requesterName" placeholder="اسم مقدم الطلب"></div>
-                        <div class="form-row">
-                            <div class="form-group"><label for="requestDate">تاريخ الطلب</label><input type="date" id="requestDate" name="requestDate"></div>
-                            <div class="form-group"><label for="registrationDate">تاريخ التسجيل</label><input type="date" id="registrationDate" name="registrationDate"></div>
-                        </div>
-                    </fieldset>
-
-                    <div class="form-actions">
-                        <button type="submit" id="submitBtn">حفظ البيانات</button>
-                        <button type="button" id="viewTicketBtn">عرض تذكرة</button>
-                        <button type="button" id="exportPdfBtn">تصدير كـ PDF</button>
-                        <button type="button" id="deleteBtn">حذف المورد</button>
-                    </div>
-                </form>
-                <div id="formStatus"></div>
-            </div>
-
-            <div id="placeholderView" class="placeholder-view">
-                 <h2>نظام إدارة الموردين</h2>
-                 <p>الرجاء اختيار مورد من القائمة لعرض بياناته، أو إضافة مورد جديد.</p>
-            </div>
-        </main>
+    <div class="container">
+        <header><h1>إدارة الموردين</h1></header>
+        <div class="toolbar">
+            <input type="text" id="searchInput" placeholder="ابحث بالاسم، الكود، إلخ...">
+            <button id="searchBtn" class="button">بحث</button>
+            <button id="addNewSupplierBtn" class="button primary-btn">إضافة مورد جديد</button>
+            <button type="button" id="refreshDataBtn" class="button secondary">عرض الكل / تحديث</button>
+        </div>
+        <div id="dataTableContainer">
+            <p id="initialMessage">الرجاء استخدام شريط البحث للعثور على مورد، أو انقر فوق "عرض الكل" لتحميل جميع البيانات.</p>
+            <p id="loadingMessage" style="display: none;">جاري تحميل البيانات...</p>
+        </div>
+        <div id="formStatus"></div>
     </div>
 
-    <!-- Ticket Modal (No changes) -->
-    <div class="modal-overlay" id="ticketModal">
-        <div class="ticket-view" id="ticketContent">
-             <div class="ticket-header">
-                <h2>تذكرة بيانات المورد</h2>
-                <p id="ticketSupplierName"></p>
+    <!-- Modal for ADDING/EDITING Supplier Data -->
+    <div id="supplierModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" title="إغلاق">×</span>
+            <h2 id="modalTitle" class="modal-title">إضافة مورد جديد</h2>
+            <form id="supplierModalForm">
+                <input type="hidden" id="modalRecordId" name="recordId">
+                <fieldset>
+                    <legend>البيانات الأساسية</legend>
+                    <div class="form-group">
+                        <label for="modalSupplierCode">كود المورد:</label>
+                        <input type="text" id="modalSupplierCode" name="SupplierCode" placeholder="اتركه فارغاً للتوليد التلقائي (إذا كان مدعوماً)">
+                    </div>
+                    <div class="form-group">
+                        <label for="modalSupplierName">اسم المورد <span class="required">*</span></label>
+                        <input type="text" id="modalSupplierName" name="SupplierName" required placeholder="ادخل اسم المورد كاملاً">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalCommercialReg">السجل التجاري <span class="required">*</span></label>
+                            <input type="text" id="modalCommercialReg" name="CommercialReg" required placeholder="رقم السجل التجاري">
+                        </div>
+                        <div class="form-group">
+                            <label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label>
+                            <input type="text" id="modalTaxRegNum" name="TaxRegNum" required placeholder="يقبل أرقام وحروف وشرطات">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalTaxStatus">الحالة الضريبية <span class="required">*</span></label>
+                        <select id="modalTaxStatus" name="TaxStatus" required><option value="خاضع">خاضع</option><option value="معفي">معفي</option></select>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>البيانات المالية</legend>
+                    <div class="form-row">
+                        <div class="form-group"><label for="modalInvoiceDiscount">خصم الفاتورة (%)</label><input type="number" id="modalInvoiceDiscount" name="InvoiceDiscount" min="0" step="0.01"></div>
+                        <div class="form-group"><label for="modalDeferredDiscount">خصم مؤجل (%)</label><input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="modalCodingFees">رسوم تكويد</label><input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01" placeholder="بالعملة المحلية"></div>
+                        <div class="form-group"><label for="modalPaymentMethod">طريقة السداد <span class="required">*</span></label><select id="modalPaymentMethod" name="PaymentMethod" required><option value="">اختر طريقة...</option><option value="نقدي">نقدي</option><option value="تحويل بنكي">تحويل بنكي</option><option value="شيك">شيك</option></select></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="modalPaymentPeriod">فترة السداد (أيام)</label><input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0"></div>
+                        <div class="form-group"><label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label><input type="number" id="modalReturnPeriod" name="ReturnPeriod" min="0"></div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>بيانات الاتصال</legend>
+                    <div class="form-group"><label for="modalContactPerson">اسم المسؤول <span class="required">*</span></label><input type="text" id="modalContactPerson" name="ContactPerson" required placeholder="اسم مسؤول الاتصال"></div>
+                    <div class="form-group"><label for="modalJobTitle">المسمى الوظيفي</label><input type="text" id="modalJobTitle" name="JobTitle"></div>
+                    <div class="form-group"><label for="modalPhoneNumber">رقم التليفون <span class="required">*</span></label><input type="tel" id="modalPhoneNumber" name="PhoneNumber" required placeholder="مثال: +201XXXXXXXXX"></div>
+                    <div class="form-group"><label for="modalEmail">البريد الإلكتروني <span class="required">*</span></label><input type="email" id="modalEmail" name="Email" required placeholder="example@domain.com"></div>
+                </fieldset>
+                <fieldset>
+                    <legend>بيانات أخرى</legend>
+                    <div class="form-group"><label for="modalRequesterName">صاحب الطلب</label><input type="text" id="modalRequesterName" name="RequesterName" placeholder="اسم مقدم الطلب"></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="modalRequestDate">تاريخ الطلب</label><input type="date" id="modalRequestDate" name="RequestDate"></div>
+                        <div class="form-group"><label for="modalRegistrationDate">تاريخ التسجيل</label><input type="date" id="modalRegistrationDate" name="RegistrationDate"></div>
+                    </div>
+                </fieldset>
+                <div class="form-actions">
+                    <button type="submit" id="modalSubmitBtn" class="button">حفظ</button>
+                    <button type="button" id="modalCancelBtn" class="button secondary">إلغاء</button>
+                </div>
+            </form>
+            <div id="modalFormStatus"></div>
+        </div>
+    </div>
+
+    <!-- Modal for VIEWING Supplier Details ("Ticket") -->
+    <div id="supplierDetailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" title="إغلاق">×</span>
+            <div class="modal-print-area">
+                <h2 id="detailModalTitle" class="modal-title">تفاصيل المورد</h2>
+                <div id="detailContent">
+                    <!-- Content will be populated by JS -->
+                </div>
             </div>
-            <div class="ticket-section">
-                <h3>البيانات الأساسية</h3>
-                <div class="ticket-item"><span class="label">كود المورد:</span><span class="value" id="ticketSupplierCode"></span></div>
-                <div class="ticket-item"><span class="label">السجل التجاري:</span><span class="value" id="ticketCommercialReg"></span></div>
-                <div class="ticket-item"><span class="label">رقم التسجيل الضريبي:</span><span class="value" id="ticketTaxRegNum"></span></div>
-            </div>
-            <div class="ticket-section">
-                <h3>البيانات المالية</h3>
-                <div class="ticket-item"><span class="label">خصم الفاتورة:</span><span class="value" id="ticketInvoiceDiscount"></span></div>
-                <div class="ticket-item"><span class="label">طريقة السداد:</span><span class="value" id="ticketPaymentMethod"></span></div>
-                <div class="ticket-item"><span class="label">فترة السداد:</span><span class="value" id="ticketPaymentPeriod"></span></div>
-            </div>
-            <div class="ticket-actions">
-                <button id="printTicketBtn" class="form-actions-button" style="background-color: var(--primary-color); color: white;">طباعة</button>
-                <button id="closeTicketBtn" class="form-actions-button" style="background-color: #6c757d; color: white;">إغلاق</button>
+            <div id="detailActions">
+                <button id="detailPrintBtn" class="button print-btn">طباعة</button>
+                <button id="detailEditBtn" class="button edit-btn">تعديل</button>
+                <button id="detailCloseBtn" class="button secondary">إغلاق</button>
             </div>
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    console.log("DEBUG: Application script loaded.");
-    // --- DOM Elements ---
-    const form = document.getElementById('supplierForm');
-    const formContainer = document.getElementById('formContainer');
-    const placeholderView = document.getElementById('placeholderView');
-    const supplierList = document.getElementById('supplierList');
-    const searchInput = document.getElementById('searchInput');
-    const newSupplierBtn = document.getElementById('newSupplierBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const deleteBtn = document.getElementById('deleteBtn');
-    const exportPdfBtn = document.getElementById('exportPdfBtn');
-    const viewTicketBtn = document.getElementById('viewTicketBtn');
-    const formStatusDiv = document.getElementById('formStatus');
-    const formTitle = document.getElementById('formTitle');
-    const supplierCodeInput = document.getElementById('supplierCode');
-    const supplierCodeDisplay = document.getElementById('supplierCodeDisplay');
-    const ticketModal = document.getElementById('ticketModal');
-    const closeTicketBtn = document.getElementById('closeTicketBtn');
-    const printTicketBtn = document.getElementById('printTicketBtn');
-
-    // --- State ---
-    let suppliers = [];
-    let currentSupplierCode = null;
-
-    // --- Utility Functions ---
-    function debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- CONFIGURATION ---
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec'; // IMPORTANT: Replace with your actual script URL
+        const DISPLAY_HEADERS_MAPPING = {
+            "SupplierCode": "كود المورد", "SupplierName": "اسم المورد", "CommercialReg": "السجل التجاري", "PhoneNumber": "رقم التليفون", "ContactPerson": "اسم المسؤول",
         };
-    }
+        const DISPLAY_HEADERS_KEYS = Object.keys(DISPLAY_HEADERS_MAPPING);
 
-    // --- Data Handling ---
-    const saveSuppliers = () => {
-        try {
-            localStorage.setItem('suppliers', JSON.stringify(suppliers));
-            console.log("DEBUG: Suppliers saved to localStorage.", suppliers);
-        } catch (e) {
-            console.error("DEBUG: Failed to save suppliers to localStorage.", e);
-            alert("خطأ: لم نتمكن من حفظ بيانات الموردين. قد تكون مساحة التخزين ممتلئة.");
+        // --- DOM ELEMENTS ---
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const addNewSupplierBtn = document.getElementById('addNewSupplierBtn');
+        const refreshDataBtn = document.getElementById('refreshDataBtn');
+        const dataTableContainer = document.getElementById('dataTableContainer');
+        const loadingMessageElement = document.getElementById('loadingMessage');
+        const initialMessageElement = document.getElementById('initialMessage');
+        const formStatusDiv = document.getElementById('formStatus');
+
+        // Edit/Add Modal
+        const supplierModal = document.getElementById('supplierModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const supplierModalForm = document.getElementById('supplierModalForm');
+        const modalRecordIdInput = document.getElementById('modalRecordId');
+        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
+        
+        // Detail "Ticket" Modal
+        const detailModal = document.getElementById('supplierDetailModal');
+        const detailModalTitle = document.getElementById('detailModalTitle');
+        const detailContent = document.getElementById('detailContent');
+        const detailPrintBtn = document.getElementById('detailPrintBtn');
+        const detailEditBtn = document.getElementById('detailEditBtn');
+
+        // --- HELPER FUNCTIONS ---
+        const escapeHTML = (str) => {
+            if (str === null || str === undefined) return '';
+            const p = document.createElement('p');
+            p.textContent = str;
+            return p.innerHTML;
+        };
+
+        const showStatus = (element, message, type = '') => {
+            element.textContent = message;
+            element.className = type;
+            element.style.display = message ? 'block' : 'none';
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => { element.style.display = 'none'; }, type === 'success' ? 4000 : 8000);
+            }
+        };
+
+        const showLoading = (isLoading) => {
+            initialMessageElement.style.display = 'none';
+            loadingMessageElement.style.display = isLoading ? 'block' : 'none';
+            if (isLoading) dataTableContainer.innerHTML = '';
+            dataTableContainer.appendChild(loadingMessageElement);
+        };
+
+        // --- DATA FETCHING & RENDERING ---
+        async function fetchData(searchTerm = '') {
+            if (!GOOGLE_SCRIPT_URL.includes('/macros/s/')) {
+                showStatus(formStatusDiv, 'خطأ: رابط Google Script غير صحيح. يرجى مراجعة الإعدادات.', 'error');
+                return;
+            }
+            showLoading(true);
+
+            const url = new URL(GOOGLE_SCRIPT_URL);
+            url.searchParams.append('action', searchTerm ? 'searchSuppliers' : 'getAllSuppliers');
+            if(searchTerm) url.searchParams.append('term', searchTerm);
+            
+            try {
+                const response = await fetch(url);
+                const result = await response.json();
+                showLoading(false);
+                if (result.status === 'success') {
+                    if (result.data && result.data.length > 0) renderTable(result.data);
+                    else dataTableContainer.innerHTML = `<p>${searchTerm ? 'لا توجد نتائج بحث مطابقة.' : 'لا يوجد موردين مسجلين حالياً.'}</p>`;
+                } else {
+                    throw new Error(result.message || 'فشل جلب البيانات.');
+                }
+            } catch (error) {
+                console.error('Error during fetchData:', error);
+                showLoading(false);
+                dataTableContainer.innerHTML = `<p class="error">خطأ في تحميل البيانات: ${error.message}</p>`;
+            }
         }
-    };
 
-    const loadSuppliers = () => {
-        const storedSuppliers = localStorage.getItem('suppliers');
-        console.log("DEBUG: Loading suppliers from localStorage.");
-        if (!storedSuppliers) {
-            console.log("DEBUG: No suppliers found in localStorage.");
-            suppliers = [];
-            return;
+        function renderTable(data) {
+            let tableHTML = '<table><thead><tr>';
+            DISPLAY_HEADERS_KEYS.forEach(key => { tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`; });
+            tableHTML += '<th>إجراءات</th></tr></thead><tbody>';
+
+            data.forEach(record => {
+                tableHTML += `<tr data-id="${escapeHTML(record.RowID)}">`;
+                DISPLAY_HEADERS_KEYS.forEach(key => { tableHTML += `<td>${escapeHTML(record[key])}</td>`; });
+                tableHTML += `<td class="actions-cell">
+                                <button class="view-btn button" data-id="${escapeHTML(record.RowID)}">عرض التفاصيل</button>
+                                <button class="delete-btn button" data-id="${escapeHTML(record.RowID)}">حذف</button>
+                             </td>`;
+                tableHTML += '</tr>';
+            });
+            tableHTML += '</tbody></table>';
+            dataTableContainer.innerHTML = tableHTML;
+            addTableActionListeners();
         }
-        try {
-            suppliers = JSON.parse(storedSuppliers);
-            console.log("DEBUG: Successfully loaded and parsed suppliers.", suppliers);
-        } catch (e) {
-            console.error("DEBUG: Error parsing suppliers from localStorage!", e);
-            suppliers = [];
-            alert("حدث خطأ أثناء تحميل بيانات الموردين. قد تكون البيانات تالفة. سيتم البدء بقائمة فارغة.");
+
+        function addTableActionListeners() {
+            dataTableContainer.querySelectorAll('.view-btn').forEach(b => b.addEventListener('click', (e) => showSupplierDetails(e.target.dataset.id)));
+            dataTableContainer.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', (e) => handleDeleteClick(e.target.dataset.id)));
         }
-    };
 
-    // --- UI Rendering ---
-    const renderSupplierList = (filter = '') => {
-        console.log(`DEBUG: renderSupplierList called with filter: "${filter}"`);
-        supplierList.innerHTML = '';
-        const lowerCaseFilter = filter.toLowerCase().trim();
+        // --- DETAIL "TICKET" MODAL LOGIC ---
+        async function showSupplierDetails(recordId) {
+            if (!recordId) return;
+            showStatus(formStatusDiv, 'جاري تحميل تفاصيل المورد...', '');
 
-        // FIX: Added defensive checks (s.supplierName || '') to prevent errors on null/undefined data.
-        const filtered = suppliers.filter(s => {
-            const nameMatch = (s.supplierName || '').toLowerCase().includes(lowerCaseFilter);
-            const codeMatch = (s.supplierCode || '').toLowerCase().includes(lowerCaseFilter);
-            return nameMatch || codeMatch;
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
+                const result = await response.json();
+                if (result.status === 'success' && result.data) {
+                    populateDetailModal(result.data);
+                    detailModal.dataset.recordId = recordId; // Store ID for the edit button
+                    detailModal.style.display = 'block';
+                    showStatus(formStatusDiv, '', ''); // Clear loading message
+                } else {
+                    throw new Error(result.message || 'فشل تحميل بيانات المورد.');
+                }
+            } catch (error) {
+                console.error('Error loading record for details:', error);
+                showStatus(formStatusDiv, error.message, 'error');
+            }
+        }
+
+        function populateDetailModal(record) {
+            const formatValue = val => escapeHTML(val) || '<span class="text-muted" style="font-style:italic;">-- غير متوفر --</span>';
+            detailModalTitle.textContent = `تفاصيل المورد: ${escapeHTML(record.SupplierName)}`;
+            
+            detailContent.innerHTML = `
+                <div class="detail-section">
+                    <h3>البيانات الأساسية</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item"><strong>كود المورد:</strong><span>${formatValue(record.SupplierCode)}</span></div>
+                        <div class="detail-item"><strong>اسم المورد:</strong><span>${formatValue(record.SupplierName)}</span></div>
+                        <div class="detail-item"><strong>السجل التجاري:</strong><span>${formatValue(record.CommercialReg)}</span></div>
+                        <div class="detail-item"><strong>رقم التسجيل الضريبي:</strong><span>${formatValue(record.TaxRegNum)}</span></div>
+                        <div class="detail-item"><strong>الحالة الضريبية:</strong><span>${formatValue(record.TaxStatus)}</span></div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h3>البيانات المالية</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item"><strong>خصم الفاتورة (%):</strong><span>${formatValue(record.InvoiceDiscount)}</span></div>
+                        <div class="detail-item"><strong>خصم مؤجل (%):</strong><span>${formatValue(record.DeferredDiscount)}</span></div>
+                        <div class="detail-item"><strong>رسوم تكويد:</strong><span>${formatValue(record.CodingFees)}</span></div>
+                        <div class="detail-item"><strong>طريقة السداد:</strong><span>${formatValue(record.PaymentMethod)}</span></div>
+                        <div class="detail-item"><strong>فترة السداد (أيام):</strong><span>${formatValue(record.PaymentPeriod)}</span></div>
+                        <div class="detail-item"><strong>فترة رفع المرتجع (أيام):</strong><span>${formatValue(record.ReturnPeriod)}</span></div>
+                    </div>
+                </div>
+                <div class="detail-section">
+                    <h3>بيانات الاتصال</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item"><strong>اسم المسؤول:</strong><span>${formatValue(record.ContactPerson)}</span></div>
+                        <div class="detail-item"><strong>المسمى الوظيفي:</strong><span>${formatValue(record.JobTitle)}</span></div>
+                        <div class="detail-item"><strong>رقم التليفون:</strong><span>${formatValue(record.PhoneNumber)}</span></div>
+                        <div class="detail-item"><strong>البريد الإلكتروني:</strong><span style="direction: ltr; text-align: left;">${formatValue(record.Email)}</span></div>
+                    </div>
+                </div>
+                 <div class="detail-section">
+                    <h3>بيانات أخرى</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item"><strong>صاحب الطلب:</strong><span>${formatValue(record.RequesterName)}</span></div>
+                        <div class="detail-item"><strong>تاريخ الطلب:</strong><span>${formatValue(record.RequestDate ? record.RequestDate.split('T')[0] : '')}</span></div>
+                        <div class="detail-item"><strong>تاريخ التسجيل:</strong><span>${formatValue(record.RegistrationDate ? record.RegistrationDate.split('T')[0] : '')}</span></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handlePrint() {
+            const printArea = detailModal.querySelector('.modal-print-area');
+            if (printArea) {
+                document.body.classList.add('print-active');
+                printArea.parentElement.parentElement.classList.add('printing'); // Mark the modal
+                window.print();
+            }
+        }
+        
+        window.onafterprint = () => {
+             document.body.classList.remove('print-active');
+             detailModal.classList.remove('printing');
+        };
+
+        // --- ADD/EDIT MODAL LOGIC ---
+        function openFormModal(mode = 'add', recordId = null) {
+            supplierModalForm.reset();
+            showStatus(modalFormStatusDiv, '', '');
+            supplierModalForm.querySelectorAll('.error-message').forEach(m => m.remove());
+
+            if (mode === 'add') {
+                modalTitle.textContent = 'إضافة مورد جديد';
+                modalRecordIdInput.value = '';
+                modalSubmitBtn.textContent = 'إضافة المورد';
+                supplierModal.style.display = 'block';
+                document.getElementById('modalSupplierName').focus();
+            } else if (mode === 'edit' && recordId) {
+                modalTitle.textContent = 'تعديل بيانات المورد';
+                modalRecordIdInput.value = recordId;
+                modalSubmitBtn.textContent = 'حفظ التعديلات';
+                loadRecordForEdit(recordId);
+            }
+        }
+
+        async function loadRecordForEdit(recordId) {
+            showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
+            try {
+                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
+                const result = await response.json();
+                if (result.status === 'success' && result.data) {
+                    Object.keys(result.data).forEach(key => {
+                        const input = supplierModalForm.elements[key];
+                        if (input) {
+                             if (input.type === 'date' && result.data[key]) {
+                                input.value = result.data[key].split('T')[0];
+                            } else {
+                                input.value = result.data[key] ?? '';
+                            }
+                        }
+                    });
+                    showStatus(modalFormStatusDiv, '', '');
+                    supplierModal.style.display = 'block';
+                    document.getElementById('modalSupplierName').focus();
+                } else { throw new Error(result.message); }
+            } catch (error) {
+                showStatus(modalFormStatusDiv, error.message, 'error');
+            }
+        }
+
+        function validateModalForm() {
+            let isValid = true;
+            supplierModalForm.querySelectorAll('.error-message').forEach(m => m.remove());
+            supplierModalForm.querySelectorAll('[required]').forEach(field => {
+                field.style.borderColor = '';
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = 'var(--danger-color)';
+                    const errorMsg = document.createElement('small');
+                    errorMsg.textContent = 'هذا الحقل مطلوب';
+                    errorMsg.className = 'error-message';
+                    field.parentNode.insertBefore(errorMsg, field.nextSibling);
+                }
+            });
+            if (!isValid) showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة.', 'error');
+            return isValid;
+        }
+
+        // --- EVENT HANDLERS ---
+        searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
+        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
+        addNewSupplierBtn.addEventListener('click', () => openFormModal('add'));
+        refreshDataBtn.addEventListener('click', () => { searchInput.value = ''; fetchData(); });
+        
+        // Form Modal Controls
+        supplierModal.querySelector('.close-button').addEventListener('click', () => supplierModal.style.display = 'none');
+        document.getElementById('modalCancelBtn').addEventListener('click', () => supplierModal.style.display = 'none');
+        
+        // Detail Modal Controls
+        detailModal.querySelector('.close-button').addEventListener('click', () => detailModal.style.display = 'none');
+        document.getElementById('detailCloseBtn').addEventListener('click', () => detailModal.style.display = 'none');
+        detailPrintBtn.addEventListener('click', handlePrint);
+        detailEditBtn.addEventListener('click', () => {
+            const recordId = detailModal.dataset.recordId;
+            detailModal.style.display = 'none';
+            openFormModal('edit', recordId);
         });
-        
-        console.log(`DEBUG: Found ${filtered.length} suppliers after filtering.`);
 
-        if (filtered.length === 0) {
-            const message = filter === '' ? 'لا يوجد موردين محفوظين.' : 'لا توجد نتائج.';
-            supplierList.innerHTML = `<li style="text-align:center; color:#888; cursor:default;">${message}</li>`;
-        }
+        supplierModalForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            if (!validateModalForm()) return;
 
-        filtered.sort((a, b) => (a.supplierName || '').localeCompare(b.supplierName || '', 'ar'));
-        
-        filtered.forEach(supplier => {
-            const li = document.createElement('li');
-            li.dataset.code = supplier.supplierCode;
+            modalSubmitBtn.disabled = true;
+            modalSubmitBtn.textContent = 'جاري الحفظ...';
+            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', '');
 
-            const nameSpan = document.createElement('span');
-            nameSpan.textContent = supplier.supplierName;
-
-            const codeSpan = document.createElement('span');
-            codeSpan.className = 'supplier-code-display';
-            codeSpan.textContent = supplier.supplierCode;
-
-            li.appendChild(nameSpan);
-            li.appendChild(codeSpan);
-
-            if (supplier.supplierCode === currentSupplierCode) {
-                li.classList.add('active');
+            const formData = new FormData(supplierModalForm);
+            formData.append('action', modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier');
+            
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    showStatus(formStatusDiv, result.message, 'success');
+                    supplierModal.style.display = 'none';
+                    fetchData(searchInput.value.trim()); // Refresh table
+                    // **NEW**: Automatically show detail ticket for the new/updated record
+                    if (result.data && result.data.RowID) {
+                        setTimeout(() => showSupplierDetails(result.data.RowID), 500);
+                    }
+                } else {
+                    throw new Error(result.message || 'حدث خطأ غير متوقع من الخادم.');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                showStatus(modalFormStatusDiv, error.message, 'error');
+            } finally {
+                modalSubmitBtn.disabled = false;
+                modalSubmitBtn.textContent = modalRecordIdInput.value ? 'حفظ التعديلات' : 'إضافة المورد';
             }
-            li.addEventListener('click', () => displaySupplierDetails(supplier.supplierCode));
-            supplierList.appendChild(li);
         });
-    };
-    
-    const showForm = () => {
-        formContainer.style.display = 'block';
-        placeholderView.style.display = 'none';
-    };
 
-    const showPlaceholder = () => {
-        formContainer.style.display = 'none';
-        placeholderView.style.display = 'block';
-    };
+        async function handleDeleteClick(recordId) {
+            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) return;
+            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
 
-    const displaySupplierDetails = (code) => {
-        console.log(`DEBUG: Displaying details for supplier code: ${code}`);
-        const supplier = suppliers.find(s => s.supplierCode === code);
-        if (!supplier) {
-            console.error(`DEBUG: Could not find supplier with code ${code}.`);
-            return;
-        }
-        
-        currentSupplierCode = code;
-        form.reset();
-        formStatusDiv.style.display = 'none';
+            const formData = new FormData();
+            formData.append('action', 'deleteSupplier');
+            formData.append('recordId', recordId);
 
-        for (const key in supplier) {
-            if (form.elements[key]) {
-                form.elements[key].value = supplier[key];
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    showStatus(formStatusDiv, result.message, 'success');
+                    fetchData(searchInput.value.trim());
+                } else {
+                    throw new Error(result.message || 'فشل حذف المورد.');
+                }
+            } catch (error) {
+                console.error('Error deleting supplier:', error);
+                showStatus(formStatusDiv, error.message, 'error');
             }
         }
-        supplierCodeDisplay.value = supplier.supplierCode;
-        supplierCodeInput.readOnly = true;
-
-        formTitle.textContent = 'تعديل بيانات المورد';
-        submitBtn.textContent = 'حفظ التعديلات';
-        deleteBtn.style.display = 'inline-block';
-        viewTicketBtn.style.display = 'inline-block';
-        renderSupplierList(searchInput.value);
-        showForm();
-    };
-
-    const clearForm = () => {
-        console.log("DEBUG: Clearing form for new supplier entry.");
-        currentSupplierCode = null;
-        form.reset();
-        formStatusDiv.style.display = 'none';
-        supplierCodeDisplay.value = '(جديد)';
-        supplierCodeInput.readOnly = false;
-        formTitle.textContent = 'نموذج تسجيل مورد جديد';
-        submitBtn.textContent = 'تسجيل المورد';
-        deleteBtn.style.display = 'none';
-        viewTicketBtn.style.display = 'none';
-        if (document.querySelector('#supplierList li.active')) {
-            document.querySelector('#supplierList li.active').classList.remove('active');
-        }
-        showForm();
-    };
-
-    const showStatus = (message, type = 'success') => {
-        formStatusDiv.textContent = message;
-        formStatusDiv.className = type;
-        formStatusDiv.style.display = 'block';
-        setTimeout(() => { formStatusDiv.style.display = 'none'; }, 4000);
-    };
-
-    // --- Event Listeners ---
-    newSupplierBtn.addEventListener('click', clearForm);
-
-    const debouncedSearch = debounce(() => renderSupplierList(searchInput.value), 300);
-    searchInput.addEventListener('input', debouncedSearch);
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log("DEBUG: Form submitted.");
-        if (!form.checkValidity()) {
-            console.log("DEBUG: Form is invalid. Reporting validity.");
-            form.reportValidity();
-            return;
-        }
-
-        const formData = new FormData(form);
-        const supplierData = Object.fromEntries(formData.entries());
-        const newCode = supplierData.supplierCode.trim();
-        console.log("DEBUG: New/updated supplier data from form:", supplierData);
-
-        const isCodeInUse = suppliers.some(
-            s => s.supplierCode === newCode && s.supplierCode !== currentSupplierCode
-        );
-
-        if (isCodeInUse) {
-            console.log(`DEBUG: Code "${newCode}" is already in use.`);
-            showStatus('هذا الكود مستخدم بالفعل لمورد آخر. الرجاء إدخال كود فريد.', 'error');
-            supplierCodeInput.focus();
-            return;
-        }
-
-        if (currentSupplierCode) { // Update
-            console.log(`DEBUG: Updating supplier with code: ${currentSupplierCode}`);
-            const index = suppliers.findIndex(s => s.supplierCode === currentSupplierCode);
-            if (index !== -1) {
-                suppliers[index] = supplierData;
-                currentSupplierCode = newCode;
-                showStatus('تم تحديث بيانات المورد بنجاح.', 'success');
-            }
-        } else { // Create new
-            console.log("DEBUG: Creating new supplier.");
-            suppliers.push(supplierData);
-            currentSupplierCode = newCode;
-            showStatus('تم تسجيل المورد الجديد بنجاح.', 'success');
-        }
-
-        saveSuppliers();
-        renderSupplierList(searchInput.value);
-        displaySupplierDetails(currentSupplierCode);
     });
-
-    deleteBtn.addEventListener('click', () => {
-        if (!currentSupplierCode) return;
-        const supplierToDelete = suppliers.find(s => s.supplierCode === currentSupplierCode);
-        if (confirm(`هل أنت متأكد من رغبتك في حذف المورد "${supplierToDelete.supplierName}"؟ لا يمكن التراجع عن هذا الإجراء.`)) {
-            console.log(`DEBUG: Deleting supplier with code: ${currentSupplierCode}`);
-            suppliers = suppliers.filter(s => s.supplierCode !== currentSupplierCode);
-            currentSupplierCode = null;
-            saveSuppliers();
-            renderSupplierList();
-            showPlaceholder();
-            alert('تم حذف المورد بنجاح.');
-        }
-    });
-
-    // --- Other Functionality ---
-    viewTicketBtn.addEventListener('click', () => { /* ... no changes ... */ });
-    closeTicketBtn.addEventListener('click', () => ticketModal.style.display = 'none');
-    printTicketBtn.addEventListener('click', () => window.print());
-    exportPdfBtn.addEventListener('click', () => { /* ... no changes ... */ });
-
-
-    // --- Initial Load ---
-    loadSuppliers();
-    renderSupplierList();
-    showPlaceholder();
-});
-</script>
-
-
+    </script>
 </body>
 </html>
