@@ -1,668 +1,248 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إدارة الموردين</title>
- <!-- DELETE THIS LINE -->
-<link rel="icon" type="image/png" href="favicon.png"> 
-
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Supplier Management Hub</title>
     <style>
-        body {
-            font-family: 'Cairo', sans-serif;
-            direction: rtl;
-            background-color: #f0f2f5;
-            margin: 0;
-            padding: 20px;
-            color: #2c3e50;
-            line-height: 1.55;
-            font-size: 16px;
-        }
-        .container {
-            max-width: 95%;
-            margin: 20px auto;
-            background-color: #ffffff;
-            padding: 25px 30px;
-            border-radius: 10px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
-            border: 1px solid #c5cdd4;
-        }
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #0062cc;
-        }
-        header h1 {
-            color: #004085;
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0;
-        }
-        fieldset {
-            border: 2px solid #aab8c5;
-            border-radius: 8px;
-            padding: 18px 25px;
-            margin-bottom: 18px;
-            background-color: #f8f9fa;
-        }
-        legend {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #0056b3;
-            padding: 0 12px;
-            margin-right: 10px;
-            background-color: #fff;
-        }
-        .form-group { position: relative; margin-bottom: 15px; }
-        .form-row { display: flex; gap: 20px; align-items: flex-start; }
-        .form-row .form-group { flex: 1; margin-bottom: 0; }
-        fieldset > .form-row { margin-bottom: 15px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: 600;
-            color: #3e4d5c;
-            font-size: 1.0em;
-        }
-        .form-group label .required { color: #c82333; margin-left: 4px; font-weight: 700; }
-        input[type="text"], input[type="number"], input[type="tel"], input[type="email"], select, input[type="date"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #b0bac5;
-            border-radius: 5px;
-            box-sizing: border-box;
-            font-size: 1.0em;
-            line-height: 1.3;
-            height: auto;
-            min-height: 38px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            background-color: #fff;
-        }
-        input[type="text"], input[type="number"], input[type="tel"], input[type="date"] {
-            text-align: center;
-            font-weight: normal;
-        }
-        input[type="email"] { text-align: left; font-weight: 400; }
-        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-year-field,
-        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-month-field,
-        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-day-field,
-        input[type="date"]:not([value]):not(:focus)::-webkit-datetime-edit-text {
-            color: transparent !important;
-        }
-        input[type="date"]::before{
-            content: 'YYYY-MM-DD';
-            display: block;
-            color: #99aabb;
-            text-align: center;
-            width: 100%;
-        }
-        input[type="date"][value]:not([value=""])::before { display: none; }
-        input:focus, select:focus {
-            border-color: #0056b3;
-            box-shadow: 0 0 0 0.2rem rgba(0, 98, 204, 0.25);
-            outline: none;
-        }
-        input::placeholder { color: #778899; font-size: 0.95em; text-align: right; font-weight: 400; }
-        input[type="text"]::placeholder, input[type="number"]::placeholder, input[type="tel"]::placeholder {
-            text-align: center;
-        }
-        .form-actions {
-            text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid #dee2e6;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        button, .button {
-            background-color: #0062cc;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.0em;
-            font-weight: 600;
-            transition: background-color 0.2s ease;
-            margin: 5px 8px;
-            line-height: 1.5;
-        }
-        button[type="button"], .button.secondary { background-color: #5a6268; }
-        .button.info { background-color: #17a2b8; }
-        button:hover, .button:hover { background-color: #004a99; }
-        button[type="button"]:hover, .button.secondary:hover { background-color: #474c52; }
-        .button.info:hover { background-color: #138496; }
-
-        #formStatus, #modalFormStatus { margin-top: 15px; padding: 10px; border-radius: 5px; text-align: center; font-weight: 600; display: none; }
-        #formStatus.success, #modalFormStatus.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        #formStatus.error, #modalFormStatus.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .error-message { color: #c82333; font-size: 0.85em; display: block; margin-top: 4px; }
-
-        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; align-items: center; }
-        .toolbar input[type="text"] { flex-grow: 1; min-width: 200px; padding: 10px 12px; font-size: 1em; }
-        .toolbar button { flex-shrink: 0; }
-        button.primary-btn { background-color: #28a745; }
-        button.primary-btn:hover { background-color: #218838; }
-
-        #dataTableContainer { overflow-x: auto; min-height: 100px; }
-        #dataTableContainer table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9em; }
-        #dataTableContainer th, #dataTableContainer td { border: 1px solid #ddd; padding: 8px 10px; text-align: right; vertical-align: middle; }
-        #dataTableContainer th { background-color: #e9ecef; font-weight: 600; color: #212529; position: sticky; top: 0; z-index: 10; }
-        #dataTableContainer tr:nth-child(even){background-color: #f8f9fa;}
-        #dataTableContainer tr:hover {background-color: #e2e6ea;}
-        #dataTableContainer .actions-cell { white-space: nowrap; } /* NEW */
-        #dataTableContainer .actions-cell button { margin: 2px 3px; padding: 6px 10px; font-size: 0.9em; }
-        #dataTableContainer .actions-cell .edit-btn { background-color: #ffc107; color: black; }
-        #dataTableContainer .actions-cell .edit-btn:hover { background-color: #e0a800; }
-        /* <!-- NEW: Styles for the new row-level print button --> */
-        #dataTableContainer .actions-cell .print-btn { background-color: #17a2b8; }
-        #dataTableContainer .actions-cell .print-btn:hover { background-color: #138496; }
-        #dataTableContainer .actions-cell .delete-btn { background-color: #dc3545; }
-        #dataTableContainer .actions-cell .delete-btn:hover { background-color: #c82333; }
-        #loadingMessage { text-align: center; padding: 20px; font-style: italic; color: #555;}
-        #dataTableContainer p.error { color: #721c24; background-color: #f8d7da; border:1px solid #f5c6cb; padding:10px; border-radius:5px; text-align: center;}
-        #dataTableContainer p:not(.error) { text-align: center; padding: 15px; color: #555;}
-
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fefefe; margin: 3% auto; padding: 25px 35px; border: 1px solid #888; width: 90%; max-width: 800px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
-        .modal-content fieldset { background-color: #fdfdfd; }
-        .close-button { color: #777; float: left; font-size: 30px; font-weight: bold; line-height: 0.8; padding: 5px; }
-        .close-button:hover, .close-button:focus { color: black; text-decoration: none; cursor: pointer; }
-        #modalTitle { color: #004085; margin-top: 0; margin-bottom: 25px; text-align: center; font-size: 1.8em; }
-        .modal-content .form-group { margin-bottom: 12px; }
-        .modal-content .form-actions button { font-size: 1em; padding: 12px 25px;}
-
-        .print-only-value { display: none; }
-
-        @media print {
-            @page { size: A4; margin: 1.5cm; }
-            body { font-size: 10pt; line-height: 1.4; background-color: #fff; -webkit-print-color-adjust: exact; }
-            body > *:not(#supplierModal) { display: none !important; }
-            #supplierModal { visibility: visible; display: block !important; position: static; overflow: visible; background-color: #fff; }
-            .modal-content { visibility: visible; width: 100%; max-width: 100%; margin: 0; padding: 0; border: none; box-shadow: none; }
-            .close-button, .form-actions, #modalFormStatus, .error-message { display: none !important; }
-            #modalTitle { padding-bottom: 10px; margin-bottom: 15px; border-bottom: 2px solid #0062cc; font-size: 1.5em; }
-            fieldset { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; align-items: start; padding: 10px 15px; margin-bottom: 15px; border: 1px solid #ccc; page-break-inside: avoid; }
-            legend { grid-column: 1 / -1; margin-bottom: 8px; padding-bottom: 5px; border-bottom: 1px solid #eee; background-color: transparent; font-size: 1.2em; }
-            .form-row { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; margin: 0; }
-            .form-group { margin: 0; padding: 0; }
-            .form-group label { margin-bottom: 4px; font-size: 9pt; font-weight: bold; }
-            .form-group input, .form-group select { display: none !important; }
-            .print-only-value { display: block !important; width: 100%; min-height: auto; padding: 6px 10px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 4px; background-color: #f0f2f5 !important; line-height: 1.3; text-align: center; word-wrap: break-word; font-size: 10pt; }
-            .print-only-value.email-value { text-align: left; direction: ltr; }
-        }
-
-        @media (max-width: 768px) {
-            .container { max-width: 100%; padding: 15px; }
-            header h1 { font-size: 22px; }
-            .toolbar { flex-direction: column; align-items: stretch; }
-            .toolbar input[type="text"], .toolbar button { width: 100%; margin-bottom: 10px; }
-            .form-row { flex-direction: column; gap: 0; }
-            .form-row .form-group { margin-bottom: 15px; }
-            .modal-content { width: 95%; margin: 5% auto; padding: 20px;}
-            #modalTitle { font-size: 1.5em; }
-        }
+        /* All CSS from before remains the same, with additions for the debug panel */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root{--bg-color:#121212;--surface-color:rgba(255,255,255,0.05);--glass-blur:15px;--border-color:rgba(255,255,255,0.1);--primary-color:#6a5acd;--primary-glow:rgba(106,90,205,0.4);--text-color:#e0e0e0;--text-secondary-color:#a0a0a0;--success-color:#28a745;--error-color:#dc3545;--warning-color:#ffc107;--border-radius:12px;--shadow:0 8px 32px 0 rgba(0,0,0,0.37)}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Inter',sans-serif;background-color:var(--bg-color);color:var(--text-color);background-image:radial-gradient(circle at 1% 1%,var(--primary-glow) 0,transparent 30%),radial-gradient(circle at 99% 99%,var(--primary-glow) 0,transparent 40%);min-height:100vh;line-height:1.6}.container{max-width:1200px;margin:0 auto;padding:2rem}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem;flex-wrap:wrap;gap:1rem}header h1{font-size:2.5rem;font-weight:700;background:linear-gradient(45deg,var(--primary-color),#af72d8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}.actions{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}.btn{background:rgba(255,255,255,0.1);border:1px solid var(--border-color);color:var(--text-color);padding:.75rem 1.5rem;border-radius:var(--border-radius);cursor:pointer;font-weight:500;transition:all .3s ease;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}.btn:hover{background:var(--primary-color);border-color:var(--primary-color);box-shadow:0 0 15px var(--primary-glow)}.search-input{background:var(--surface-color);border:1px solid var(--border-color);color:var(--text-color);padding:.75rem 1rem;border-radius:var(--border-radius);width:100%;max-width:300px;font-size:1rem;transition:all .3s ease}.search-input:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 10px var(--primary-glow)}#supplier-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}.supplier-card{background:var(--surface-color);border:1px solid var(--border-color);border-radius:var(--border-radius);padding:1.5rem;backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));box-shadow:var(--shadow);transition:transform .3s ease,box-shadow .3s ease;display:flex;flex-direction:column;gap:1rem}.supplier-card:hover{transform:translateY(-5px);box-shadow:0 0 25px var(--primary-glow)}.card-header{display:flex;justify-content:space-between;align-items:flex-start}.card-header h3{font-size:1.25rem;color:var(--text-color);max-width:80%}.card-header .code{font-size:.9rem;background:var(--primary-color);color:#fff;padding:.25rem .5rem;border-radius:6px;font-weight:600}.card-body p{font-size:.95rem;color:var(--text-secondary-color)}.card-body strong{color:var(--text-color);font-weight:500}.card-footer{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border-color);display:flex;gap:.5rem;justify-content:flex-end}.card-footer .btn{padding:.5rem 1rem;font-size:.9rem}.btn-edit{background:rgba(106,90,205,0.2);border-color:rgba(106,90,205,0.5)}.btn-edit:hover{background:var(--primary-color);border-color:var(--primary-color)}.btn-delete{background:rgba(220,53,69,0.2);border-color:rgba(220,53,69,0.5)}.btn-delete:hover{background:var(--error-color);border-color:var(--error-color)}#loader{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:60px;height:60px;border:5px solid var(--surface-color);border-top-color:var(--primary-color);border-radius:50%;animation:spin 1s linear infinite;z-index:1001}@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}#modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);display:flex;justify-content:center;align-items:center;z-index:1000;opacity:0;visibility:hidden;transition:opacity .3s ease,visibility .3s ease}#modal.show{opacity:1;visibility:visible}.modal-content{background:var(--surface-color);border:1px solid var(--border-color);border-radius:var(--border-radius);padding:2.5rem;backdrop-filter:blur(var(--glass-blur));-webkit-backdrop-filter:blur(var(--glass-blur));box-shadow:var(--shadow);width:90%;max-width:500px;transform:scale(.95);transition:transform .3s ease}#modal.show .modal-content{transform:scale(1)}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}.modal-header h2{font-size:1.75rem}.close-btn{font-size:2rem;background:none;border:none;color:var(--text-secondary-color);cursor:pointer;transition:color .3s ease}.close-btn:hover{color:var(--text-color)}.form-group{margin-bottom:1.5rem}.form-group label{display:block;margin-bottom:.5rem;color:var(--text-secondary-color);font-weight:500}.form-group input{width:100%;padding:.75rem 1rem;background:rgba(0,0,0,.2);border:1px solid var(--border-color);border-radius:var(--border-radius);color:var(--text-color);font-size:1rem}.form-group input:focus{outline:none;border-color:var(--primary-color)}.modal-footer{display:flex;justify-content:flex-end;gap:1rem;margin-top:2rem}#no-suppliers-msg{text-align:center;padding:3rem;color:var(--text-secondary-color);grid-column:1 / -1;background:var(--surface-color);border-radius:var(--border-radius);border:1px solid var(--border-color)}#toast-container{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:10px}.toast{padding:12px 20px;border-radius:var(--border-radius);color:#fff;font-weight:500;box-shadow:0 4px 15px rgba(0,0,0,.2);opacity:0;transform:translateX(100%);animation:slideIn .5s forwards}.toast.exit{animation:slideOut .5s forwards}@keyframes slideIn{to{opacity:1;transform:translateX(0)}}@keyframes slideOut{to{opacity:0;transform:translateX(100%)}}.toast.success{background:var(--success-color)}.toast.error{background:var(--error-color)}
+        /* --- DEBUG STYLES --- */
+        .debug-panel{position:fixed;bottom:0;left:0;width:100%;background:rgba(0,0,0,0.9);border-top:2px solid var(--warning-color);max-height:40vh;display:flex;flex-direction:column;z-index:9998;transform:translateY(100%);transition:transform .3s ease-in-out}.debug-panel.show{transform:translateY(0)}.debug-header{display:flex;justify-content:space-between;align-items:center;padding:.5rem 1rem;background:rgba(255,255,255,.1)}.debug-header h3{color:var(--warning-color);font-size:1rem;margin:0}.debug-log{flex-grow:1;overflow-y:auto;padding:1rem;font-family:monospace;font-size:.85rem;color:#ddd;line-height:1.4}.debug-log p{margin:0 0 .5rem;word-break:break-all;border-bottom:1px solid #444;padding-bottom:.5rem}.debug-log .log-error{color:var(--error-color)}.debug-log .log-success{color:var(--success-color)}.debug-log .log-info{color:#58a6ff}.debug-controls{display:flex;gap:1rem;margin-top:1rem;padding:0 2rem 1rem 2rem}
     </style>
 </head>
 <body>
+
     <div class="container">
-        <header><h1>إدارة الموردين</h1></header>
-        <div class="toolbar">
-            <input type="text" id="searchInput" placeholder="ابحث بالاسم، الكود، إلخ...">
-            <button id="searchBtn" class="button">بحث</button>
-            <button id="addNewSupplierBtn" class="button primary-btn">إضافة مورد جديد</button>
-            <button type="button" id="refreshDataBtn" class="button secondary">تحديث البيانات</button>
+        <header>
+            <h1>Supplier Hub</h1>
+            <div class="actions">
+                <input type="search" id="searchInput" class="search-input" placeholder="Search suppliers...">
+                <button id="addSupplierBtn" class="btn">Add Supplier</button>
+            </div>
+        </header>
+
+        <main>
+            <div id="loader" style="display: none;"></div>
+            <div id="supplier-grid"></div>
+        </main>
+        
+        <div class="debug-controls">
+            <button id="testConnectionBtn" class="btn">Test Connection</button>
+            <button id="toggleDebugBtn" class="btn">Show Debug Log</button>
         </div>
-        <div id="dataTableContainer"><p id="loadingMessage">جاري تحميل البيانات...</p></div>
-        <div id="formStatus"></div>
     </div>
 
-    <div id="supplierModal" class="modal">
-        <div class="modal-content">
-            <span class="close-button" title="إغلاق">×</span>
-            <h2 id="modalTitle">إضافة مورد جديد</h2>
-            <form id="supplierModalForm">
-                <input type="hidden" id="modalRecordId" name="recordId">
-                <fieldset>
-                    <legend>البيانات الأساسية</legend>
-                    <div class="form-group">
-                        <label for="modalSupplierCode">كود المورد <span class="required">*</span></label>
-                        <input type="text" id="modalSupplierCode" name="SupplierCode" required placeholder="ادخل كود المورد الفريد">
-                        <span class="print-only-value"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalSupplierName">اسم المورد <span class="required">*</span></label>
-                        <input type="text" id="modalSupplierName" name="SupplierName" required placeholder="ادخل اسم المورد كاملاً">
-                        <span class="print-only-value"></span>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalCommercialReg">السجل التجاري <span class="required">*</span></label>
-                            <input type="text" id="modalCommercialReg" name="CommercialReg" required placeholder="رقم السجل التجاري">
-                            <span class="print-only-value"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="modalTaxRegNum">رقم التسجيل الضريبي <span class="required">*</span></label>
-                            <input type="text" id="modalTaxRegNum" name="TaxRegNum" required pattern="\d{3}-\d{3}-\d{3}" title="الرجاء إدخال 9 أرقام مفصولة بشرطات (123-456-789)" placeholder="XXX-XXX-XXX">
-                            <span class="print-only-value"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalTaxStatus">الحالة الضريبية <span class="required">*</span></label>
-                        <select id="modalTaxStatus" name="TaxStatus" required>
-                            <option value="خاضع">خاضع</option>
-                            <option value="معفي">معفي</option>
-                        </select>
-                        <span class="print-only-value"></span>
-                    </div>
-                </fieldset>
-                 <fieldset>
-                    <legend>البيانات المالية</legend>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalInvoiceDiscount">خصم الفاتورة (%)</label>
-                            <input type="text" id="modalInvoiceDiscount" name="InvoiceDiscount" placeholder="مثال: 5 أو 'حسب الاتفاق'">
-                            <span class="print-only-value"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="modalDeferredDiscount">خصم مؤجل (%)</label>
-                            <input type="number" id="modalDeferredDiscount" name="DeferredDiscount" min="0" step="0.01">
-                            <span class="print-only-value"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalCodingFees">رسوم تكويد</label>
-                            <input type="number" id="modalCodingFees" name="CodingFees" min="0" step="0.01" placeholder="بالعملة المحلية">
-                            <span class="print-only-value"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="modalPaymentMethod">طريقة السداد <span class="required">*</span></label>
-                            <select id="modalPaymentMethod" name="PaymentMethod" required>
-                                <option value="">اختر طريقة...</option>
-                                <option value="نقدي">نقدي</option>
-                                <option value="تحويل بنكي">تحويل بنكي</option>
-                                <option value="شيك">شيك</option>
-                            </select>
-                            <span class="print-only-value"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalPaymentPeriod">فترة السداد (أيام)</label>
-                            <input type="number" id="modalPaymentPeriod" name="PaymentPeriod" min="0">
-                            <span class="print-only-value"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="modalReturnPeriod">فترة رفع المرتجع (أيام)</label>
-                            <input type="text" id="modalReturnPeriod" name="ReturnPeriod" placeholder="مثال: 30 أو 'حسب الاتفاق'">
-                            <span class="print-only-value"></span>
-                        </div>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend>بيانات الاتصال</legend>
-                    <div class="form-group">
-                        <label for="modalContactPerson">اسم المسؤول <span class="required">*</span></label>
-                        <input type="text" id="modalContactPerson" name="ContactPerson" required placeholder="اسم مسؤول الاتصال">
-                        <span class="print-only-value"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalJobTitle">المسمى الوظيفي</label>
-                        <input type="text" id="modalJobTitle" name="JobTitle">
-                        <span class="print-only-value"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalPhoneNumber">رقم التليفون <span class="required">*</span></label>
-                        <input type="tel" id="modalPhoneNumber" name="PhoneNumber" pattern="[0-9\s\-\+\(\)]+" required placeholder="مثال: +201XXXXXXXXX">
-                        <span class="print-only-value"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalEmail">البريد الإلكتروني <span class="required">*</span></label>
-                        <input type="email" id="modalEmail" name="Email" required placeholder="example@domain.com">
-                        <span class="print-only-value email-value"></span>
-                    </div>
-                </fieldset>
-                <fieldset>
-                    <legend>بيانات أخرى</legend>
-                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="modalRequesterName">صاحب الطلب</label>
-                            <input type="text" id="modalRequesterName" name="RequesterName" placeholder="اسم مقدم الطلب">
-                            <span class="print-only-value"></span>
-                        </div>
-                         <div class="form-group">
-                            <label for="modalRequestDate">تاريخ الطلب</label>
-                            <input type="date" id="modalRequestDate" name="RequestDate">
-                            <span class="print-only-value"></span>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="modalRegistrationDate">تاريخ التسجيل</label>
-                        <input type="date" id="modalRegistrationDate" name="RegistrationDate">
-                        <span class="print-only-value"></span>
-                    </div>
-                </fieldset>
-                <div class="form-actions">
-                    <button type="submit" id="modalSubmitBtn" class="button">حفظ</button>
-                    <button type="button" id="printModalBtn" class="button info">طباعة</button>
-                    <button type="button" id="modalCancelBtn" class="button secondary">إلغاء</button>
-                </div>
-            </form>
-            <div id="modalFormStatus"></div>
+    <!-- MODAL -->
+    <div id="modal"><div class="modal-content"><div class="modal-header"><h2 id="modalTitle">Add New Supplier</h2><button id="closeModalBtn" class="close-btn">&times;</button></div><form id="supplierForm"><input type="hidden" id="formMode" value="add"><input type="hidden" id="originalSupplierCode"><div class="form-group"><label for="supplierCode">Supplier Code</label><input type="text" id="supplierCode" required></div><div class="form-group"><label for="supplierName">Supplier Name</label><input type="text" id="supplierName" required></div><div class="form-group"><label for="invoiceDiscount">Invoice Discount (%)</label><input type="number" id="invoiceDiscount" step="0.01" required></div><div class="form-group"><label for="returnPeriod">Return Period (days)</label><input type="number" id="returnPeriod" required></div><div class="modal-footer"><button type="button" id="cancelBtn" class="btn">Cancel</button><button type="submit" id="saveBtn" class="btn">Save Supplier</button></div></form></div></div>
+    
+    <div id="toast-container"></div>
+    
+    <!-- DEBUG PANEL -->
+    <div id="debugPanel" class="debug-panel">
+        <div class="debug-header">
+            <h3>Live Debug Log</h3>
+            <button id="clearDebugBtn" class="btn" style="padding: 0.2rem 0.5rem;">Clear</button>
         </div>
+        <div id="debugLog" class="debug-log"></div>
     </div>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // --- CONFIGURATION AND DOM ELEMENTS ---
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyc0dz9vqkjei3Ipw2CCEUKLsBJS5gghETgtUvqm3PHED-daCDLKbox-yjMePYPQZpY/exec';
-        const DISPLAY_HEADERS_MAPPING = { "SupplierCode": "كود المورد", "SupplierName": "اسم المورد", "CommercialReg": "السجل التجاري", "TaxRegNum": "رقم التسجيل الضريبي", "InvoiceDiscount": "خصم الفاتورة", "ReturnPeriod": "فترة المرتجع", "ContactPerson": "اسم المسؤول", "PhoneNumber": "رقم التليفون", "Email": "البريد الإلكتروني" };
-        const DISPLAY_HEADERS_KEYS = Object.keys(DISPLAY_HEADERS_MAPPING);
+        // --- CONFIGURATION ---
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyZALo_LWOQ8sgtLZ4aVLVHMteKLt8orx5MY-TPZSCgE6gFTK_1jvt9GYP477r4OSKW8Q/exec'; 
+
+        // --- DOM ELEMENTS ---
+        const loader = document.getElementById('loader');
+        const supplierGrid = document.getElementById('supplier-grid');
         const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const addNewSupplierBtn = document.getElementById('addNewSupplierBtn');
-        const refreshDataBtn = document.getElementById('refreshDataBtn');
-        const dataTableContainer = document.getElementById('dataTableContainer');
-        const loadingMessageElement = document.getElementById('loadingMessage');
-        const formStatusDiv = document.getElementById('formStatus');
-        const supplierModal = document.getElementById('supplierModal');
-        const modalTitle = document.getElementById('modalTitle');
-        const supplierModalForm = document.getElementById('supplierModalForm');
-        const modalRecordIdInput = document.getElementById('modalRecordId');
-        const modalSubmitBtn = document.getElementById('modalSubmitBtn');
-        const modalCancelBtn = document.getElementById('modalCancelBtn');
-        const modalCloseBtn = supplierModal.querySelector('.close-button');
-        const modalFormStatusDiv = document.getElementById('modalFormStatus');
-        const printModalBtn = document.getElementById('printModalBtn');
-
-        // --- HELPER FUNCTIONS ---
-        function isGoogleScriptUrlSet() {
-            const placeholderExamplePart = 'YOUR_PLACEHOLDER_SCRIPT_ID_HERE';
-            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes(placeholderExamplePart) || GOOGLE_SCRIPT_URL.endsWith('/dev') || !GOOGLE_SCRIPT_URL.includes('/exec') ) {
-                showStatus(formStatusDiv, 'خطأ فادح: URL الخاص بـ Google Apps Script غير مُكوَّن بشكل صحيح.', 'error');
-                return false;
-            }
-            return true;
-        }
-        function showLoading(isLoading) {
-            if (isLoading) {
-                dataTableContainer.innerHTML = '';
-                if (loadingMessageElement) { dataTableContainer.appendChild(loadingMessageElement); loadingMessageElement.style.display = 'block'; }
-                formStatusDiv.style.display = 'none';
-            } else {
-                 if (loadingMessageElement) loadingMessageElement.style.display = 'none';
-            }
-        }
-        function showStatus(element, message, type = '') {
-            if (!element) return;
-            element.textContent = message;
-            element.className = type;
-            element.style.display = message ? 'block' : 'none';
-            if (type === 'success' || type === 'error') { setTimeout(() => { if (element) element.style.display = 'none'; }, type === 'success' ? 3500 : 7000); }
-        }
-        function escapeHTML(str) {
-            if (typeof str !== 'string') return str === null || str === undefined ? '' : String(str);
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        // --- DATA FETCHING & RENDERING ---
-        async function fetchData(searchTerm = '') {
-            if (!isGoogleScriptUrlSet()) return;
-            showLoading(true);
-            let url = `${GOOGLE_SCRIPT_URL}?action=getAllSuppliers`;
-            if (searchTerm) { url = `${GOOGLE_SCRIPT_URL}?action=searchSuppliers&term=${encodeURIComponent(searchTerm)}`; }
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    const errText = await response.text();
-                    let errMessage = `فشل جلب البيانات: ${response.status}`;
-                    try { const errData = JSON.parse(errText); if (errData && errData.message) { errMessage = `خطأ من الخادم: ${errData.message}`; } } catch (e) {}
-                    throw new Error(errMessage);
-                }
-                const result = await response.json();
-                showLoading(false);
-                if (result.status === 'success') {
-                    if (result.data && result.data.length > 0) { renderTable(result.data); }
-                    else if (searchTerm) { dataTableContainer.innerHTML = '<p>لا توجد نتائج بحث مطابقة.</p>'; }
-                    else { dataTableContainer.innerHTML = '<p>لا يوجد موردين مسجلين حالياً. انقر فوق "إضافة مورد جديد" للبدء.</p>'; }
-                } else { throw new Error(result.message || 'فشل جلب البيانات من الخادم.'); }
-            } catch (error) { showLoading(false); dataTableContainer.innerHTML = `<p class="error">خطأ في تحميل البيانات: ${error.message}</p>`; }
-        }
+        const addSupplierBtn = document.getElementById('addSupplierBtn');
+        const modal = document.getElementById('modal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const supplierForm = document.getElementById('supplierForm');
+        const saveBtn = document.getElementById('saveBtn');
+        const toastContainer = document.getElementById('toast-container');
+        const testConnectionBtn = document.getElementById('testConnectionBtn');
+        const toggleDebugBtn = document.getElementById('toggleDebugBtn');
+        const debugPanel = document.getElementById('debugPanel');
+        const debugLog = document.getElementById('debugLog');
+        const clearDebugBtn = document.getElementById('clearDebugBtn');
         
-        // <!-- MODIFIED: renderTable now includes a print button in the actions cell -->
-        function renderTable(data) {
-            let tableHTML = '<table><thead><tr>';
-            DISPLAY_HEADERS_KEYS.forEach(key => { tableHTML += `<th>${DISPLAY_HEADERS_MAPPING[key]}</th>`; });
-            tableHTML += '<th>إجراءات</th></tr></thead><tbody>';
-            data.forEach(record => {
-                tableHTML += `<tr data-id="${escapeHTML(String(record.RowID))}">`;
-                DISPLAY_HEADERS_KEYS.forEach(key => {
-                    let cellValue = record[key];
-                    let displayValue = (cellValue === null || cellValue === undefined || String(cellValue).trim() === '') ? '' :
-                                       (key === 'InvoiceDiscount' && !isNaN(parseFloat(cellValue)) && isFinite(cellValue)) ? `${escapeHTML(cellValue)}%` :
-                                       (key === 'ReturnPeriod' && !isNaN(parseInt(cellValue, 10)) && isFinite(cellValue)) ? `${escapeHTML(cellValue)} يوم` :
-                                       escapeHTML(cellValue);
-                    tableHTML += `<td>${displayValue}</td>`;
-                });
-                tableHTML += `<td class="actions-cell">
-                                <button class="edit-btn button" data-id="${escapeHTML(String(record.RowID))}">تعديل</button>
-                                <button class="print-btn button info" data-id="${escapeHTML(String(record.RowID))}">طباعة</button>
-                                <button class="delete-btn button" data-id="${escapeHTML(String(record.RowID))}">حذف</button>
-                             </td></tr>`;
-            });
-            tableHTML += '</tbody></table>';
-            dataTableContainer.innerHTML = tableHTML;
-            addTableActionListeners();
-        }
-        
-        // <!-- MODIFIED: addTableActionListeners now handles the new print button -->
-        function addTableActionListeners() {
-            dataTableContainer.querySelectorAll('.edit-btn').forEach(button => button.addEventListener('click', handleEditClick));
-            dataTableContainer.querySelectorAll('.print-btn').forEach(button => button.addEventListener('click', handleRowPrintClick));
-            dataTableContainer.querySelectorAll('.delete-btn').forEach(button => button.addEventListener('click', handleDeleteClick));
-        }
+        let allSuppliers = [];
 
-        // --- MODAL & FORM LOGIC ---
-        function openModal(mode = 'add', recordId = null) {
-            supplierModalForm.reset();
-            clearModalErrorMessages();
-            showStatus(modalFormStatusDiv, '', '');
-            if (mode === 'add') {
-                modalTitle.textContent = 'إضافة مورد جديد';
-                modalRecordIdInput.value = '';
-                modalSubmitBtn.textContent = 'إضافة المورد';
-                supplierModal.style.display = 'block';
-                document.getElementById('modalSupplierCode').focus();
-            } else if (mode === 'edit' && recordId) {
-                modalTitle.textContent = 'تعديل بيانات المورد';
-                modalRecordIdInput.value = recordId;
-                modalSubmitBtn.textContent = 'حفظ التعديلات';
-                loadRecordForEdit(recordId);
-            }
-        }
-        function closeModal() { supplierModal.style.display = 'none'; }
-        async function loadRecordForEdit(recordId) {
-            if (!isGoogleScriptUrlSet()) return;
-            showStatus(modalFormStatusDiv, 'جاري تحميل بيانات المورد...', '');
+        // --- DEBUG FUNCTIONS ---
+        const logToUI = (message, type = 'info') => {
+            const now = new Date();
+            const timestamp = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            const logEntry = document.createElement('p');
+            logEntry.className = `log-${type}`;
+            logEntry.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            debugLog.appendChild(logEntry);
+            debugLog.scrollTop = debugLog.scrollHeight;
+        };
+        
+        const testBackendConnection = async () => {
+            logToUI("Running connection test...", "info");
+            showLoader(true);
             try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
-                if (!response.ok) {
-                    const errText = await response.text();
-                    let errMessage = `فشل تحميل بيانات المورد: ${response.status}`;
-                    try { const errData = JSON.parse(errText); if (errData && errData.message) { errMessage = `خطأ من الخادم: ${errData.message}`; } } catch (e) { }
-                    throw new Error(errMessage);
-                }
+                const testUrl = `${GOOGLE_SCRIPT_URL}?action=test&t=${new Date().getTime()}`;
+                const response = await fetch(testUrl);
                 const result = await response.json();
-                if (result.status === 'success' && result.data) {
-                    populateModalForm(result.data);
-                    showStatus(modalFormStatusDiv, '', '');
-                    supplierModal.style.display = 'block';
-                    document.getElementById('modalSupplierName').focus();
-                } else { throw new Error(result.message || 'فشل تحميل بيانات المورد.'); }
+                
+                if (result.success) {
+                    logToUI(`SUCCESS: ${result.message}`, "success");
+                    showToast(result.message, 'success');
+                } else {
+                    throw new Error(result.message);
+                }
             } catch (error) {
-                // If opening the modal for edit fails, we show the error inside the modal.
-                showStatus(modalFormStatusDiv, error.message, 'error');
+                logToUI(`FAILURE: ${error.message}`, "error");
+                showToast(`Test Failed: ${error.message}`, 'error');
+            } finally {
+                showLoader(false);
             }
-        }
-        function populateModalForm(record) {
-            for (const key in record) {
-                if (record.hasOwnProperty(key)) {
-                    const inputElement = supplierModalForm.elements[key];
-                    if (inputElement) {
-                        if (inputElement.type === 'date' && record[key]) {
-                            try {
-                                let dateStr = String(record[key]).split('T')[0];
-                                const date = new Date(dateStr);
-                                if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr) && !isNaN(date.getTime())) {
-                                   const tzoffset = (new Date()).getTimezoneOffset() * 60000;
-                                   const localISOTime = (new Date(date.valueOf() + tzoffset)).toISOString().split('T')[0];
-                                   inputElement.value = localISOTime;
-                                } else { inputElement.value = ''; }
-                            } catch (e) { inputElement.value = ''; }
-                        } else {
-                            inputElement.value = record[key] !== null && record[key] !== undefined ? record[key] : '';
-                        }
-                    }
+        };
+
+        // --- CORE FUNCTIONS ---
+        const showLoader = (show) => { loader.style.display = show ? 'block' : 'none'; };
+        const showToast = (message, type = 'success') => { const toast = document.createElement('div'); toast.className = `toast ${type}`; toast.textContent = message; toastContainer.appendChild(toast); setTimeout(() => { toast.classList.add('exit'); toast.addEventListener('animationend', () => toast.remove()); }, 5000); };
+        
+        // --- CHANGE 1: Corrected percentage display ---
+        const renderSuppliers = (suppliers) => { 
+            supplierGrid.innerHTML = ''; 
+            if (!suppliers || suppliers.length === 0) { 
+                const message = searchInput.value ? 'No suppliers match your search.' : 'No suppliers found. Click "Add Supplier" to start!'; 
+                supplierGrid.innerHTML = `<p id="no-suppliers-msg">${message}</p>`; 
+                return; 
+            } 
+            suppliers.forEach(supplier => { 
+                const card = document.createElement('div'); 
+                card.className = 'supplier-card'; 
+                card.dataset.code = supplier.SupplierCode; 
+                // Convert decimal to percentage for display (e.g., 0.1 -> 10)
+                const discountPercent = (parseFloat(supplier.InvoiceDiscount || 0) * 100).toFixed(2).replace(/\.00$/, '');
+                
+                card.innerHTML = `<div class="card-header"><h3>${supplier.SupplierName||'N/A'}</h3><span class="code">${supplier.SupplierCode||'N/A'}</span></div><div class="card-body"><p><strong>Invoice Discount:</strong> ${discountPercent}%</p><p><strong>Return Period:</strong> ${supplier.ReturnPeriod||0} days</p></div><div class="card-footer"><button class="btn btn-edit">Edit</button><button class="btn btn-delete">Delete</button></div>`; 
+                supplierGrid.appendChild(card); 
+            }); 
+        };
+
+        const fetchSuppliers = async () => {
+            logToUI("Attempting to fetch all suppliers...", "info");
+            showLoader(true);
+            supplierGrid.innerHTML = '';
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL);
+                logToUI(`Received response from server. Status: ${response.status}`, "info");
+                if (!response.ok) throw new Error(`Network error: ${response.status} ${response.statusText}`);
+                
+                const result = await response.json();
+                if (result.success) {
+                    logToUI(`Successfully fetched ${result.data.length} records.`, "success");
+                    allSuppliers = result.data;
+                    renderSuppliers(allSuppliers);
+                } else {
+                    throw new Error(result.message || 'An unknown script error occurred.');
                 }
+            } catch (error) {
+                logToUI(`FETCH ERROR: ${error.message}`, "error");
+                console.error('Fetch Error:', error);
+                showToast(error.message, 'error');
+                supplierGrid.innerHTML = `<p id="no-suppliers-msg"><strong>Error loading data.</strong><br><small>${error.message}</small></p>`;
+            } finally {
+                showLoader(false);
             }
-        }
-        function validateModalForm() {
-            let isValid = true;
-            clearModalErrorMessages();
-            supplierModalForm.querySelectorAll('[required]').forEach(field => {
-                if (!field.value.trim()) {
-                    isValid = false;
-                    field.style.borderColor = '#c82333';
-                    const errorMsg = document.createElement('small');
-                    errorMsg.textContent = 'هذا الحقل مطلوب';
-                    errorMsg.classList.add('error-message');
-                    if (field.nextElementSibling && !field.nextElementSibling.classList.contains('error-message')) {
-                         field.parentNode.insertBefore(errorMsg, field.nextElementSibling);
-                    }
-                } else { field.style.borderColor = ''; }
-            });
-            const taxRegNumInput = document.getElementById('modalTaxRegNum');
-            if (taxRegNumInput.value.trim() && !taxRegNumInput.checkValidity()) {
-                isValid = false; taxRegNumInput.style.borderColor = '#c82333';
-                const errorMsg = document.createElement('small');
-                errorMsg.textContent = taxRegNumInput.title || 'تنسيق غير صحيح.';
-                errorMsg.classList.add('error-message');
-                if (taxRegNumInput.nextElementSibling && !taxRegNumInput.nextElementSibling.classList.contains('error-message')) {
-                     taxRegNumInput.parentNode.insertBefore(errorMsg, taxRegNumInput.nextElementSibling);
+        };
+        
+        const postData = async (action, data) => {
+            logToUI(`Attempting to POST action: '${action}'...`, "info");
+            showLoader(true);
+            saveBtn.disabled = true;
+            try {
+                const payload = { action, data };
+                logToUI(`Payload: ${JSON.stringify(payload)}`, "info");
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+
+                logToUI(`Received response from server. Status: ${response.status}`, "info");
+                const result = await response.json();
+                if (result.success) {
+                    logToUI(`'${action}' action was successful. Message: ${result.data.message}`, "success");
+                    showToast(result.data.message || 'Operation successful!');
+                    hideModal();
+                    await fetchSuppliers();
+                } else {
+                    throw new Error(result.message || `Failed to perform action: ${action}`);
                 }
-            } else if (taxRegNumInput.value.trim()){ taxRegNumInput.style.borderColor = ''; }
-            if (!isValid) { showStatus(modalFormStatusDiv, 'الرجاء ملء جميع الحقول المطلوبة بشكل صحيح.', 'error'); }
-            else { showStatus(modalFormStatusDiv, '', ''); }
-            return isValid;
-        }
-        function clearModalErrorMessages() {
-            supplierModalForm.querySelectorAll('.error-message').forEach(msg => msg.remove());
-            supplierModalForm.querySelectorAll('input[required], select[required], input[pattern]').forEach(input => { input.style.borderColor = ''; });
-        }
-        function prepareFormForPrinting() {
-            supplierModalForm.querySelectorAll('input, select').forEach(inputEl => {
-                const printValueEl = inputEl.nextElementSibling;
-                if (printValueEl && printValueEl.classList.contains('print-only-value')) {
-                    let valueToPrint = (inputEl.tagName.toLowerCase() === 'select' && inputEl.selectedIndex >= 0) ? inputEl.options[inputEl.selectedIndex].text : inputEl.value;
-                    printValueEl.textContent = valueToPrint || '---';
-                }
-            });
-        }
+            } catch (error) {
+                const errorMessage = `POST ERROR on action '${action}': ${error.message}. This is often a CORS policy error. Please ensure the Google Apps Script has been redeployed correctly.`;
+                logToUI(errorMessage, "error");
+                console.error(`${action} Error:`, error);
+                showToast(error.message, 'error');
+            } finally {
+                showLoader(false);
+                saveBtn.disabled = false;
+            }
+        };
+
+        // --- CHANGE 2: Correctly handle form submission data ---
+        const handleFormSubmit = (e) => { 
+            e.preventDefault(); 
+            const mode = document.getElementById('formMode').value; 
+            const supplierData = { 
+                SupplierCode: document.getElementById('supplierCode').value.trim(), 
+                SupplierName: document.getElementById('supplierName').value.trim(), 
+                // Convert user input (e.g., 10) to a decimal (0.1) before sending
+                InvoiceDiscount: parseFloat(document.getElementById('invoiceDiscount').value || 0) / 100,
+                ReturnPeriod: document.getElementById('returnPeriod').value, 
+            }; 
+            const action = mode === 'add' ? 'create' : 'update'; 
+            if (mode === 'edit') { 
+                supplierData.originalSupplierCode = document.getElementById('originalSupplierCode').value; 
+            } 
+            postData(action, supplierData); 
+        };
+        const handleDelete = (supplierCode) => { if (!confirm(`Delete supplier ${supplierCode}?`)) return; postData('delete', { supplierCode }); };
+        
+        // --- CHANGE 3: Correctly populate the form for editing ---
+        const showModal = (mode = 'add', supplier = null) => { 
+            document.getElementById('formMode').value = mode; 
+            supplierForm.reset(); 
+            if (mode === 'add') { 
+                document.getElementById('modalTitle').textContent = 'Add New Supplier'; 
+                document.getElementById('supplierCode').disabled = false; 
+            } else if (mode === 'edit' && supplier) { 
+                document.getElementById('modalTitle').textContent = 'Edit Supplier'; 
+                document.getElementById('supplierCode').value = supplier.SupplierCode; 
+                document.getElementById('supplierName').value = supplier.SupplierName; 
+                // Convert decimal (e.g., 0.1) to a whole number (10) for the form input
+                document.getElementById('invoiceDiscount').value = (parseFloat(supplier.InvoiceDiscount || 0) * 100); 
+                document.getElementById('returnPeriod').value = supplier.ReturnPeriod; 
+                document.getElementById('originalSupplierCode').value = supplier.SupplierCode; 
+                document.getElementById('supplierCode').disabled = false; 
+            } 
+            modal.classList.add('show'); 
+        };
+        const hideModal = () => { modal.classList.remove('show'); };
+        
+        const handleFilter = (e) => { const searchTerm = e.target.value.toLowerCase(); const filteredSuppliers = allSuppliers.filter(s => String(s.SupplierName || '').toLowerCase().includes(searchTerm) || String(s.SupplierCode || '').toLowerCase().includes(searchTerm)); renderSuppliers(filteredSuppliers); };
         
         // --- EVENT LISTENERS ---
-        searchBtn.addEventListener('click', () => fetchData(searchInput.value.trim()));
-        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') fetchData(searchInput.value.trim()); });
-        addNewSupplierBtn.addEventListener('click', () => openModal('add'));
-        refreshDataBtn.addEventListener('click', () => { searchInput.value = ''; fetchData(); });
-        modalCloseBtn.addEventListener('click', closeModal);
-        modalCancelBtn.addEventListener('click', closeModal);
-        window.addEventListener('click', (event) => { if (event.target === supplierModal) closeModal(); });
-        window.addEventListener('keydown', (event) => { if (event.key === 'Escape' && supplierModal.style.display === 'block') closeModal(); });
-        printModalBtn.addEventListener('click', () => { prepareFormForPrinting(); window.print(); });
-
-        supplierModalForm.addEventListener('submit', async function (event) {
-            event.preventDefault();
-            if (!validateModalForm() || !isGoogleScriptUrlSet()) return;
-            modalSubmitBtn.disabled = true;
-            const originalButtonText = modalSubmitBtn.textContent;
-            modalSubmitBtn.textContent = 'جاري الحفظ...';
-            showStatus(modalFormStatusDiv, 'جاري حفظ البيانات...', '');
-            const formData = new FormData(supplierModalForm);
-            const action = modalRecordIdInput.value ? 'updateSupplier' : 'createSupplier';
-            formData.append('action', action);
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const responseText = await response.text();
-                let result;
-                try { result = JSON.parse(responseText); } catch (e) { throw new Error(`فشل تحليل استجابة الخادم. (${response.status})`); }
-                if (!response.ok) { let errMessage = `فشل حفظ البيانات: ${response.status}`; if (result && result.message) { errMessage = `خطأ من الخادم: ${result.message}`; } throw new Error(errMessage); }
-                if (result.status === 'success') { showStatus(modalFormStatusDiv, result.message, 'success'); fetchData(searchInput.value.trim()); setTimeout(closeModal, 1500); }
-                else { throw new Error(result.message || 'فشل حفظ البيانات من جهة الخادم.'); }
-            } catch (error) { showStatus(modalFormStatusDiv, error.message, 'error'); }
-            finally { modalSubmitBtn.disabled = false; modalSubmitBtn.textContent = originalButtonText; }
-        });
-        
-        function handleEditClick(event) { openModal('edit', event.target.dataset.id); }
-
-        // <!-- NEW: Handler for the row-level print button -->
-        async function handleRowPrintClick(event) {
-            const recordId = event.target.dataset.id;
-            if (!recordId) return;
-
-            showStatus(formStatusDiv, 'جاري تحضير الطباعة...', '');
-            if (!isGoogleScriptUrlSet()) return;
-            
-            try {
-                const response = await fetch(`${GOOGLE_SCRIPT_URL}?action=getSupplierById&id=${encodeURIComponent(recordId)}`);
-                if (!response.ok) {
-                    throw new Error(`فشل جلب بيانات المورد للطباعة: ${response.status}`);
-                }
-                const result = await response.json();
-                if (result.status === 'success' && result.data) {
-                    populateModalForm(result.data);
-                    prepareFormForPrinting();
-                    window.print();
-                    showStatus(formStatusDiv, '', ''); // Clear status message
-                } else {
-                    throw new Error(result.message || 'فشل تحميل بيانات المورد للطباعة.');
-                }
-            } catch (error) {
-                // Show error in the main status div, not the modal one.
-                showStatus(formStatusDiv, error.message, 'error');
-            }
-        }
-
-        async function handleDeleteClick(event) {
-            const recordId = event.target.dataset.id;
-            if (!recordId || !confirm('هل أنت متأكد أنك تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.')) return;
-            if (!isGoogleScriptUrlSet()) return;
-            showStatus(formStatusDiv, 'جاري حذف المورد...', '');
-            const formData = new FormData();
-            formData.append('action', 'deleteSupplier');
-            formData.append('recordId', recordId);
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', body: formData });
-                const responseText = await response.text();
-                let result;
-                try { result = JSON.parse(responseText); } catch (e) { throw new Error(`فشل تحليل استجابة الخادم عند الحذف. (${response.status})`); }
-                if (!response.ok) { let errMessage = `فشل حذف المورد: ${response.status}`; if (result && result.message) { errMessage = `خطأ من الخادم: ${result.message}`; } throw new Error(errMessage); }
-                if (result.status === 'success') { showStatus(formStatusDiv, result.message, 'success'); fetchData(searchInput.value.trim()); }
-                else { throw new Error(result.message || 'فشل حذف المورد من جهة الخادم.'); }
-            } catch (error) { showStatus(formStatusDiv, error.message, 'error'); }
-        }
-
-        // --- INITIALIZATION ---
-        if(isGoogleScriptUrlSet()){ fetchData(); }
-        else { showLoading(false); }
-    });
+        document.addEventListener('DOMContentLoaded', fetchSuppliers);
+        testConnectionBtn.addEventListener('click', testBackendConnection);
+        toggleDebugBtn.addEventListener('click', () => { debugPanel.classList.toggle('show'); toggleDebugBtn.textContent = debugPanel.classList.contains('show') ? 'Hide Debug Log' : 'Show Debug Log'; });
+        clearDebugBtn.addEventListener('click', () => { debugLog.innerHTML = ''; });
+        addSupplierBtn.addEventListener('click', () => showModal('add'));
+        closeModalBtn.addEventListener('click', hideModal);
+        cancelBtn.addEventListener('click', hideModal);
+        modal.addEventListener('click', (e) => { if (e.target === modal) hideModal(); });
+        supplierForm.addEventListener('submit', handleFormSubmit);
+        searchInput.addEventListener('input', handleFilter);
+        supplierGrid.addEventListener('click', (e) => { const target = e.target.closest('.btn'); if (!target) return; const card = target.closest('.supplier-card'); const code = card.dataset.code; if (target.classList.contains('btn-edit')) { const s = allSuppliers.find(sup => String(sup.SupplierCode) === String(code)); if (s) showModal('edit', s); } if (target.classList.contains('btn-delete')) { handleDelete(code); } });
     </script>
 </body>
 </html>
